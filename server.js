@@ -450,6 +450,9 @@ function generateMaze(id) {
                     userPair.emit("complete", true);
                     userMatch.emit("complete", true);
 
+                    userMatch.emit("completeGeneration", true);
+                    userPair.emit("completeGeneration", true);
+
                     userMatch.completeGeneration = true;
                     userPair.completeGeneration = true;
                 }

@@ -189,6 +189,10 @@ socket.on("paired", function(data) {
     }*/
 });
 
+socket.on("completeGeneration", function(data) {
+    $("#opponent-progress").text("Opponent Progress: 0% | Race!!!")
+});
+
 socket.on("winner", function(data) {
     console.log("receiving winner event");
     gamecomplete = true;
@@ -269,6 +273,8 @@ socket.on("disconnecting", function(data) {
     $("#play").fadeOut();
     $("#win-message").fadeOut();
     $("#lose-message").fadeOut();
+    $("#opponent-progress").fadeOut();
+
     $("#disconnect-message").fadeIn();
     $("#win-play-again").fadeIn();
 });
