@@ -59,7 +59,7 @@ var mazeDisplay = function(p) {
     }
 
     Cell.prototype.highlight = function() {
-        p.fill("#D3CDB6");
+        p.fill(255, 255, 255);
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
     }
 
@@ -100,10 +100,10 @@ var mazeDisplay = function(p) {
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
-                p.fill("#D3CDB6");
+                p.fill(255, 255, 255);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
             } else {
-                p.fill("#D3CDB6");
+                p.fill(255, 255, 255);
 
                 if (current) {
                     p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
@@ -111,7 +111,7 @@ var mazeDisplay = function(p) {
             }
         }
 
-        p.fill("#D3CDB6");
+        p.fill(255, 255, 255);
         p.ellipse(587.5, 387.5, 12.5, 12.5);
     }
 
