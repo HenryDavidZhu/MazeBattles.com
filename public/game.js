@@ -116,7 +116,7 @@ var mazeDisplay = function(p) {
     }
 
     p.keyTyped = function() {
-        console.log("userX = " + userX + ", userY = " + userY);
+        console.log("key typed!");
 
         if (complete) {
             if (p.key === 'w' || p.key === 'W') {
@@ -194,6 +194,9 @@ socket.on("completeGeneration", function(data) {
 });
 
 socket.on("winner", function(data) {
+    userX = 0;
+    userY = 0;
+
     console.log("receiving winner event");
     gamecomplete = true;
 
