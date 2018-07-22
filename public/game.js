@@ -197,6 +197,7 @@ socket.on("winner", function(data) {
     $("#canvas2-wrapper").fadeOut();
     $("#play").fadeOut();
     $("#opponent-progress").fadeOut();
+    $("#play-again").fadeOut();
 
     console.log("receiving winner event");
 
