@@ -283,26 +283,6 @@ function playerConnect(user) {
         user.canPair = true;
     }
 
-    function solveMaze(id) {
-        var userMatch = userMatchings[id];
-        var userPair = links[userMatch.id];
-
-        if (userMatch.completeGeneration) { // Only solve the maze once the generation of the maze has been completed
-            var roomName = userMatch.id + "|||" + userPair.id;
-
-            if (!(roomName in linksAndMazes)) {
-                roomName = userPair.id + "|||" + userMatch.id;
-            }
-
-            var linkMaze = linksAndMazes[roomName];
-            var current = roomsAndSolvingPoints[roomName];
-
-            while (roomsAndQueues[roomName].length > 0) { // While they are still cells to analyze
-
-            }
-        }
-    }
-
     user.on("position", updatePosition);
 
     function updatePosition(data) { // Endgame logic applies to both winners and losers
