@@ -1,0 +1,20 @@
+{
+  "name": "mazebattle",
+  "version": "1.0.0",
+  "description": "multiplayer maze competition",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "keywords": [
+    "mazes",
+    "multiplayer",
+    "game",
+    "race"
+  ],
+  "author": "henryzhu",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^2.1.0"
+  }
+}

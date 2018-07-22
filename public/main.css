@@ -1,0 +1,232 @@
+html, body {
+    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #2D2A32;
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    text-align: center;
+}
+
+#content {
+    display: none;
+}
+
+#loading-msg, #disconnect-message {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    background: transparent;
+    color: white;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid white;
+}
+
+#redpage {
+    text-align: center;
+    background: black;
+    height: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+}
+#canvas-wrapper, #canvas2-wrapper {
+    position: relative;
+    z-index: 4;
+    height: 400px;
+    width: 600px;
+    background: transparent;
+    border-radius: 7px;
+}
+#canvas2-wrapper {
+    display: none;
+}
+
+.align-left {
+  text-align: left;
+}
+
+#play-wrapper, #play2-wrapper, #opponent-progress {
+    background: transparent;
+    color: white;
+    display: inline-block;
+    z-index: 5;
+    margin-top: 8px;
+    padding: 9px 14px;
+    border-radius: 15px;
+    font-size: 18px;
+    transition: all 0.2s ease 0s;
+    border: 1px solid white;
+}
+#play2-wrapper, #opponent-progress {
+    display: none;
+}
+#opponent-progress {
+    border-radius: 8px;
+    padding: 7px 12px;
+}
+#play-wrapper:hover, #play2-wrapper:hover {
+    cursor: pointer;
+}
+
+#play {
+    position: relative;
+    outline: 0;
+    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    background: #2D2A32;
+    border: 0;
+    color: #2D2A32;
+    font-size: 17px;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+}
+#play:hover {
+    cursor: pointer;
+}
+#game-wrapper {
+    z-index: 4;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    transform: translateX(-50%) translateY(-50%);
+    padding: 3px;
+    border-radius: 4px;
+}
+#generating-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-300px) translateY(-200px);
+    width: 400px;
+    height: 400px;
+    background: rgba(0, 0, 0, 0.18);
+    color: white;
+    display: none;
+}
+#bottom {
+    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    background: rgb(20, 20, 20);
+    color: white;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    height: 22px;
+    line-height: 22px;
+}
+#bottom a {
+    color: white;
+}
+#title {
+    font-size: 16px;
+    text-align: center;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
+    color: white;
+}
+#audio {
+    display: none;
+}
+#score-streak {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 3px 9px;
+    background: transparent;
+    background: black;
+    color: white;
+    font-size: 18px;
+    border: 0;
+
+}
+#navigation {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+}
+#bar1, #bar2, #bar3 {
+    height: 2px;
+    width: 28px;
+    background: black;
+    margin-bottom: 8px;
+}
+
+#win-message, #lose-message, #disconnect-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    display: none;
+    transition: all 0.2s ease 0s;
+    background: transparent;
+    color: white;
+    border-radius: 6px;
+    border: 1px solid white;
+}
+
+.message {
+    background: transparent;
+    color: white;
+    font-size: 24px;
+    padding: 9px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+}
+
+.smaller {
+    font-size: 20px !important;
+}
+#win-play-again, #lose-play-again {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+    color: white;
+    display: none;
+    font-size: 21px;
+}
+#win-play-again:hover, #lose-play-again:hover {
+    background: white;
+    color: black;
+}
+.left-cell, .right-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+.right-cell {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+#score-streak {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding: 6px 15px;
+    border-radius: 9px;
+}
+#play {
+    color: #88f747;
+    font-size: 15px;
+}
+#dropdown-menu {
+    display: none;
+    background: #eee677;
+}
