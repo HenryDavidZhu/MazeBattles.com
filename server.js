@@ -1,9 +1,5 @@
-// SIMPLIFY to links[user.id]
-// INCLUDE TIME LIMIT TIME
-// STOP PLAYING AGAIN WHEN GAME IS IN SESSION
 /*
-    Current issues dealing with:
-    EMIT TO ROOMS INSTEAD OF INDIVIDUAL IDS and CLEAR UP USERMATCHINGS AND USERSPOOL?
+    Change pairing function from a threaded process to an event-based process
 */
 var express = require("express");
 var socket = require("socket.io");
@@ -61,13 +57,6 @@ function Maze(widthCells, heightCells) {
 }
 
 function Cell(cellSize, row, column) {
-    /*
-        Creates a new Cell object with the following parameters:
-        1. cellSize - the width/height in pixels, of the cell
-        2. row - the row number of the cell (starting from 0)
-        3. column - the column number of the cell (starting from 0)
-    */
-
     this.cellSize = cellSize;
     this.column = column;
 
@@ -94,11 +83,6 @@ Cell.prototype.getNumWalls = function() {
     }
 
     return numWalls;
-}
-
-Cell.prototype.toString = function() {
-    // For debugging purposes: return the row and column of the cell
-    return "(" + this.row + ", " + this.column + ")";
 }
 
 Maze.prototype.getNeighbor = function(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
@@ -175,8 +159,6 @@ Maze.prototype.getNeighbor = function(dfs, cellRow, cellColumn) { // Get all of 
     }
 }
 
-
-
 function deleteWall(current, neighbor) { // Delete the wall between two cells
     var deltaX = current.column - neighbor.column; // Get the x distance between the two cells
     var deltaY = current.row - neighbor.row; // Get the y distance between the two cells
@@ -251,20 +233,12 @@ function playerConnect(user) {
             pool (prevents problems with duplicating a user's addition into the memory during refresh)
         */
         if (guest) {
-            /*
-                The user can be paired intiially (so we set user.canPair = true)
-                The user has not been paired initially (so we set user.isPaired = false)
-            */
             user.canPair = true;
             user.isPaired = false;
             user.completeGeneration = false; // Each user starts off with a new maze
 
             user.score = 0; // Each user starts out with 0 wins initially
 
-            /*
-                Add the user to the userPool
-                Add the userID to the usersPoolIDs
-            */
             usersPool.push(user);
             usersPoolIDs.push(user.id);
 
@@ -273,6 +247,8 @@ function playerConnect(user) {
         }
 
         playersOnline += 1; // Update the number of players online
+
+        matchUsers();
     }
 
     user.on("open-pairing", openPairing); // When the user has just won or lost the match
@@ -281,6 +257,8 @@ function playerConnect(user) {
         // Set user.isPaired to false, and set user.canPair to true
         user.isPaired = false;
         user.canPair = true;
+
+        matchUsers();
     }
 
     user.on("position", updatePosition);
@@ -305,6 +283,8 @@ function playerConnect(user) {
                     links[userMatchings[socketID].id].emit("winner", [socketID, clientsAndTimes[socketID], links[userMatchings[socketID].id].score]);
                 }
             }
+
+            matchUsers();
         }
     }
 
@@ -312,7 +292,7 @@ function playerConnect(user) {
 
     function disconnectUser() {
         if (user.isPaired && !user.canPair && links[user.id]) {
-            console.log("user.canPair = " + user.canPair);
+            console.log(user.id + " has disconnected");
 
             // Find out who the disconnected user is connected to
             var disconnectedUserID = user.id;
@@ -378,13 +358,13 @@ function playerConnect(user) {
             usersToGenerateMaze.splice(usersToGenerateMaze.indexOf(disconnectedUserID), 1);
 
             // TODO: Delete clientsAndTimes
+            matchUsers();
         }
     }
 }
 
 function generateMaze(id) {
     if (clearTimeoutsFor.indexOf(id) > -1) {
-        console.log("clearing timeout");
         clearTimeout(generateMaze);
         return;
     }
@@ -405,7 +385,6 @@ function generateMaze(id) {
         var current = roomsAndCurrent[roomName];
 
         if (userMatch.isPaired) {
-
             if (userMatch.mazeHolder == null) {
                 userMatch.mazeHolder = false;
                 userPair.mazeHolder = true;
@@ -518,8 +497,6 @@ function matchUsers() {
                 client.emit("initialMaze", maze);
                 usersPool[prevBase].emit("initialMaze", maze);
 
-                console.log("generating maze to " + client.id + " and " + usersPool[prevBase].id);
-
                 if (clearTimeoutsFor.indexOf(client.id) != -1) {
                     clearTimeoutsFor.splice(clearTimeoutsFor.indexOf(client.id), 1);
                 }
@@ -537,6 +514,7 @@ function matchUsers() {
 
 var startStopWatch = function(id, expected) {
     // Use a self-adjusting time algorithm
+    // console.log("stopwatch started!");
     var currentTime = clientsAndTimes[id];
     var error = Date.now() - expected;
 
@@ -547,14 +525,3 @@ var startStopWatch = function(id, expected) {
         startStopWatch(id, expected);
     }, Math.max(0, 1000 - error)); // Figure out why it is Math.max(0, 1000 - error)
 }
-
-setInterval(matchUsers, 100);
-
-function printLinks() {
-    for (var i = 0; i < usersPoolIDs.length; i++) {
-        console.log("links[" + usersPoolIDs[i] + "] = " + links[usersPoolIDs[i]] + ", links.length = " + Object.keys(links).length);
-    }
-    console.log("---------------------------------------");
-}
-
-//setInterval(printLinks, 1000);

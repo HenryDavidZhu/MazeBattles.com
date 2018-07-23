@@ -58,11 +58,6 @@ var mazeDisplay = function(p) {
         p.background(0, 0, 0);
     }
 
-    Cell.prototype.highlight = function() {
-        p.fill(255, 255, 255);
-        p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
-    }
-
     p.draw = function() {
         p.clear();
 
@@ -103,10 +98,11 @@ var mazeDisplay = function(p) {
                 p.fill(255, 255, 255);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
             } else {
-                p.fill(255, 255, 255);
-
                 if (current) {
-                    p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
+                    p.noFill();
+                    p.stroke(255, 255, 255);     
+                    p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
+                    p.fill(255, 255, 255);
                 }
             }
         }
@@ -283,5 +279,9 @@ socket.on("disconnecting", function(data) {
 });
 
 socket.on('connect', () => {
-    console.log(socket.id); // an alphanumeric id...
+    console.log(socket.id); // Print out the current socket's id
+});
+
+socket.on("disconnect", () => {
+    console.log("You have been disconnected from the match.");
 });
