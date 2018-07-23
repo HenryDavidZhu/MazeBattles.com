@@ -1,5 +1,9 @@
 /*
-    Change pairing function from a threaded process to an event-based process
+    Bugs that I still need to fix:
+    1. Handling users that disconnect due to inactivity
+       a. Set the pingTimeout to 63 seconds
+       b. On the client side, check when 
+    2.
 */
 var express = require("express");
 var socket = require("socket.io");
