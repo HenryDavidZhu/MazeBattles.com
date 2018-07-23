@@ -257,6 +257,7 @@ function playerConnect(user) {
         // Set user.isPaired to false, and set user.canPair to true
         user.isPaired = false;
         user.canPair = true;
+        user.completeGeneration = false;
 
         matchUsers();
     }
@@ -291,6 +292,8 @@ function playerConnect(user) {
     user.on("disconnect", disconnectUser);
 
     function disconnectUser() {
+        user.emit("inactivity", true);
+
         if (user.isPaired && !user.canPair && links[user.id]) {
             console.log(user.id + " has disconnected");
 

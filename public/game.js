@@ -285,3 +285,17 @@ socket.on('connect', () => {
 socket.on("disconnect", () => {
     console.log("You have been disconnected from the match.");
 });
+
+socket.on("inactivity", function(data) {
+    alert("You have been disconnected due to inactivity.");
+    $("#playing-against").fadeOut();
+    $("#canvas2-wrapper").fadeOut();
+    $("#play").fadeOut();
+    $("#win-message").fadeOut();
+    $("#lose-message").fadeOut();
+    $("#opponent-progress").fadeOut();
+
+    $("#disconnect-message").text("You have been disconnected due to inactivity.");
+    $("#disconnect-message").fadeIn();
+    $("#win-play-again").fadeIn();
+});
