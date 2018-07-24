@@ -13,7 +13,7 @@ var server = app.listen(3000);
 
 app.use(express.static("public"));
 
-var io = socket(server);
+var io = socket(server, {pingTimeout: 63000});
 
 io.sockets.on("connection", playerConnect);
 

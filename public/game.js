@@ -156,7 +156,7 @@ function equalCells(cell1, cell2) {
 }
 
 function solve(maze) {
-    // Use BFS to solve the maze
+    /* Use BFS to solve the maze
     var nodeQueue = new Queue();
     var visitedCells = [];
     var traveledPath = [];
@@ -190,7 +190,7 @@ function solve(maze) {
             }
         }
       }
-    }
+    }*/
 }
 
 var mazeDisplay = function(p) {
