@@ -1,13 +1,13 @@
 // Implement path tracing
 
 function Maze(widthCells, heightCells) {
-    this.widthCells = widthCells;
-    this.heightCells = heightCells;
+    maze.widthCells = widthCells;
+    maze.heightCells = heightCells;
     this.numCells = widthCells * heightCells;
-    this.cellGraph = [];
+    maze.cellGraph = [];
 
     for (var i = 0; i < heightCells; i++) {
-        this.cellGraph.push([]);
+        maze.cellGraph.push([]);
     }
 }
 
@@ -34,6 +34,127 @@ var gamecomplete = false;
 var userX = 0;
 var userY = 0;
 
+/*
+bfs(start, looking_for)
+  create arrays (node_queue, visited_nodes, and traveled_path)
+  add the start to the arrays
+  while the queue is not empty
+    take out the first element in the queue
+    for each of the neighbors of this first element 
+      if its not in the visited set and not blocked
+        add this to the arrays
+        if this contains what we are looking for
+          return the backtrack of this node
+        end if
+      end if
+    end for
+  end while
+end method
+*/
+function getNeighbor(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
+    var neighbors = []; // The list of all the neighbors of that cell
+    var coordinates = []; // The list of the coordinates of the neighbors of that cell
+
+    console.log("cellRow = " + cellRow + ", cellColumn = " + cellColumn);
+
+    if (cellColumn > 0) { // If the cell isn't on the left side, there is a neighbor to the left
+        var neighbor = maze.cellGraph[cellRow][cellColumn - 1]; // Get the neighboring cell to the left
+        console.log("analyzing cell " + neighbor.row + ", " + neighbor.column);
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow, cellColumn - 1]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWall(this, neighbor)) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellColumn < maze.widthCells - 1) { // If the cell isn't on the right side, there is a neighbor to the right
+        var neighbor = maze.cellGraph[cellRow][cellColumn + 1]; // Get the neighboring cell to the right
+        console.log("analyzing cell " + neighbor.row + ", " + neighbor.column);
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow, cellColumn + 1]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWall(this, neighbor)) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellRow > 0) { // If the cell isn't on the top side, there is a neighbor to the top
+        var neighbor = maze.cellGraph[cellRow - 1][cellColumn]; // Get the neighboring cell to the top
+        console.log("analyzing cell " + neighbor.row + ", " + neighbor.column);
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow - 1, cellColumn]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWall(this, neighbor)) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellRow < maze.heightCells - 1) { // If the cell isn't on the bottom side, there is a neighbor to the bottom
+        var neighbor = maze.cellGraph[cellRow + 1][cellColumn]; // Get the neighboring cell to the bottom
+        console.log("analyzing cell " + neighbor.row + ", " + neighbor.column);
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow + 1, cellColumn]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWall(this, neighbor)) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+
+    if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+        if (neighbors.length > 0) { // Make sure that their is a neighbor to draw from
+            var randomIndex = Math.floor(Math.random() * neighbors.length);
+            var randomNeighbor = neighbors[randomIndex]; // Get a random neighbor
+            return randomNeighbor;
+        } else {
+            return undefined;
+        }
+    } else { // If dfs is set to false, return all the neighbors
+        return neighbors;
+    }
+}
+
+    function isWall(cellA, cellB) {
+        // Whether there's a wall or not depends on the orientation of the blocks
+        // If it's vertical, it has to be false between even numbers
+        // If it's horizontal, it has to be false between odd numbers
+        for (var j = 0; j < cellA.walls.length; j++) {
+            for (var k = 0; k < cellB.walls.length; k++) {
+                if (Math.abs(j - k) == 2 && !cellA.walls[j] && !cellB.walls[k]) {
+                    var rA = cellA.row;
+                    var cA = cellA.column;
+                    var rB = cellB.row;
+                    var cB = cellB.column
+                    if ((rA - rB) == 1 && j == 0 || (rA - rB) == -1 && j == 2 || (cA - cB) == 1 && j == 3 || (cA - cB) == -1 && j == 1) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+function equalCells(cell1, cell2) {
+    return cell1.row == cell2.row && cell1.column == cell2.column;
+}
+
 function solve(maze) {
     // Use BFS to solve the maze
     var nodeQueue = new Queue();
@@ -41,6 +162,8 @@ function solve(maze) {
     var traveledPath = [];
 
     var startingNode = maze.cellGraph[0][0];
+    var endNode = maze.cellGraph[15][15];
+
     nodeQueue.enqueue(startingNode);
     visitedCells.push(startingNode);
     traveledPath.push(startingNode);
@@ -48,7 +171,25 @@ function solve(maze) {
     while (!nodeQueue.isEmpty()) {
       var node = nodeQueue.dequeue();
 
+      console.log("current node analyzing: " + node.row + ", " + node.column);
 
+      // Get the neighbors of the node
+      var neighbors = getNeighbor(false, node.row, node.column);
+
+      console.log(node.row + ", " + node.column + "'s neighbors: " + neighbors);
+
+      for (var i = 0; i < neighbors.length; i++) {
+        console.log(node.row + ", " + node.column + " walls: " + node.walls);
+        if (!neighbors[i].visited && isWall(neighbors[i], node)) {
+            nodeQueue.enqueue(neighbors[i]);
+            visitedCells.push(neighbors[i]);
+            traveledPath.push(neighbors[i]);
+
+            if (equalCells(neighbors[i], endNode)) {
+                return traveledPath;
+            }
+        }
+      }
     }
 }
 
@@ -186,6 +327,7 @@ socket.on("paired", function(data) {
 });
 
 socket.on("completeGeneration", function(data) {
+    console.log(solve(maze));
     $("#opponent-progress").text("Opponent Progress: 0% | Race!!!")
 });
 

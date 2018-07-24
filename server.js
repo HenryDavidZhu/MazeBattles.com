@@ -14,6 +14,7 @@ var server = app.listen(3000);
 app.use(express.static("public"));
 
 var io = socket(server);
+
 io.sockets.on("connection", playerConnect);
 
 var usersPool = []; // An array that contains all of the users connected on the site (objects)

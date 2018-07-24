@@ -110,7 +110,7 @@ var mazeIntro = function(p) {
             }
         }
         if (this.row < maze.heightCells - 1) {
-            var neighbor = maze.cellGraph[this.row + 1][this.column];
+            var neighbor = maze.cellGraph[this.row + 1][this.column];   
 
             if (dfs) {
                 if (!neighbor.visited) {
