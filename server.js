@@ -261,23 +261,22 @@ function playerConnect(user) {
 
     function openPairing(placeholder) {
         // Set user.isPaired to false, and set user.canPair to true
-        if (!user.isPaired) {
-            var userIndex = usersPoolIDs.indexOf(user.id);
+        
+        var userIndex = usersPoolIDs.indexOf(user.id);
 
-            user.canPair = true;
-            user.isPaired = false;
-            user.completeGeneration = false;
+        user.canPair = true;
+        user.isPaired = false;
+        user.completeGeneration = false;
 
-            if (userIndex == -1) {
-                usersPool.push(user);
-                usersPoolIDs.push(user.id);
+        if (userIndex == -1) {
+            usersPool.push(user);
+            usersPoolIDs.push(user.id);
 
-                // Associative array that ties each string id to a user
-                userMatchings[user.id] = user;           
-            }
-
-            matchUsers();
+            // Associative array that ties each string id to a user
+            userMatchings[user.id] = user;           
         }
+
+        matchUsers();
     }
 
     user.on("position", updatePosition);
@@ -310,11 +309,15 @@ function playerConnect(user) {
     user.on("disconnect", disconnectUser);
     user.on("activitytimeout", disconnectUser);
 
-    function disconnectUser() {
-        user.isPaired = false;
+    function disconnectUser(inactivity) {
+        console.log("disconnecting user");
+
+        //user.isPaired = false;
         user.emit("inactivity", true);
 
-        if (user.isPaired && !user.canPair && links[user.id]) {
+        console.log("user.canPair = " + user.canPair + ", user.isPaired = " + user.isPaired)
+
+        if (!user.canPair && links[user.id]) {
             console.log(user.id + " has disconnected");
 
             // Find out who the disconnected user is connected to
