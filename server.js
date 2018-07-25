@@ -233,6 +233,7 @@ function playerConnect(user) {
     user.on("user-connected", addPlayer); // Once the user has connected, launch the addPlayer function
 
     function addPlayer(guest) {
+        console.log("adding user w/ id " + user.id);
         /*
             The following if statement checks if the user is a valid user and if the user has already been added to the user-identification
             pool (prevents problems with duplicating a user's addition into the memory during refresh)
@@ -260,11 +261,23 @@ function playerConnect(user) {
 
     function openPairing(placeholder) {
         // Set user.isPaired to false, and set user.canPair to true
-        user.isPaired = false;
-        user.canPair = true;
-        user.completeGeneration = false;
+        if (!user.isPaired) {
+            var userIndex = usersPoolIDs.indexOf(user.id);
 
-        matchUsers();
+            user.canPair = true;
+            user.isPaired = false;
+            user.completeGeneration = false;
+
+            if (userIndex == -1) {
+                usersPool.push(user);
+                usersPoolIDs.push(user.id);
+
+                // Associative array that ties each string id to a user
+                userMatchings[user.id] = user;           
+            }
+
+            matchUsers();
+        }
     }
 
     user.on("position", updatePosition);
@@ -295,8 +308,10 @@ function playerConnect(user) {
     }
 
     user.on("disconnect", disconnectUser);
+    user.on("activitytimeout", disconnectUser);
 
     function disconnectUser() {
+        user.isPaired = false;
         user.emit("inactivity", true);
 
         if (user.isPaired && !user.canPair && links[user.id]) {

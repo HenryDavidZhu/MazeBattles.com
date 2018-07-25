@@ -1,4 +1,4 @@
-// Implement path tracing
+var inactivityChecker;
 
 function Maze(widthCells, heightCells) {
     maze.widthCells = widthCells;
@@ -33,6 +33,10 @@ var gamecomplete = false;
 
 var userX = 0;
 var userY = 0;
+
+function inactivity() {
+    socket.emit("activitytimeout", true);
+}
 
 /*
 bfs(start, looking_for)
@@ -282,6 +286,9 @@ var mazeDisplay = function(p) {
 
         userPosition = maze.cellGraph[userY][userX];
         socket.emit("position", [socket.id, userPosition]);
+
+        clearTimeout(inactivityChecker);
+        inactivityChecker = setTimeout(inactivity, 30000);
     }
 };
 
@@ -405,6 +412,8 @@ socket.on("wins", function(data) {
 
 socket.on("complete", function(data) {
     complete = true;
+
+    inactivityChecker = setTimeout(inactivity, 30000);
 });
 
 socket.on("disconnecting", function(data) {
