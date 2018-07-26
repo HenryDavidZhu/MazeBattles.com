@@ -261,22 +261,23 @@ function playerConnect(user) {
 
     function openPairing(placeholder) {
         // Set user.isPaired to false, and set user.canPair to true
-        
-        var userIndex = usersPoolIDs.indexOf(user.id);
+        if (!user.isPaired) {
+            var userIndex = usersPoolIDs.indexOf(user.id);
 
-        user.canPair = true;
-        user.isPaired = false;
-        user.completeGeneration = false;
+            user.canPair = true;
+            user.isPaired = false;
+            user.completeGeneration = false;
 
-        if (userIndex == -1) {
-            usersPool.push(user);
-            usersPoolIDs.push(user.id);
+            if (userIndex == -1) {
+                usersPool.push(user);
+                usersPoolIDs.push(user.id);
 
-            // Associative array that ties each string id to a user
-            userMatchings[user.id] = user;           
+                // Associative array that ties each string id to a user
+                userMatchings[user.id] = user;           
+            }
+
+            matchUsers();
         }
-
-        matchUsers();
     }
 
     user.on("position", updatePosition);
@@ -329,7 +330,9 @@ function playerConnect(user) {
             clearTimeoutsFor.push(pairedUserID);
 
             // Allow the paired user to be able to be repaired
-            pairedUser = userMatchings[pairedUserID]
+            pairedUser = userMatchings[pairedUserID];
+            pairedUser.isPaired = false;
+            pairedUser.canPair = true;
 
             // Determine the room that the two clients are in
             var roomName = disconnectedUserID + "|||" + pairedUserID;
