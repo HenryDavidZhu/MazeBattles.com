@@ -3,7 +3,8 @@
     1. Handling users that disconnect due to inactivity
        a. Set the pingTimeout to 63 seconds
        b. On the client side, check when 
-    2.
+    2. Reset pingTimeout when user joins a new match
+    3. Fix race!!! message
 */
 var express = require("express");
 var socket = require("socket.io");
@@ -260,11 +261,16 @@ function playerConnect(user) {
     user.on("open-pairing", openPairing); // When the user has just won or lost the match
 
     function openPairing(placeholder) {
-        // Set user.isPaired to false, and set user.canPair to true
+        console.log("user.canPair = " + user.canPair + ", user.isPaired = " + user.isPaired);
+
         if (!user.isPaired) {
+            user.canPair = true;
+        }
+
+        // Set user.isPaired to false, and set user.canPair to true
+        if (!user.isPaired && user.canPair) {
             var userIndex = usersPoolIDs.indexOf(user.id);
 
-            user.canPair = true;
             user.isPaired = false;
             user.completeGeneration = false;
 
@@ -315,8 +321,6 @@ function playerConnect(user) {
 
         //user.isPaired = false;
         user.emit("inactivity", true);
-
-        console.log("user.canPair = " + user.canPair + ", user.isPaired = " + user.isPaired)
 
         if (!user.canPair && links[user.id]) {
             console.log(user.id + " has disconnected");

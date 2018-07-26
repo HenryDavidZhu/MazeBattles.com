@@ -293,6 +293,10 @@ var mazeDisplay = function(p) {
 };
 
 socket.on("paired", function(data) {
+    if (inactivityChecker) {
+        clearTimeout(inactivityChecker);
+    }
+
     complete = false;
 
     // Delete all duplicate canvas(es) inside element
@@ -412,7 +416,6 @@ socket.on("wins", function(data) {
 
 socket.on("complete", function(data) {
     complete = true;
-
     inactivityChecker = setTimeout(inactivity, 30000);
 });
 
