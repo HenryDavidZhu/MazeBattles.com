@@ -293,6 +293,8 @@ var mazeDisplay = function(p) {
 };
 
 socket.on("paired", function(data) {
+    $("#win-play-again").fadeOut();
+
     if (inactivityChecker) {
         clearTimeout(inactivityChecker);
     }
@@ -306,6 +308,7 @@ socket.on("paired", function(data) {
         canvasWrapper.removeChild(canvasWrapper.firstChild);
     }
 
+    $("#disconnect-message").fadeOut();
     $("#spinner").fadeOut();
     $("#loading-msg").fadeOut();
     $("#start-label").fadeOut();

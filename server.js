@@ -5,6 +5,7 @@
        b. On the client side, check when 
     2. Reset pingTimeout when user joins a new match
     3. Fix race!!! message
+    4. When two users are disconnected, they are automatically reopened for pairing
 */
 var express = require("express");
 var socket = require("socket.io");
@@ -45,11 +46,6 @@ var clearTimeoutsFor = []; // The list of users to remove from the system
 var usersToGenerateMaze = []; // The list of users in which to generate the maze to
 
 function Maze(widthCells, heightCells) {
-    /*
-        Creates a new Maze object with the following parameters:
-        1. widthCells - the number of columns
-        2. heightCells - the nmber of rows
-    */
     this.widthCells = widthCells;
     this.heightCells = heightCells;
 
@@ -234,7 +230,6 @@ function playerConnect(user) {
     user.on("user-connected", addPlayer); // Once the user has connected, launch the addPlayer function
 
     function addPlayer(guest) {
-        console.log("adding user w/ id " + user.id);
         /*
             The following if statement checks if the user is a valid user and if the user has already been added to the user-identification
             pool (prevents problems with duplicating a user's addition into the memory during refresh)
@@ -317,14 +312,10 @@ function playerConnect(user) {
     user.on("activitytimeout", disconnectUser);
 
     function disconnectUser(inactivity) {
-        console.log("disconnecting user");
-
-        //user.isPaired = false;
+        user.isPaired = false;
         user.emit("inactivity", true);
 
-        if (!user.canPair && links[user.id]) {
-            console.log(user.id + " has disconnected");
-
+        if (!user.canPair && links[user.id] && !links[user.id].canPair) {
             // Find out who the disconnected user is connected to
             var disconnectedUserID = user.id;
             var pairedUserID = links[disconnectedUserID].id;
@@ -336,7 +327,7 @@ function playerConnect(user) {
             // Allow the paired user to be able to be repaired
             pairedUser = userMatchings[pairedUserID];
             pairedUser.isPaired = false;
-            pairedUser.canPair = true;
+            //pairedUser.canPair = true;
 
             // Determine the room that the two clients are in
             var roomName = disconnectedUserID + "|||" + pairedUserID;
