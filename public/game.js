@@ -358,7 +358,7 @@ socket.on("winner", function(data) {
     $("#opponent-progress").fadeOut();
     $("#play-again").fadeOut();
 
-    console.log("receiving winner event");
+    console.log("receiving winner event, winstreak = " + data[2]);
 
     $("#win-play-again").fadeIn();
 
@@ -378,15 +378,19 @@ socket.on("winner", function(data) {
         }
 
         $("#secs").text(secondText);
-        $("#win-streak-win").text(data[2]);
+        $("#score-streak").text("Win Streak: " + data[2]);
     } else {
         console.log("You lost the match.");
 
         $("#lose-message").fadeIn();
 
-        $("#win-streak-lose").text(data[2]);
+        $("#score-streak").text(data[2]);
         $("#play").fadeIn();
     }
+
+    maze = undefined;
+    current = undefined;
+    userPosition = undefined;
 });
 
 socket.on("initialMaze", function(data) {
@@ -400,21 +404,6 @@ socket.on("modifyCell", function(data) {
     if (maze) {
         maze.cellGraph[current.row][current.column] = current;
     }
-});
-
-socket.on("wins", function(data) {
-    var wins = data[0];
-    var winner = data[1];
-
-    console.log("winner = " + winner);
-
-    if (winner) {
-        $("#score-streak").text("Win Streak: " + data[0]);
-    }
-
-    maze = undefined;
-    current = undefined;
-    userPosition = undefined;
 });
 
 socket.on("complete", function(data) {
