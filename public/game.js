@@ -304,12 +304,12 @@ socket.on("paired", function(data) {
 
     complete = false;
 
-    // Delete all duplicate canvas(es) inside element
+    /* Delete all duplicate canvas(es) inside element
     var canvasWrapper = document.getElementById("canvas2-wrapper");
 
     while (canvasWrapper.firstChild) {
         canvasWrapper.removeChild(canvasWrapper.firstChild);
-    }
+    }*/
 
     $("#disconnect-message").fadeOut();
     $("#spinner").fadeOut();
@@ -329,7 +329,9 @@ socket.on("paired", function(data) {
 
     console.log("creating myp25");
 
-    myp25 = new p5(mazeDisplay, "canvas2-wrapper");
+    if (myp25 == null) {
+        myp25 = new p5(mazeDisplay, "canvas2-wrapper");
+    }
 });
 
 socket.on("completeGeneration", function(data) {
