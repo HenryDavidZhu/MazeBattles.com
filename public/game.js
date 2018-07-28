@@ -257,8 +257,7 @@ var mazeDisplay = function(p) {
     }
 
     p.keyTyped = function() {
-        console.log("key typed!");
-
+        console.log("key typed.");
         if (complete) {
             if (p.key === 'w' || p.key === 'W') {
                 if (!userPosition.walls[0]) {
@@ -282,21 +281,21 @@ var mazeDisplay = function(p) {
             }
         }
 
-        console.log("userX = " + userX + ", userY = " + userY);
-
         userPosition = maze.cellGraph[userY][userX];
         socket.emit("position", [socket.id, userPosition]);
 
         clearTimeout(inactivityChecker);
         inactivityChecker = setTimeout(inactivity, 30000);
-        return;
     }
 };
+
+// Handle key events (not using p5.js' keyTyped because it triggers multiple events after a user plays a match
+    // after winning one)
 
 socket.on("paired", function(data) {
     userX = 0;
     userY = 0;
-    
+
     $("#win-play-again").fadeOut();
 
     if (inactivityChecker) {
@@ -328,20 +327,9 @@ socket.on("paired", function(data) {
     $("#play").fadeIn();
     $("#score-streak").fadeIn();
 
+    console.log("creating myp25");
+
     myp25 = new p5(mazeDisplay, "canvas2-wrapper");
-
-    // Launch the self adjusting timer
-    // Time (final) = Time (initial) + delta(Time)
-    /*
-    var deltaTime = 1000;
-    var initialTime = Date.now();
-    var expectedTime = initialtime + deltaTime;
-
-    setTimeout(updateTime, deltaTime);
-
-    function updateTime() {
-        var error = Date.now() - expectedTime;
-    }*/
 });
 
 socket.on("completeGeneration", function(data) {
