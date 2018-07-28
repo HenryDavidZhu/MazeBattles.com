@@ -289,10 +289,14 @@ var mazeDisplay = function(p) {
 
         clearTimeout(inactivityChecker);
         inactivityChecker = setTimeout(inactivity, 30000);
+        return;
     }
 };
 
 socket.on("paired", function(data) {
+    userX = 0;
+    userY = 0;
+    
     $("#win-play-again").fadeOut();
 
     if (inactivityChecker) {
