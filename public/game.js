@@ -297,6 +297,8 @@ var mazeDisplay = function(p) {
     // after winning one)
 
 socket.on("paired", function(data) {
+    $("#opponent-progress").text("Opponent Progress: 0% | Generating Maze...")
+
     userX = 0;
     userY = 0;
 
