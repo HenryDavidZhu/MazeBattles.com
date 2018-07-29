@@ -1,3 +1,7 @@
+/*
+    1. 
+*/
+
 var inactivityChecker;
 
 function Maze(widthCells, heightCells) {
@@ -378,13 +382,15 @@ socket.on("winner", function(data) {
 
         $("#lose-message").fadeIn();
 
-        $("#score-streak").text(data[2]);
+        $("#score-streak").text("Win Streak: " + data[2]);
         $("#play").fadeIn();
     }
 
     maze = undefined;
     current = undefined;
     userPosition = undefined;
+
+    clearTimeout(inactivityChecker);
 });
 
 socket.on("initialMaze", function(data) {
