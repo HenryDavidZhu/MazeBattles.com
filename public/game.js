@@ -21,6 +21,7 @@ function Cell(cellSize, row, column) {
     this.visited = false;
     this.marked = false;
     this.examined = false;
+    this.parentCell = null;
 }
 
 var maze;
@@ -36,7 +37,8 @@ var userX = 0;
 var userY = 0;
 
 // Solving maze
-var path = [];
+var solution;
+var solved = false;
 
 function inactivity() {
     socket.emit("activitytimeout", true);
@@ -181,34 +183,46 @@ function equalCells(cell1, cell2) {
 }
 
 function solve(maze) {
-    var startingNode = maze.cellGraph[0][0];
-    var endNode = maze.cellGraph[15][23];
     var queue = new Queue();
+    var start = maze.cellGraph[0][0]; // Start position is the left corner of the maze
+    start.visited = true;
+    queue.enqueue(start);
 
-    queue.enqueue(startingNode);
+    var prev = {}; // Used for backtracking path
 
     while (!queue.isEmpty()) {
         var curr = queue.dequeue();
+        var neighbors = getNeighbor(false, curr.row, curr.column);
 
-        if (equalCells(curr, endNode)) { // Reached end of the maze
-            path.push(curr);
-        } else {
-            // Get the neighbors of the maze
-            var neighbors = getNeighbor(false, curr.row, curr.column);
+        for (var i = 0; i < neighbors.length; i++) {
+            var neighbor = neighbors[i];
 
-            for (var i = 0; i < neighbors.length; i++) {
-                var neighbor = neighbors[i];
-                path.push(neighbor);
-
-                if (!neighbor.visited) {
-                    neighbor.visited = true;
-                    queue.enqueue(neighbor);
-                }
+            if (!neighbor.visited) {
+                queue.enqueue(neighbor);
+                neighbor.visited = true;
+                prev[curr.row + "-" + curr.column] = neighbor;
+                console.log("setting " + curr.row + "-" + curr.column + " to " + neighbor.row + "-" + neighbor.column);
             }
-
-            curr.examined = true;
         }
     }
+
+    console.log("done solving maze");
+
+    // Reconstruct path
+    var path = [];
+    var iter = maze.cellGraph[15][15]; // Start at end point
+    var previous = prev[iter.row + "-" + iter.column];
+
+    while (iter != null) {
+        if (iter.row == 0 && iter.column == 0) {
+            break;
+        }
+        
+        path.push(iter);
+        iter = prev[iter.row + "-" + iter.column];
+    }
+
+    path = path.reverse();
 
     return path;
 }
@@ -258,6 +272,16 @@ var mazeDisplay = function(p) {
 
                 p.fill(255, 255, 255);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+            
+                if (solved) {
+                    var previous = solution[0];
+
+                    for (var i = 1; i < solution.length; i++) {
+                        p.stroke(56, 211, 255);
+                        p.line(previous.row * 25 + 12.5, previous.column * 25 + 12.5, solution[i].row * 25 + 12.5, solution[i].column * 25 + 12.5);
+                        previous = solution[i];
+                    }
+                }
             } else {
                 if (current) {
                     p.noFill();
@@ -409,13 +433,17 @@ socket.on("modifyCell", function(data) {
 
     if (maze) {
         maze.cellGraph[current.row][current.column] = current;
+        maze.cellGraph[current.row][current.column].visited = false;
     }
 });
 
 socket.on("complete", function(data) {
-    console.log(solve(maze));
     complete = true;
     inactivityChecker = setTimeout(inactivity, 30000);
+
+    solution = solve(maze);
+    console.log(solution.length);
+    solved = true;
 });
 
 socket.on("disconnecting", function(data) {
