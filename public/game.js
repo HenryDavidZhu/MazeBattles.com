@@ -39,6 +39,10 @@ var userY = 0;
 // Solving maze
 var solution;
 var solved = false;
+var solvePercentage = 0;
+var path = [];
+
+var opponentProgress = 0;
 
 function inactivity() {
     socket.emit("activitytimeout", true);
@@ -233,6 +237,33 @@ function solve(maze) {
     return path;
 }
 
+function inPath(path, x, y) {
+    for (var i = 0; i < path.length; i++) {
+        var cell = path[i];
+
+        if (cell.column == x && cell.row == y) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function percentageSolved(solution, path) {
+    var solvedCells = 0;
+
+    for (var i = 0; i < path.length; i++) {
+        var cell = path[i];
+        var cellCoordinates = path[i].split("-");
+
+        if (inPath(solution, parseInt(cellCoordinates[0]), parseInt(cellCoordinates[1]))) {
+            solvedCells += 1;
+        }
+    }
+
+    return (100 * solvedCells / solution.length);
+}
+
 var mazeDisplay = function(p) {
     p.setup = function() {
         var canvas = p.createCanvas(600, 400);
@@ -276,14 +307,16 @@ var mazeDisplay = function(p) {
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
-                p.fill(255, 255, 255);
+                p.fill(67, 239, 104);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
             
                 if (solved) {
                     p.stroke(67, 239, 104);
+
                     var prev = solution[0];
+                    p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
+
                     for (var k = 1; k < solution.length; k++) {
-                        
                         var pathCell = solution[k];
                         p.line((prev.column) * 25 + 12.5, (prev.row) * 25 + 12.5, (pathCell.column) * 25 + 12.5, (pathCell.row) * 25 + 12.5);
                         prev = pathCell;
@@ -304,31 +337,47 @@ var mazeDisplay = function(p) {
     }
 
     p.keyTyped = function() {
-        if (complete) {
+        if (complete && solved) {
             if (p.key === 'w' || p.key === 'W') {
                 if (!userPosition.walls[0]) {
                     userY -= 1;
+                    path.push(userX + "-" + userY);
+
+                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 's' || p.key === 'S') {
                 if (!userPosition.walls[2]) {
                     userY += 1;
+                    path.push(userX + "-" + userY);
+
+                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'a' || p.key === 'A') {
                 if (!userPosition.walls[3]) {
                     userX -= 1;
+                    path.push(userX + "-" + userY);
+
+                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'd' || p.key === 'D') {
                 if (!userPosition.walls[1]) {
                     userX += 1;
+                    path.push(userX + "-" + userY);
+
+                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
+
+            console.log("solvedPercentage = " + solvedPercentage);
+            $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race.");
         }
 
         userPosition = maze.cellGraph[userY][userX];
         socket.emit("position", [socket.id, userPosition]);
+        socket.emit("solvedPercentage", [socket.id, solvedPercentage]);
 
         clearTimeout(inactivityChecker);
         inactivityChecker = setTimeout(inactivity, 30000);
@@ -340,6 +389,8 @@ var mazeDisplay = function(p) {
 
 socket.on("paired", function(data) {
     solved = false;
+    solvedPercentage = 0;
+    path = [];
 
     $("#opponent-progress").text("Opponent Progress: 0% | Generating Maze...")
 
@@ -383,7 +434,7 @@ socket.on("paired", function(data) {
 });
 
 socket.on("completeGeneration", function(data) {
-    $("#opponent-progress").text("Opponent Progress: 0% | Race!!!")
+    $("#opponent-progress").text("Opponent Progress: 0% | Race.")
 });
 
 socket.on("winner", function(data) {
@@ -452,6 +503,12 @@ socket.on("complete", function(data) {
 
     solution = solve(maze);
     solved = true;
+});
+
+socket.on("opponentPercentage", function(data) {
+    console.log("opponentProgress = " + opponentProgress);
+    opponentProgress = data.toFixed(2);
+    $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race!!!")
 });
 
 socket.on("disconnecting", function(data) {

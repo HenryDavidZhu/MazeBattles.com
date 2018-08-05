@@ -204,7 +204,7 @@ body {
     display: none;
     font-size: 131%;
 }
-#win-play-again:hover, #lose-play-again:hover {
+#planagain:hover, #lose-play-again:hover {
     background: white;
     color: black;
 }

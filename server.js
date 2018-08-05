@@ -385,6 +385,18 @@ function playerConnect(user) {
             matchUsers();
         }
     }
+
+    user.on("solvedPercentage", updatePercentages);
+
+    function updatePercentages(data) {
+        var socket = data[0];
+        var percentage = data[1];
+        console.log("percentage = " + percentage);
+
+        if (links[socket]) {
+            links[socket].emit("opponentPercentage", percentage);
+        }
+    }
 }
 
 function generateMaze(id) {
