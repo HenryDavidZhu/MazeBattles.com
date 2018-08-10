@@ -47,7 +47,7 @@ var mazeIntro = function(p) {
     }
 
     Cell.prototype.display = function() {
-        p.stroke("#ffffff");
+        p.stroke(0, 0, 0);
         if (this.walls[0] && this.row != 0) { // Top
             p.line(this.xPos, this.yPos, this.xPos + this.cellSize, this.yPos);
         }
@@ -141,7 +141,7 @@ var mazeIntro = function(p) {
         p.noFill();
         p.stroke(67, 239, 104);
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
-        p.fill(255, 255, 255);
+        p.fill(0, 0, 0);
     }
 
     Cell.prototype.mark = function() {
@@ -261,7 +261,6 @@ var mazeIntro = function(p) {
         } else {
             maze.cellGraph[0][0].mark();
             maze.cellGraph[maze.heightCells - 1][maze.widthCells - 1].highlight();
-
         }
     }
 };

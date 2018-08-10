@@ -20,6 +20,10 @@
     </head>
     <body>
       <div id="content">
+        <div id="left-desc">
+          <h1>MazeBattles</h1>
+          Race to solve mazes as quickly as possible.
+        </div>
         <div id="game-wrapper">
           <div id="canvas-wrapper">
           </div>
@@ -45,14 +49,7 @@
             Generating the maze...
           </div>
       </div>
-    <div id="score-streak">
-      Win Streak: 0
-    </div>
 
-    <div id="title">
-      use <b>[a][w][s][d]</b> to move<br>
-      mazebattles.com beta v1.0.0
-    </div>
 
     <div id="loading-msg">
       Finding a player to pair you up with...
@@ -80,7 +77,9 @@
       </div>
     </div>
 
-    <div id="win-play-again"><span id="playagain"><u>Play Again</u></span> | <u>View Solution</u></div> 
+
+
+    <div id="win-play-again"><span id="playagain" class="playspan"><u>Play Again</u></span> | <span id="viewsolution" class="solutionspan"><u>View Solution</u></span></div> 
      </div>
       <script type="text/javascript">
           $("#content").fadeIn(1200);
@@ -95,7 +94,7 @@
               socket.emit("user-connected", true); // Playing as a guest
           });
 
-          $("#win-play-again").click(function() {
+          $("#playagain").click(function() {
             $("#win-message").fadeOut();
             $("#lose-message").fadeOut();
             $("#disconnect-message").fadeOut();

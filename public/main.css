@@ -1,11 +1,11 @@
 html, body {
-    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    font-family: -apple-system, system-ui, Tahoma, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     margin: 0;
     padding: 0;
-    color: #2D2A32;
+    color: black;
     width: 100%;
     height: 100%;
-    background: black;
+    background: white;
     text-align: center;
 }
 
@@ -14,7 +14,12 @@ body {
 }
 
 #content {
-    display: none;
+    display: flex;
+    z-index: 4;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
 }
 
 #loading-msg, #disconnect-message {
@@ -25,10 +30,14 @@ body {
     transform: translateX(-50%);
     font-size: 138%;
     background: transparent;
-    color: white;
+    color: black;
     padding: 9px 14px;
     border-radius: 8px;
-    border: 1px solid white;
+    border: 1px solid black;
+}
+
+#left-desc h1 {
+    line-height: 24px;
 }
 
 #redpage {
@@ -58,16 +67,17 @@ body {
 }
 
 #play-wrapper, #play2-wrapper, #opponent-progress {
-    background: transparent;
-    color: white;
+    background: white;
+    color: rgb(22, 134, 217);
     display: inline-block;
     z-index: 5;
     margin-top: 8px;
     padding: 9px 14px;
     border-radius: 15px;
     font-size: 113%;
+    font-weight: 600;
     transition: all 0.2s ease 0s;
-    border: 1px solid white;
+    border: 1px solid rgb(22, 134, 217);
 }
 #play2-wrapper, #opponent-progress {
     display: none;
@@ -96,12 +106,7 @@ body {
     cursor: pointer;
 }
 #game-wrapper {
-    z-index: 4;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: inline-block;
-    transform: translateX(-50%) translateY(-50%);
+ 
     padding: 3px;
     border-radius: 4px;
 }
@@ -113,13 +118,13 @@ body {
     width: 400px;
     height: 400px;
     background: rgba(0, 0, 0, 0.18);
-    color: white;
+    color: black;
     display: none;
 }
 #bottom {
     font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
     background: rgb(20, 20, 20);
-    color: white;
+    color: black;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -129,7 +134,7 @@ body {
     line-height: 22px;
 }
 #bottom a {
-    color: white;
+    color: black;
 }
 #title {
     font-size: 100%;
@@ -138,7 +143,7 @@ body {
     bottom: 10px;
     right: 10px;
     text-align: right;
-    color: white;
+    color: black;
 }
 #audio {
     display: none;
@@ -150,7 +155,7 @@ body {
     padding: 3px 9px;
     background: transparent;
     background: black;
-    color: white;
+    color: black;
     font-size: 100%;
     border: 0;
 
@@ -178,18 +183,18 @@ body {
     display: none;
     transition: all 0.2s ease 0s;
     background: transparent;
-    color: white;
+    color: black;
     border-radius: 6px;
-    border: 1px solid white;
+    border: 1px solid black;
 }
 
 .message {
     background: transparent;
-    color: white;
+    color: black;
     font-size: 150%;
     padding: 9px 14px;
     border-radius: 6px;
-    white-space: nowrap;
+    black-space: nowrap;
 }
 
 .smaller {
@@ -200,12 +205,12 @@ body {
     left: 50%;
     transform: translateX(-50%);
     bottom: 10px;
-    color: white;
+    color: black;
     display: none;
     font-size: 131%;
 }
-#planagain:hover, #lose-play-again:hover {
-    background: white;
+.playspan:hover, #lose-play-again:hover {
+    background: black;
     color: black;
 }
 .left-cell, .right-cell {
@@ -218,8 +223,8 @@ body {
 }
 #score-streak {
     background: transparent;
-    border: 1px solid white;
-    color: white;
+    border: 1px solid black;
+    color: black;
     position: absolute;
     left: 10px;
     bottom: 10px;
@@ -233,4 +238,26 @@ body {
 #dropdown-menu {
     display: none;
     background: #eee677;
+}
+
+.circle {
+    display: inline-block;
+    vertical-align: middle;
+    background-color: rgb(67, 239, 104);
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+}
+.ring {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 50%;
+    height: 11px;
+    width: 11px;
+    border: 1px solid rgb(67, 239, 104);
+}
+
+.solutionspan:hover {
+    background: black;
+    color: black;
 }

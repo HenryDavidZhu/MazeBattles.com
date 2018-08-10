@@ -42,6 +42,8 @@ var solved = false;
 var solvePercentage = 0;
 var path = [];
 
+var displayedSolution = false;
+
 var opponentProgress = 0;
 
 function inactivity() {
@@ -264,75 +266,81 @@ function percentageSolved(solution, path) {
     return (100 * solvedCells / solution.length);
 }
 
+function drawSolution(solution) {
+    if (solved) {
+        p.stroke(67, 239, 104);
+
+        var prev = solution[0];
+        p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
+
+        for (var k = 1; k < solution.length; k++) {
+            var pathCell = solution[k];
+            p.line((prev.column) * 25 + 12.5, (prev.row) * 25 + 12.5, (pathCell.column) * 25 + 12.5, (pathCell.row) * 25 + 12.5);
+            prev = pathCell;
+        }
+    }
+}
+
 var mazeDisplay = function(p) {
     p.setup = function() {
         var canvas = p.createCanvas(600, 400);
         p.background(0, 0, 0);
     }
 
+    p.displayMaze = function() {
+        for (var i = 0; i < maze.cellGraph.length; i++) {
+            for (var j = 0; j < maze.cellGraph[i].length; j++) {
+                p.stroke(0, 0, 0);
+                var cell = maze.cellGraph[i][j];
+                var numWalls = 0;
+
+                for (var e = 0; e < cell.walls.length; e++) {
+                    if (cell.walls[e]) {
+                        numWalls += 1;
+                    }
+                }
+
+                if (cell.walls[0] && cell.row != 0) { // Top
+                    p.line(cell.xPos, cell.yPos, cell.xPos + cell.cellSize, cell.yPos);
+                }
+                if (cell.walls[1] && cell.column != maze.widthCells - 1) { // Right
+                    p.line(cell.xPos + cell.cellSize, cell.yPos, cell.xPos + cell.cellSize, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[2] && cell.row != maze.heightCells - 1) { // Bottom
+                    p.line(cell.xPos + cell.cellSize, cell.yPos + cell.cellSize, cell.xPos, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[3] && cell.column != 0) { // Left
+                    p.line(cell.xPos, cell.yPos + cell.cellSize, cell.xPos, cell.yPos);
+                }
+                p.noStroke();
+            }
+        }
+
+        p.line(0, 400, 400, 400);
+    }
+
     p.draw = function() {
         p.clear();
 
         if (maze) {
-            for (var i = 0; i < maze.cellGraph.length; i++) {
-                for (var j = 0; j < maze.cellGraph[i].length; j++) {
-                    p.stroke("#ffffff");
-                    var cell = maze.cellGraph[i][j];
-                    var numWalls = 0;
-
-                    for (var e = 0; e < cell.walls.length; e++) {
-                        if (cell.walls[e]) {
-                            numWalls += 1;
-                        }
-                    }
-
-                    if (cell.walls[0] && cell.row != 0) { // Top
-                        p.line(cell.xPos, cell.yPos, cell.xPos + cell.cellSize, cell.yPos);
-                    }
-                    if (cell.walls[1] && cell.column != maze.widthCells - 1) { // Right
-                        p.line(cell.xPos + cell.cellSize, cell.yPos, cell.xPos + cell.cellSize, cell.yPos + cell.cellSize);
-                    }
-                    if (cell.walls[2] && cell.row != maze.heightCells - 1) { // Bottom
-                        p.line(cell.xPos + cell.cellSize, cell.yPos + cell.cellSize, cell.xPos, cell.yPos + cell.cellSize);
-                    }
-                    if (cell.walls[3] && cell.column != 0) { // Left
-                        p.line(cell.xPos, cell.yPos + cell.cellSize, cell.xPos, cell.yPos);
-                    }
-                    p.noStroke();
-                }
-            }
-
-            p.line(0, 400, 400, 400);
+            p.displayMaze();
 
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
                 p.fill(67, 239, 104);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
-            
-                if (solved) {
-                    p.stroke(67, 239, 104);
-
-                    var prev = solution[0];
-                    p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
-
-                    for (var k = 1; k < solution.length; k++) {
-                        var pathCell = solution[k];
-                        p.line((prev.column) * 25 + 12.5, (prev.row) * 25 + 12.5, (pathCell.column) * 25 + 12.5, (pathCell.row) * 25 + 12.5);
-                        prev = pathCell;
-                    }
-                }
             } else {
                 if (current) {
                     p.noFill();
-                    p.stroke(255, 255, 255);
+                    p.stroke(0, 0, 0);
                     p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
-                    p.fill(255, 255, 255);
+                    p.fill(0, 0, 0);
                 }
             }
         }
 
-        p.fill(255, 255, 255);
+        p.fill(0, 0, 0);
         p.ellipse(587.5, 387.5, 12.5, 12.5);
     }
 
@@ -508,7 +516,7 @@ socket.on("complete", function(data) {
 socket.on("opponentPercentage", function(data) {
     console.log("opponentProgress = " + opponentProgress);
     opponentProgress = data.toFixed(2);
-    $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race!!!")
+    $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race.")
 });
 
 socket.on("disconnecting", function(data) {
@@ -536,4 +544,18 @@ socket.on("inactivity", function(data) {
     $("#disconnect-message").text("You have been disconnected due to inactivity.");
     $("#disconnect-message").fadeIn();
     $("#win-play-again").fadeIn();
+});
+
+$(document).ready(function() {
+    $(document).on("click", "#viewsolution", function() {
+        if (solved && complete) {
+            alert("clicked view solution button");
+            $("#disconnect-message").fadeOut();
+            $("#win-message").fadeOut();
+            $("#lose-message").fadeOut();
+            $("#canvas2-wrapper").fadeIn();
+
+            myp25.displayMaze();
+        }
+    });
 });

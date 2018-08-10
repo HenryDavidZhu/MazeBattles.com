@@ -1,11 +1,6 @@
 /*
     Bugs that I still need to fix:
-    1. Handling users that disconnect due to inactivity
-       a. Set the pingTimeout to 63 seconds
-       b. On the client side, check when 
-    2. Reset pingTimeout when user joins a new match
-    3. Fix race!!! message
-    4. When two users are disconnected, they are automatically reopened for pairing
+    1. When a user canPair is set to true (not paired), but the tab is closed
 */
 var express = require("express");
 var socket = require("socket.io");
@@ -384,6 +379,26 @@ function playerConnect(user) {
             // TODO: Delete clientsAndTimes
             matchUsers();
         }
+
+        // Edge case (user canPair is true, isn't paired, and has no link)
+        if (user.canPair && !user.isPaired && !links[user.id]) {
+            var disconnectedUserID = user.id;
+            delete userMatchings[disconnectedUserID];
+
+            var index = -1;
+
+            for (var i = 0; i < usersPool.length; i++) {
+                var userToAnalyze = usersPool[i];
+
+                if (userToAnalyze.id == disconnectedUserID) {
+                    index = i;
+                    break;
+                }
+            }
+
+            usersPool.splice(index, 1);
+            usersPoolIDs.splice(usersPoolIDs.indexOf(disconnectedUserID), 1);
+        }
     }
 
     user.on("solvedPercentage", updatePercentages);
@@ -479,7 +494,7 @@ function generateMaze(id) {
 
 function matchUsers() {
     var base = -1;
-    for (var i = 0; i < usersPool.length; i++) {
+    for (var i = (usersPool.length - 1); i >= 0; i--) {
         var client = usersPool[i];
         if (!client.isPaired && client.canPair) {
             if (base == -1) {
