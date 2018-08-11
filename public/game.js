@@ -199,7 +199,7 @@ function solve(maze) {
     while (!queue.isEmpty()) {
         var curr = queue.dequeue();
 
-        if (curr.row == 15 && curr.column == 23) {
+        if (curr.row == 15 && curr.column == 19) {
             break;
         }
 
@@ -220,7 +220,7 @@ function solve(maze) {
 
     // Reconstruct path
     var path = [];
-    var iter = maze.cellGraph[15][23]; // Start at end point
+    var iter = maze.cellGraph[15][19]; // Start at end point
     var previous = prev[iter.row + "-" + iter.column];
 
     while (iter != null) {

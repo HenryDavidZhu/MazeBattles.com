@@ -27,6 +27,7 @@
                close you were to completing the maze within the 3 minute time limit.
 
                <div class="adespace">
+
                </div>
 
                <div class="centre">
@@ -81,8 +82,8 @@
 
       <div class="footer">
       </div>
+      
       <!--
-      <div class="footer">
         <div id="score-streak">
           Win Streak: 0
         </div>
@@ -92,11 +93,12 @@
           navigate <span class="circle"></span> to the <span class="ring"></span><br>
           mazebattles.com beta v1.0.0
         </div>
-      </div>-->
+      -->
 
       <script type="text/javascript">
          $("#content").fadeIn(1200);
          $("#play-wrapper,#play2-wrapper").click(function() {
+           $("#inner").fadeOut();
            $("#canvas-wrapper").fadeOut();
            $("#play").fadeOut();
            $("#sidebar").fadeOut();
