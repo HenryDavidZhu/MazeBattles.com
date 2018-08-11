@@ -283,7 +283,7 @@ function playerConnect(user) {
         var currentPosition = data[1]; // This is potentially causing problems
         userPositions[socketID] = currentPosition;
 
-        if (currentPosition.row == 15 && currentPosition.column == 23) {
+        if (currentPosition.row == 15 && currentPosition.column == 19) {
             // Game has been won by current
             if (userMatchings[socketID]) { // If the player wins, add 1 to their current score
                 userMatchings[socketID].score = userMatchings[socketID].score + 1;
@@ -527,7 +527,7 @@ function matchUsers() {
                 links[client.id] = usersPool[base];
                 links[usersPool[base].id] = client;
 
-                var maze = new Maze(24, 16);
+                var maze = new Maze(20, 16);
                 maze.createMaze();
                 linksAndMazes[roomName] = maze; // This is the problem we are having
                 roomsAndVisitedCells[roomName] = 1;

@@ -283,14 +283,14 @@ function drawSolution(solution) {
 
 var mazeDisplay = function(p) {
     p.setup = function() {
-        var canvas = p.createCanvas(600, 400);
+        var canvas = p.createCanvas(500, 400);
         p.background(0, 0, 0);
     }
 
     p.displayMaze = function() {
         for (var i = 0; i < maze.cellGraph.length; i++) {
             for (var j = 0; j < maze.cellGraph[i].length; j++) {
-                p.stroke(0, 0, 0);
+                p.stroke(255, 255, 255);
                 var cell = maze.cellGraph[i][j];
                 var numWalls = 0;
 

@@ -2,10 +2,10 @@ html, body {
     font-family: -apple-system, system-ui, Tahoma, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     margin: 0;
     padding: 0;
-    color: black;
+    color: white;
     width: 100%;
     height: 100%;
-    background: white;
+    background: rgb(10, 10, 10);
     text-align: center;
 }
 
@@ -30,14 +30,33 @@ body {
     transform: translateX(-50%);
     font-size: 138%;
     background: transparent;
-    color: black;
+    color: white;
     padding: 9px 14px;
     border-radius: 8px;
     border: 1px solid black;
 }
 
+#left-desc {
+    width: 320px;
+}
+
 #left-desc h1 {
+    font-size: 28px;
     line-height: 24px;
+}
+
+#inner {
+    padding-right: 25px;
+    text-align: left;
+}
+
+.footer {
+    background: #372554;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 14px;
 }
 
 #redpage {
@@ -54,7 +73,7 @@ body {
     position: relative;
     z-index: 4;
     height: 400px;
-    width: 600px;
+    width: 500px;
     background: transparent;
     border-radius: 7px;
 }
@@ -66,18 +85,29 @@ body {
   text-align: left;
 }
 
+.adespace {
+    height: 50px;
+    border: 1px solid #52528C;
+    margin-top: 15px;
+}
+
+.centre {
+    text-align: center;
+}
+
 #play-wrapper, #play2-wrapper, #opponent-progress {
-    background: white;
-    color: rgb(22, 134, 217);
+    background: #52528C;
+    color: white;
     display: inline-block;
     z-index: 5;
     margin-top: 8px;
-    padding: 9px 14px;
+    padding: 6px 10px;
     border-radius: 15px;
-    font-size: 113%;
+    font-size: 16px;
     font-weight: 600;
     transition: all 0.2s ease 0s;
-    border: 1px solid rgb(22, 134, 217);
+    border: 1px solid black;
+    text-align: center;
 }
 #play2-wrapper, #opponent-progress {
     display: none;
@@ -118,13 +148,13 @@ body {
     width: 400px;
     height: 400px;
     background: rgba(0, 0, 0, 0.18);
-    color: black;
+    color: white;
     display: none;
 }
 #bottom {
     font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
     background: rgb(20, 20, 20);
-    color: black;
+    color: white;
     position: fixed;
     bottom: 0;
     width: 100%;
@@ -134,7 +164,7 @@ body {
     line-height: 22px;
 }
 #bottom a {
-    color: black;
+    color: white;
 }
 #title {
     font-size: 100%;
@@ -143,22 +173,23 @@ body {
     bottom: 10px;
     right: 10px;
     text-align: right;
-    color: black;
+    color: white;
 }
 #audio {
     display: none;
 }
+
 #score-streak {
     position: absolute;
     bottom: 10px;
     left: 10px;
     padding: 3px 9px;
     background: transparent;
-    background: black;
-    color: black;
+    background: white;
+    color: white;
     font-size: 100%;
     border: 0;
-
+    z-index: 10;
 }
 #navigation {
     display: inline-block;
@@ -183,14 +214,14 @@ body {
     display: none;
     transition: all 0.2s ease 0s;
     background: transparent;
-    color: black;
+    color: white;
     border-radius: 6px;
     border: 1px solid black;
 }
 
 .message {
     background: transparent;
-    color: black;
+    color: white;
     font-size: 150%;
     padding: 9px 14px;
     border-radius: 6px;
@@ -205,13 +236,13 @@ body {
     left: 50%;
     transform: translateX(-50%);
     bottom: 10px;
-    color: black;
+    color: white;
     display: none;
     font-size: 131%;
 }
 .playspan:hover, #lose-play-again:hover {
     background: black;
-    color: black;
+    color: white;
 }
 .left-cell, .right-cell {
     display: table-cell;
@@ -224,7 +255,7 @@ body {
 #score-streak {
     background: transparent;
     border: 1px solid black;
-    color: black;
+    color: white;
     position: absolute;
     left: 10px;
     bottom: 10px;
@@ -259,5 +290,5 @@ body {
 
 .solutionspan:hover {
     background: black;
-    color: black;
+    color: white;
 }
