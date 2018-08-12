@@ -268,7 +268,7 @@ function percentageSolved(solution, path) {
 
 function drawSolution(solution) {
     if (solved) {
-        p.stroke(67, 239, 104);
+        p.stroke("#eb42f4");
 
         var prev = solution[0];
         p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
@@ -328,7 +328,7 @@ var mazeDisplay = function(p) {
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
-                p.fill(67, 239, 104);
+                p.fill("#eb42f4");
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
             } else {
                 if (current) {

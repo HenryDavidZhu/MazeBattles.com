@@ -17,6 +17,11 @@
       <script src="game.js"></script>
    </head>
    <body>
+      <div class="align-left">
+         <div id="opponent-progress">
+            Opponent Progress: 0% | Generating Maze...
+         </div>
+      </div>
       <div id="content">
          <div id="left-desc">
             <div id="inner">
@@ -25,30 +30,23 @@
                the <b>[a][w][s][d]</b> keys.
                After a match concludes, MazeBattles allows you to see the complete solution to a maze, and how
                close you were to completing the maze within the 3 minute time limit.
-
                <div class="adespace">
-
                </div>
-
                <div class="centre">
-                 <div id="play-wrapper">
-                    Ready to race to solve mazes?
-                 </div>
-                 <div id="play2-wrapper">
-                    Ready to race to solve mazes?</span>
-                 </div>
+                  <div id="play-wrapper">
+                     Ready to race to solve mazes?
+                  </div>
+                  <div id="play2-wrapper">
+                     Ready to race to solve mazes?</span>
+                  </div>
                </div>
             </div>
          </div>
          <div id="game-wrapper">
             <div id="canvas-wrapper">
             </div>
-            <div id="canvas2-wrapper">
-            </div>
-
-            <div class="align-left">
-               <div id="opponent-progress">
-                  Opponent Progress: 0% | Generating Maze...
+            <div class="game-window">
+               <div id="canvas2-wrapper">
                </div>
             </div>
             <div id="generating-msg">
@@ -60,6 +58,7 @@
          </div>
          <div id="disconnect-message">
             Your opponent has unfortunately disconnected.
+            <div id="win-play-again"><span id="playagain" class="playspan"><u>Play Again</u></span> | <span id="viewsolution" class="solutionspan"><u>View Solution</u></span></div>
          </div>
          <div id="win-message">
             <div class="message">
@@ -77,24 +76,20 @@
             </div>
          </div>
 
-         <div id="win-play-again"><span id="playagain" class="playspan"><u>Play Again</u></span> | <span id="viewsolution" class="solutionspan"><u>View Solution</u></span></div>
       </div>
-
       <div class="footer">
       </div>
-      
       <!--
-        <div id="score-streak">
-          Win Streak: 0
-        </div>
-
-        <div id="title">
-          use <b>[a][w][s][d]</b> to move<br>
-          navigate <span class="circle"></span> to the <span class="ring"></span><br>
-          mazebattles.com beta v1.0.0
-        </div>
-      -->
-
+         <div id="score-streak">
+           Win Streak: 0
+         </div>
+         
+         <div id="title">
+           use <b>[a][w][s][d]</b> to move<br>
+           navigate <span class="circle"></span> to the <span class="ring"></span><br>
+           mazebattles.com beta v1.0.0
+         </div>
+         -->
       <script type="text/javascript">
          $("#content").fadeIn(1200);
          $("#play-wrapper,#play2-wrapper").click(function() {

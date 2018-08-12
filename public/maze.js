@@ -140,13 +140,13 @@ var mazeIntro = function(p) {
 
     Cell.prototype.highlight = function() {
         p.noFill();
-        p.stroke(67, 239, 104);
+        p.stroke("#eb42f4");
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
         p.fill(0, 0, 0);
     }
 
     Cell.prototype.mark = function() {
-        p.fill(67, 239, 104);
+        p.fill("#eb42f4");
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
     }
 

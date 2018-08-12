@@ -1,5 +1,5 @@
 html, body {
-    font-family: -apple-system, system-ui, Tahoma, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
+    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     margin: 0;
     padding: 0;
     color: white;
@@ -27,13 +27,13 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%);
-    font-size: 138%;
+    transform: translateX(-50%) translateY(-50%);
+    font-size: 28px;
     background: transparent;
     color: white;
     padding: 9px 14px;
     border-radius: 8px;
-    border: 1px solid black;
+    white-space: nowrap;
 }
 
 #left-desc {
@@ -73,10 +73,17 @@ body {
     position: relative;
     z-index: 4;
     height: 400px;
-    width: 500px;
     background: transparent;
     border-radius: 7px;
 }
+
+.game-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
 #canvas2-wrapper {
     display: none;
 }
@@ -96,7 +103,7 @@ body {
 }
 
 #play-wrapper, #play2-wrapper, #opponent-progress {
-    background: #52528C;
+    background: rgb(10, 10, 10);
     color: white;
     display: inline-block;
     z-index: 5;
@@ -106,16 +113,36 @@ body {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.2s ease 0s;
-    border: 1px solid black;
+    border: 1px solid #52528C;
     text-align: center;
 }
+
+#play-wrapper:hover {
+    background: #52528C;
+    color: white;
+}
+
+#opponent-progress {
+    color: white;
+    display: inline-block;
+    z-index: 5;
+    font-size: 16px;
+    font-weight: normal;
+    transition: all 0.2s ease 0s;
+    text-align: center;   
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 5px;  
+
+    border: 0;
+}
+
 #play2-wrapper, #opponent-progress {
     display: none;
 }
-#opponent-progress {
-    border-radius: 8px;
-    padding: 7px 12px;
-}
+
 #play-wrapper:hover, #play2-wrapper:hover {
     cursor: pointer;
 }
@@ -123,7 +150,7 @@ body {
 #play {
     position: relative;
     outline: 0;
-    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     background: #2D2A32;
     border: 0;
     color: #2D2A32;
@@ -152,7 +179,7 @@ body {
     display: none;
 }
 #bottom {
-    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     background: rgb(20, 20, 20);
     color: white;
     position: fixed;
@@ -210,13 +237,12 @@ body {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-    font-family: "Inconsolata", "Helvetica", "Arial", sans-serif;
+    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     display: none;
     transition: all 0.2s ease 0s;
     background: transparent;
     color: white;
     border-radius: 6px;
-    border: 1px solid black;
 }
 
 .message {
@@ -225,20 +251,15 @@ body {
     font-size: 150%;
     padding: 9px 14px;
     border-radius: 6px;
-    black-space: nowrap;
+    white-space: nowrap;
 }
 
 .smaller {
     font-size: 125% !important;
 }
 #win-play-again, #lose-play-again {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 10px;
-    color: white;
     display: none;
-    font-size: 131%;
+    font-size: 20px;
 }
 .playspan:hover, #lose-play-again:hover {
     background: black;
@@ -254,7 +275,6 @@ body {
 }
 #score-streak {
     background: transparent;
-    border: 1px solid black;
     color: white;
     position: absolute;
     left: 10px;
