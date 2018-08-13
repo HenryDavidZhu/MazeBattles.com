@@ -1,3 +1,5 @@
+// Use set when checking for solved
+
 var inactivityChecker;
 
 function Maze(widthCells, heightCells) {
@@ -398,9 +400,10 @@ var mazeDisplay = function(p) {
 socket.on("paired", function(data) {
     solved = false;
     solvedPercentage = 0;
+    opponentProgress = 0;
     path = [];
 
-    $("#opponent-progress").text("Opponent Progress: 0% | Generating Maze...")
+    $("#opponent-progress").html("Opponent Progress: 0% | Generating Maze<span class='dot'>.</span><span class='dot'>.</span><span class='dot'>.</span>")
 
     userX = 0;
     userY = 0;
@@ -456,8 +459,6 @@ socket.on("winner", function(data) {
     $("#play").fadeOut();
     $("#opponent-progress").fadeOut();
     $("#play-again").fadeOut();
-
-    $("#win-play-again").fadeIn();
 
     if (socket.id == data[0]) {
         var totalSeconds = data[1];
@@ -520,7 +521,6 @@ socket.on("opponentPercentage", function(data) {
 });
 
 socket.on("disconnecting", function(data) {
-    alert("Your opponent disconnected.");
     $("#playing-against").fadeOut();
     $("#canvas2-wrapper").fadeOut();
     $("#play").fadeOut();
@@ -529,11 +529,9 @@ socket.on("disconnecting", function(data) {
     $("#opponent-progress").fadeOut();
 
     $("#disconnect-message").fadeIn();
-    $("#win-play-again").fadeIn();
 });
 
 socket.on("inactivity", function(data) {
-    alert("You have been disconnected due to inactivity.");
     $("#playing-against").fadeOut();
     $("#canvas2-wrapper").fadeOut();
     $("#play").fadeOut();
@@ -541,9 +539,8 @@ socket.on("inactivity", function(data) {
     $("#lose-message").fadeOut();
     $("#opponent-progress").fadeOut();
 
-    $("#disconnect-message").text("You have been disconnected due to inactivity.");
+    $("#disconnect-text").text("You have been disconnected due to inactivity.");
     $("#disconnect-message").fadeIn();
-    $("#win-play-again").fadeIn();
 });
 
 $(document).ready(function() {
