@@ -19,7 +19,7 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(calc(-50% - 10px));
 }
 
 #loading-msg, #disconnect-message {
@@ -77,15 +77,15 @@ body {
     border-radius: 7px;
 }
 
+#canvas2-wrapper {
+    display: none;
+}
+
 .game-window {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-}
-
-#canvas2-wrapper {
-    display: none;
 }
 
 .align-left {
@@ -208,15 +208,20 @@ body {
 
 #score-streak {
     position: absolute;
-    bottom: 10px;
-    left: 10px;
-    padding: 3px 9px;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
     background: transparent;
     background: white;
     color: white;
     font-size: 100%;
     border: 0;
     z-index: 10;
+
+    background: transparent;
+    color: white;
+    padding-bottom: 6px;
+    border-radius: 9px;
 }
 #navigation {
     display: inline-block;
@@ -272,15 +277,7 @@ body {
     padding-left: 7px;
     padding-right: 7px;
 }
-#score-streak {
-    background: transparent;
-    color: white;
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-    padding: 6px 15px;
-    border-radius: 9px;
-}
+
 #play {
     color: #88f747;
     font-size: 94%;
@@ -343,4 +340,8 @@ body {
 
 #playagain1:hover, #playagain2:hover, #playagain3:hover, #playagain4:hover {
     cursor: grab;
+}
+
+#score-streak {
+    display: none;
 }

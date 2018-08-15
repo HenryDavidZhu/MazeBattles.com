@@ -1,7 +1,3 @@
-/*
-    Bugs that I still need to fix:
-    1. When a user canPair is set to true (not paired), but the tab is closed
-*/
 var express = require("express");
 var socket = require("socket.io");
 
@@ -290,12 +286,12 @@ function playerConnect(user) {
 
                 userMatchings[socketID].canPair = false;
                 userMatchings[socketID].isPaired = false;
-                userMatchings[socketID].emit("winner", [socketID, clientsAndTimes[socketID], userMatchings[socketID].score]);
+                userMatchings[socketID].emit("winner", [socketID, userMatchings[socketID].score]);
 
                 if (links[userMatchings[socketID].id]) { // If the player loses, nothing happens to their score
                     links[userMatchings[socketID].id].canPair = false;
                     links[userMatchings[socketID].id].isPaired = false;
-                    links[userMatchings[socketID].id].emit("winner", [socketID, clientsAndTimes[socketID], links[userMatchings[socketID].id].score]);
+                    links[userMatchings[socketID].id].emit("winner", [socketID, links[userMatchings[socketID].id].score]);
                 }
             }
 
@@ -308,7 +304,6 @@ function playerConnect(user) {
 
     function disconnectUser(inactivity) {
         user.isPaired = false;
-        user.emit("inactivity", true);
 
         if (!user.canPair && links[user.id] && !links[user.id].canPair) {
             // Find out who the disconnected user is connected to
@@ -376,8 +371,9 @@ function playerConnect(user) {
             usersToGenerateMaze.splice(usersToGenerateMaze.indexOf(pairedUserID), 1);
             usersToGenerateMaze.splice(usersToGenerateMaze.indexOf(disconnectedUserID), 1);
 
-            // TODO: Delete clientsAndTimes
             matchUsers();
+        } else {
+            user.emit("inactivity", true);
         }
 
         // Edge case (user canPair is true, isn't paired, and has no link)
@@ -512,16 +508,6 @@ function matchUsers() {
                 var clientID = client.id;
                 var baseID = usersPool[base].id;
 
-                clientsAndTimes[client.id] = 0;
-                clientsAndTimes[usersPool[base].id] = 0;
-
-                setTimeout(function() {
-                    startStopWatch(clientID, Date.now() + 1000);
-                }, 1000);
-                setTimeout(function() {
-                    startStopWatch(baseID, Date.now() + 1000);
-                }, 1000);
-
                 client.join(roomName);
                 usersPool[base].join(roomName);
                 links[client.id] = usersPool[base];
@@ -561,18 +547,4 @@ function matchUsers() {
             }
         }
     }
-}
-
-var startStopWatch = function(id, expected) {
-    // Use a self-adjusting time algorithm
-    // console.log("stopwatch started!");
-    var currentTime = clientsAndTimes[id];
-    var error = Date.now() - expected;
-
-    clientsAndTimes[id] = currentTime + 1;
-
-    expected = expected + 1000;
-    setTimeout(function() {
-        startStopWatch(id, expected);
-    }, Math.max(0, 1000 - error)); // Figure out why it is Math.max(0, 1000 - error)
 }

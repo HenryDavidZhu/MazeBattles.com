@@ -26,12 +26,13 @@
          <div id="left-desc">
             <div id="inner">
                <h1>MazeBattles</h1>
-               Race to solve mazes as quickly as possible with other players around the world. Navigate using 
-               the <b>[a][w][s][d]</b> keys.
-               After a match concludes, MazeBattles allows you to see the complete solution to a maze, and how
-               close you were to completing the maze within the 3 minute time limit.
+               Race to solve mazes as quickly as possible with other players around the world. Navigate the circle to the bottom right corner  
+               using the <b>[a][w][s][d]</b> keys.
+               While you are solivng a maze, MazeBattles.com lets you see your opponent's progress in real-time and your win streak.
+               <!--
                <div class="adespace">
                </div>
+             -->
                <div class="centre">
                   <div id="play-wrapper">
                      Ready to race to solve mazes?
@@ -57,12 +58,12 @@
             Finding a player to pair you up with<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
          </div>
          <div id="disconnect-message">
-            Your opponent has unfortunately disconnected.
+            <span id="disconnect-text">Your opponent has unfortunately disconnected.</span>
             <div class="win-play-again"><span id="playagain1" class="playspan"><u>Play Again</u></span></div>
          </div>
          <div id="win-message">
             <div class="message">
-               You <b>won</b> the match, solving the maze in <span id="mins"></span>:<span id="secs"></span>!
+                You <b>won</b> the match!
                 <div class="win-play-again"><span id="playagain2" class="playspan"><u>Play Again</u></span></div>
             </div>
          </div>
@@ -72,15 +73,14 @@
                 <div class="win-play-again"><span id="playagain3" class="playspan"><u>Play Again</u></span></div>
             </div>
          </div>
-         <div id="disconnect-message">
-            <div class="message">
-               <span id="disconnect-text">Your opponent has disconnected. You have been given a win.</span>
-                <div class="win-play-again"><span id="playagain4" class="playspan"><u>Play Again</u></span></div>
-            </div>
-         </div>
 
       </div>
+
       <div class="footer">
+      </div>
+
+      <div id="score-streak">
+        Win Streak: 0
       </div>
       <!--
          <div id="score-streak">
@@ -104,7 +104,8 @@
            $("#score-streak").fadeOut();
            $("#play-wrapper").fadeOut();
            $("#loading-msg").fadeIn();
-             socket.emit("user-connected", true); // Playing as a guest
+           //$("#score-streak").fadeIn();
+           socket.emit("user-connected", true); // Playing as a guest
          });
          
          $("#playagain1,#playagain2,#playagain3,#playagain4").click(function() {

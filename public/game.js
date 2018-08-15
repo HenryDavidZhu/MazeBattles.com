@@ -52,23 +52,6 @@ function inactivity() {
     socket.emit("activitytimeout", true);
 }
 
-/*
-bfs(start, looking_for)
-  create arrays (node_queue, visited_nodes, and traveled_path)
-  add the start to the arrays
-  while the queue is not empty
-    take out the first element in the queue
-    for each of the neighbors of this first element 
-      if its not in the visited set and not blocked
-        add this to the arrays
-        if this contains what we are looking for
-          return the backtrack of this node
-        end if
-      end if
-    end for
-  end while
-end method
-*/
 function getNeighbor(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
     var neighbors = []; // The list of all the neighbors of that cell
     var coordinates = []; // The list of the coordinates of the neighbors of that cell
@@ -230,8 +213,8 @@ function solve(maze) {
             break;
         }
 
-        path.push(iter);
-
+        var cellString = iter.row + "-" + iter.column;
+        path.push(cellString);
 
         iter = prev[iter.row + "-" + iter.column];
     }
@@ -253,19 +236,8 @@ function inPath(path, x, y) {
     return false;
 }
 
-function percentageSolved(solution, path) {
-    var solvedCells = 0;
-
-    for (var i = 0; i < path.length; i++) {
-        var cell = path[i];
-        var cellCoordinates = path[i].split("-");
-
-        if (inPath(solution, parseInt(cellCoordinates[0]), parseInt(cellCoordinates[1]))) {
-            solvedCells += 1;
-        }
-    }
-
-    return (100 * solvedCells / solution.length);
+function percentageSolved(solution, path) {//asdf
+    return (100 * path.length / solution.length);
 }
 
 function drawSolution(solution) {
@@ -347,41 +319,62 @@ var mazeDisplay = function(p) {
     }
 
     p.keyTyped = function() {
+        console.log("solution.length = " + solution.length);
+
         if (complete && solved) {
             if (p.key === 'w' || p.key === 'W') {
-                if (!userPosition.walls[0]) {
+                if (userPosition && !userPosition.walls[0]) {
                     userY -= 1;
-                    path.push(userX + "-" + userY);
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
 
                     solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 's' || p.key === 'S') {
-                if (!userPosition.walls[2]) {
+                if (userPosition && !userPosition.walls[2]) {
                     userY += 1;
-                    path.push(userX + "-" + userY);
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
 
                     solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'a' || p.key === 'A') {
-                if (!userPosition.walls[3]) {
+                if (userPosition && !userPosition.walls[3]) {
                     userX -= 1;
-                    path.push(userX + "-" + userY);
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
 
                     solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'd' || p.key === 'D') {
-                if (!userPosition.walls[1]) {
+                if (userPosition && !userPosition.walls[1]) {
                     userX += 1;
-                    path.push(userX + "-" + userY);
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
 
                     solvedPercentage = percentageSolved(solution, path);
                 }
             }
 
-            console.log("solvedPercentage = " + solvedPercentage);
             $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race.");
         }
 
@@ -426,6 +419,7 @@ socket.on("paired", function(data) {
     $("#disconnect-message").fadeOut();
     $("#spinner").fadeOut();
     $("#loading-msg").fadeOut();
+    $("#score-streak").fadeOut();
     $("#start-label").fadeOut();
     $("#play-again").fadeOut();
     $("#canvas2-wrapper").fadeIn();
@@ -457,32 +451,19 @@ socket.on("winner", function(data) {
     $("#playing-against").fadeOut();
     $("#canvas2-wrapper").fadeOut();
     $("#play").fadeOut();
+    $("#score-streak").fadeOut();
     $("#opponent-progress").fadeOut();
     $("#play-again").fadeOut();
 
     if (socket.id == data[0]) {
-        var totalSeconds = data[1];
-
-        var mins = Math.floor(totalSeconds / 60);
-        var seconds = totalSeconds % 60;
-
         $("#win-message").fadeIn();
-        $("#mins").text(mins);
-
-        var secondText = seconds;
-
-        if (seconds < 10) {
-            secondText = "0" + seconds;
-        }
-
-        $("#secs").text(secondText);
-        $("#score-streak").text("Win Streak: " + data[2]);
+        $("#score-streak").text("Win Streak: " + data[1]);
     } else {
         console.log("You lost the match.");
 
         $("#lose-message").fadeIn();
 
-        $("#score-streak").text("Win Streak: " + data[2]);
+        $("#score-streak").text("Win Streak: " + data[1]);
         $("#play").fadeIn();
     }
 
@@ -527,6 +508,7 @@ socket.on("disconnecting", function(data) {
     $("#win-message").fadeOut();
     $("#lose-message").fadeOut();
     $("#opponent-progress").fadeOut();
+    $("#score-streak").fadeOut();
 
     $("#disconnect-message").fadeIn();
 });
@@ -537,7 +519,10 @@ socket.on("inactivity", function(data) {
     $("#play").fadeOut();
     $("#win-message").fadeOut();
     $("#lose-message").fadeOut();
+    $("#score-streak").fadeOut();
     $("#opponent-progress").fadeOut();
+
+    console.log("inactivity disconnect");
 
     $("#disconnect-text").text("You have been disconnected due to inactivity.");
     $("#disconnect-message").fadeIn();
