@@ -306,6 +306,8 @@ function playerConnect(user) {
         user.isPaired = false;
 
         if (!user.canPair && links[user.id] && !links[user.id].canPair) {
+            user.emit("inactivity", true);
+            
             // Find out who the disconnected user is connected to
             var disconnectedUserID = user.id;
             var pairedUserID = links[disconnectedUserID].id;
@@ -328,6 +330,7 @@ function playerConnect(user) {
 
             // Emit to paired user that the opponent has disconnected
             io.to(pairedUserID).emit("disconnecting", true);
+
 
             // Disconnect clients from the room
             user.leave(roomName);
@@ -372,8 +375,6 @@ function playerConnect(user) {
             usersToGenerateMaze.splice(usersToGenerateMaze.indexOf(disconnectedUserID), 1);
 
             matchUsers();
-        } else {
-            user.emit("inactivity", true);
         }
 
         // Edge case (user canPair is true, isn't paired, and has no link)
