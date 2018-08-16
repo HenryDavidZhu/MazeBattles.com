@@ -6,6 +6,7 @@
    <head>
       <meta charset="utf-8" />
       <title>MazeBattles.com | Multiplayer Maze Competition</title>
+      <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
       <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
       <link href="main.css" rel="stylesheet">
       <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
@@ -39,12 +40,12 @@
 
          <div id="left-desc">
             <div id="inner">
-               Race to solve mazes as quickly as possible with other players around the world. Navigate the circle to the bottom right corner  
-               using the <b>[a][w][s][d]</b> keys.
+               Race to solve mazes as quickly as possible with other players. Navigate the circle to the bottom right corner  
+               using <b>awsd</b>.
                <!--
                <div class="adespace">
                </div>
-             -->
+             --><div class="whitespace"></div>
                <div class="centre">
                   <div id="play-wrapper">
                      Ready to race to solve mazes?
@@ -60,7 +61,7 @@
             Finding a player to pair you up with<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
          </div>
          <div id="disconnect-message">
-            <span id="disconnect-text">Your opponent has unfortunately disconnected.</span>
+            <span id="disconnect-text">Your opponent has unfortunately disconnected<br><b>or</b> you have been inactive.</span>
             <div class="win-play-again"><span id="playagain1" class="playspan"><u>Play Again</u></span></div>
          </div>
          <div id="win-message">

@@ -261,7 +261,7 @@ var mazeIntro = function(p) {
             current.highlight();
         } else {
             maze.cellGraph[0][0].mark();
-            maze.cellGraph[maze.heightCells - 1][maze.widthCells - 1].highlight();
+            //maze.cellGraph[maze.heightCells - 1][maze.widthCells - 1].highlight();
         }
     }
 };

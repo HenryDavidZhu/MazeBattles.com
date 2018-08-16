@@ -1,5 +1,5 @@
 html, body {
-    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
+    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     margin: 0;
     padding: 0;
     color: white;
@@ -110,7 +110,6 @@ body {
     color: white;
     display: inline-block;
     z-index: 5;
-    margin-top: 8px;
     padding: 6px 10px;
     border-radius: 15px;
     font-size: 16px;
@@ -153,8 +152,7 @@ body {
 #play {
     position: relative;
     outline: 0;
-    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
-    background: #2D2A32;
+    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;    background: #2D2A32;
     border: 0;
     color: #2D2A32;
     font-size: 106%;
@@ -182,7 +180,7 @@ body {
     display: none;
 }
 #bottom {
-    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
+    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     background: rgb(20, 20, 20);
     color: white;
     position: fixed;
@@ -211,7 +209,7 @@ body {
 
 #score-streak {
     position: absolute;
-    bottom: 18px;
+    bottom: 14px;
     left: 50%;
     transform: translateX(-50%);
     background: transparent;
@@ -245,7 +243,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
-    font-family: -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
+    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
     display: none;
     transition: all 0.2s ease 0s;
     background: transparent;

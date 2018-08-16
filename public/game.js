@@ -521,10 +521,6 @@ socket.on("inactivity", function(data) {
     $("#lose-message").fadeOut();
     $("#score-streak").fadeOut();
     $("#opponent-progress").fadeOut();
-
-    console.log("inactivity disconnect");
-
-    $("#disconnect-text").text("You have been disconnected due to inactivity.");
     $("#disconnect-message").fadeIn();
 });
 
