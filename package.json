@@ -17,6 +17,7 @@
   "dependencies": {
     "express": "^4.16.3",
     "socket.io": "^2.1.0",
-    "socketio": "^1.0.0"
+    "socketio": "^1.0.0",
+    "uniqid": "^5.0.3"
   }
 }

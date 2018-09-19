@@ -1,127 +1,66 @@
-<!--
-   Mazebattles or mazefights
-   -->
 <!doctype html>
 <html>
    <head>
       <meta charset="utf-8" />
       <title>MazeBattles.com | Multiplayer Maze Competition</title>
-      <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
-      <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
       <link href="main.css" rel="stylesheet">
+
       <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-      <link href="https://fonts.googleapis.com/css?family=Marmelad" rel="stylesheet">
-      <script src="js/connect.js"></script>
-      <script src="queue.js"></script>
-      <script src="game.js"></script>
+
+      <script src="js/connect.js"></script> <!-- Script that connects to the node.js server -->
+      <script src="queue.js"></script> 
+      <script src="game.js"></script> <!-- Handles server requests and sends data to servers (logic processing) -->
    </head>
    <body>
-      <div class="align-left">
-         <div id="opponent-progress">
-            Opponent Progress: 0% | Generating Maze<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-         </div>
-      </div>
+
+      <nav>
+          
+      </nav>
+
       <div id="content">
          <div id="game-wrapper">
             <div id="canvas-wrapper">
-            </div>
-            <div class="game-window">
-               <div id="canvas2-wrapper">
-               </div>
-            </div>
-            <div id="generating-msg">
-               Generating the maze<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
             </div>
          </div>
 
         <div class="whitespace"></div>    
 
-         <div id="left-desc">
-            <div id="inner">
-               Race to solve mazes as quickly as possible with other players. Navigate the circle to the bottom right corner  
-               using <b>awsd</b>.
-               <!--
-               <div class="adespace">
-               </div>
-             --><div class="whitespace"></div>
-               <div class="centre">
-                  <div id="play-wrapper">
-                     Ready to race to solve mazes?
+         <div id="text-container">
+               <div id="play-wrapper">
+                  <div id="one-on-one">
+                     One-on-One
                   </div>
-                  <div id="play2-wrapper">
-                     Ready to race to solve mazes?</span>
+                  <div id="single-player">
+                     Single-player
                   </div>
                </div>
+
+               <div id="one-on-one-wrapper">
+                  <div id="one-on-one">
+                     Join
+                  </div>
+                  <div id="single-player">
+                     Invite
+                  </div>
+               </div>
             </div>
-         </div>
-
-         <div id="loading-msg">
-            Finding a player to pair you up with<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
-         </div>
-         <div id="disconnect-message">
-            <span id="disconnect-text">Your opponent has unfortunately disconnected<br><b>or</b> you have been inactive.</span>
-            <div class="win-play-again"><span id="playagain1" class="playspan"><u>Play Again</u></span></div>
-         </div>
-         <div id="win-message">
-            <div class="message">
-                You <b>won</b> the match!
-                <div class="win-play-again"><span id="playagain2" class="playspan"><u>Play Again</u></span></div>
-            </div>
-         </div>
-         <div id="lose-message">
-            <div class="message">
-               You <b>lost</b> the match!
-                <div class="win-play-again"><span id="playagain3" class="playspan"><u>Play Again</u></span></div>
-            </div>
-         </div>
-
       </div>
-
-      <div class="footer">
-      </div>
-
-      <div id="score-streak">
-        Win Streak: 0
-      </div>
-      <!--
-         <div id="score-streak">
-           Win Streak: 0
-         </div>
-         
-         <div id="title">
-           use <b>[a][w][s][d]</b> to move<br>
-           navigate <span class="circle"></span> to the <span class="ring"></span><br>
-           mazebattles.com beta v1.0.0
-         </div>
-         -->
+      
       <script type="text/javascript">
-         $("#content").fadeIn(1200);
-         $("#play-wrapper,#play2-wrapper").click(function() {
-           $("#inner").fadeOut();
-           $("#canvas-wrapper").fadeOut();
-           $("#play").fadeOut();
-           $("#sidebar").fadeOut();
-           $("#title").fadeOut();
-           $("#score-streak").fadeOut();
-           $("#play-wrapper").fadeOut();
-           $("#loading-msg").fadeIn();
-           //$("#score-streak").fadeIn();
-           socket.emit("user-connected", true); // Playing as a guest
-         });
-         
-         $("#playagain1,#playagain2,#playagain3,#playagain4").click(function() {
-           $("#win-message").fadeOut();
-           $("#lose-message").fadeOut();
-           $("#disconnect-message").fadeOut();
-           $("#play-wrapper").fadeOut();
-         
-           $("#loading-msg").fadeIn();
-         
-           socket.emit("open-pairing", true);
-         });
+        $("#one-on-one").click(function() {
+          // Display the new One-on-One layout
+          // Two buttons: Joining a match and Inviting others to the match
+          // Fade out play-wrapper, and fade in the one-on-one-wrapper
+          $("#play-wrapper").addClass("animated fadeOutLeft");
+        });
       </script>
+
       <script src="maze.js"></script>
    </body>
 </html>

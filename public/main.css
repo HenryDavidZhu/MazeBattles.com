@@ -1,22 +1,18 @@
+/* General styling*/
 html, body {
-    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
+    font-family: "Open Sans", monospace;
     margin: 0;
     padding: 0;
     color: white;
     width: 100%;
     height: 100%;
-    background: rgb(10, 10, 10);
+    background: #FF512F;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #DD2476, #FF512F);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #DD2476, #FF512F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     text-align: center;
-}
-
-body {
     font-size: 16px;
+    font-weight: 400;
 }
-
-.whitespace {
-    height: 8px;
-}
-
 #content {
     z-index: 4;
     position: absolute;
@@ -25,88 +21,39 @@ body {
     transform: translateX(-50%) translateY(-50%);
 }
 
-#loading-msg, #disconnect-message {
-    display: none;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    font-size: 28px;
-    background: transparent;
-    color: white;
-    padding: 9px 14px;
-    border-radius: 8px;
-    white-space: nowrap;
+
+/* Whitespace */
+.whitespace {
+    height: 20px;
 }
 
-#left-desc {
+
+/* Text syling */
+#text-container {
     width: 500px;
 }
-
-#left-desc h1 {
-    font-size: 28px;
-    line-height: 15px;
-}
-
-#inner {
-    padding-right: 25px;
-    text-align: left;
-}
-
-.footer {
-    background: #372554;
-    color: white;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 8px;
-}
-
-#redpage {
+#play-wrapper {
     text-align: center;
-    background: black;
-    height: 50%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 2;
-    width: 100%;
 }
-#canvas-wrapper, #canvas2-wrapper {
+
+
+/* Gameplay styling */
+#canvas-wrapper {
     position: relative;
     z-index: 4;
     height: 400px;
     background: transparent;
     border-radius: 7px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+#game-wrapper {
+    padding-bottom: 4px;
 }
 
-#canvas2-wrapper {
-    display: none;
-}
 
-.game-window {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-}
-
-.align-left {
-  text-align: left;
-}
-
-.adespace {
-    height: 50px;
-    border: 1px solid #52528C;
-    margin-top: 15px;
-}
-
-.centre {
-    text-align: center;
-}
-
-#play-wrapper, #play2-wrapper, #opponent-progress {
-    background: rgb(10, 10, 10);
+/* Styling for the play buttons */
+#one-on-one, #single-player, #opponent-progress {
+    background: rgba(255, 255, 255, 0.1);
     color: white;
     display: inline-block;
     z-index: 5;
@@ -115,234 +62,13 @@ body {
     font-size: 16px;
     font-weight: 600;
     transition: all 0.2s ease 0s;
-    border: 1px solid #52528C;
     text-align: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    font-weight: 700;
 }
-
-#play-wrapper:hover {
-    background: #52528C;
-    color: white;
-}
-
-#opponent-progress {
-    color: white;
-    display: inline-block;
-    z-index: 5;
-    font-size: 16px;
-    font-weight: normal;
-    transition: all 0.2s ease 0s;
-    text-align: center;   
-
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 3px;  
-
-    border: 0;
-}
-
-#play2-wrapper, #opponent-progress {
-    display: none;
-}
-
-#play-wrapper:hover, #play2-wrapper:hover {
+#one-on-one:hover, #single-player:hover {
     cursor: pointer;
 }
-
-#play {
-    position: relative;
-    outline: 0;
-    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;    background: #2D2A32;
-    border: 0;
-    color: #2D2A32;
-    font-size: 106%;
-    width: 25px;
-    height: 25px;
-    border-radius: 25px;
-}
-#play:hover {
-    cursor: pointer;
-}
-#game-wrapper {
- 
-    padding: 3px;
-    border-radius: 4px;
-}
-#generating-msg {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-300px) translateY(-200px);
-    width: 400px;
-    height: 400px;
-    background: rgba(0, 0, 0, 0.18);
-    color: white;
-    display: none;
-}
-#bottom {
-    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
-    background: rgb(20, 20, 20);
-    color: white;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 88%;
-    height: 22px;
-    line-height: 22px;
-}
-#bottom a {
-    color: white;
-}
-#title {
-    font-size: 100%;
-    text-align: center;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    text-align: right;
-    color: white;
-}
-#audio {
-    display: none;
-}
-
-#score-streak {
-    position: absolute;
-    bottom: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: transparent;
-    background: white;
-    color: white;
-    font-size: 100%;
-    border: 0;
-    z-index: 10;
-
-    background: transparent;
-    color: white;
-    padding-bottom: 6px;
-    border-radius: 9px;
-}
-#navigation {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    cursor: pointer;
-}
-#bar1, #bar2, #bar3 {
-    height: 2px;
-    width: 28px;
-    background: black;
-    margin-bottom: 8px;
-}
-
-#win-message, #lose-message, #disconnect-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    font-family: "Ubuntu", -apple-system, system-ui, "Helvetica Neue", Helvetica, "Meiryo UI", Meiryo, "Arial Unicode MS", sans-serif;
-    display: none;
-    transition: all 0.2s ease 0s;
-    background: transparent;
-    color: white;
-    border-radius: 6px;
-}
-
-.message {
-    background: transparent;
-    color: white;
-    font-size: 150%;
-    padding: 9px 14px;
-    border-radius: 6px;
-    white-space: nowrap;
-}
-
-.smaller {
-    font-size: 125% !important;
-}
-.win-play-again, .lose-play-again {
-    font-size: 20px;
-}
-.playspan:hover, #lose-play-again:hover {
-    background: black;
-    color: white;
-}
-.left-cell, .right-cell {
-    display: table-cell;
-    vertical-align: middle;
-}
-.right-cell {
-    padding-left: 7px;
-    padding-right: 7px;
-}
-
-#play {
-    color: #88f747;
-    font-size: 94%;
-}
-#dropdown-menu {
-    display: none;
-    background: #eee677;
-}
-
-.circle {
-    display: inline-block;
-    vertical-align: middle;
-    background-color: rgb(67, 239, 104);
-    border-radius: 50%;
-    height: 12px;
-    width: 12px;
-}
-.ring {
-    display: inline-block;
-    vertical-align: middle;
-    border-radius: 50%;
-    height: 11px;
-    width: 11px;
-    border: 1px solid rgb(67, 239, 104);
-}
-
-.solutionspan:hover {
-    background: black;
-    color: white;
-}
-
-@keyframes blink {
-    0% {
-      opacity: .2;
-    }
-
-    20% {
-      opacity: 1;
-    }
-
-    100% {
-      opacity: .2;
-    }
-}
-
-#loading-msg span {
-    animation-name: blink;
-    animation-duration: 1.4s;
-    animation-iteration-count: infinite;
-    animation-fill-mode: both;
-}
-
-#loading-msg span:nth-child(2) {
-    animation-delay: .2s;
-}
-
-#loading-msg span:nth-child(3) {
-    animation-delay: .4s;
-}
-
-#playagain1:hover, #playagain2:hover, #playagain3:hover, #playagain4:hover {
-    cursor: grab;
-}
-
-#score-streak {
+#one-on-one-wrapper {
     display: none;
 }
