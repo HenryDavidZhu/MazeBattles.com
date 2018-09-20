@@ -51,6 +51,7 @@ button {
     background: transparent;
     border-radius: 7px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    border: 4px solid rgba(255, 255, 255, 0.2);
 }
 #game-wrapper {
     padding-bottom: 4px;
@@ -71,6 +72,7 @@ button {
     text-align: center;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-weight: 700;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 #one-on-one:hover, #single-player:hover, #join:hover, #invite:hover {
     cursor: pointer;
