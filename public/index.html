@@ -4,8 +4,7 @@
       <meta charset="utf-8" />
       <title>MazeBattles.com | Multiplayer Maze Competition</title>
 
-      <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css?family=Cormorant+Garamond:400,700" rel="stylesheet">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
       <link href="main.css" rel="stylesheet">
 
@@ -33,31 +32,46 @@
 
          <div id="text-container">
                <div id="play-wrapper">
-                  <div id="one-on-one">
+                  <button id="one-on-one">
                      One-on-One
-                  </div>
-                  <div id="single-player">
+                  </button>
+                  <button id="single-player">
                      Single-player
-                  </div>
+                  </button>
                </div>
 
                <div id="one-on-one-wrapper">
-                  <div id="one-on-one">
+                  <button id="join">
                      Join
-                  </div>
-                  <div id="single-player">
+                  </button>
+                  <button id="invite">
                      Invite
-                  </div>
+                  </button>
                </div>
             </div>
       </div>
       
       <script type="text/javascript">
+        $("#content").fadeIn();
+
         $("#one-on-one").click(function() {
           // Display the new One-on-One layout
           // Two buttons: Joining a match and Inviting others to the match
           // Fade out play-wrapper, and fade in the one-on-one-wrapper
           $("#play-wrapper").addClass("animated fadeOutLeft");
+
+          // Make the one-on-one-wrapper visible
+          $("#play-wrapper").hide();
+          $("#one-on-one-wrapper").show();
+
+          $("#one-on-one-wrapper").addClass("animated fadeInRight");
+
+          $("#join").click(function() {
+            $("#one-on-one-wrapper").removeClass("animated fadeInRight");
+            $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+
+            socket.emit("joining-room", true);
+          });
         });
       </script>
 

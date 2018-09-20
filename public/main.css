@@ -1,6 +1,6 @@
 /* General styling*/
 html, body {
-    font-family: "Open Sans", monospace;
+    font-family: Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
     color: white;
@@ -12,6 +12,8 @@ html, body {
     text-align: center;
     font-size: 16px;
     font-weight: 400;
+    overflow: hidden;
+    letter-spacing: 1px;
 }
 #content {
     z-index: 4;
@@ -19,8 +21,12 @@ html, body {
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+    display: none;
 }
-
+button {
+    border: 0;
+    outline: 0;
+}
 
 /* Whitespace */
 .whitespace {
@@ -32,7 +38,7 @@ html, body {
 #text-container {
     width: 500px;
 }
-#play-wrapper {
+#play-wrapper, #one-on-one-wrapper {
     text-align: center;
 }
 
@@ -52,7 +58,7 @@ html, body {
 
 
 /* Styling for the play buttons */
-#one-on-one, #single-player, #opponent-progress {
+#one-on-one, #single-player, #opponent-progress, #join, #invite {
     background: rgba(255, 255, 255, 0.1);
     color: white;
     display: inline-block;
@@ -66,9 +72,12 @@ html, body {
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     font-weight: 700;
 }
-#one-on-one:hover, #single-player:hover {
+#one-on-one:hover, #single-player:hover, #join:hover, #invite:hover {
     cursor: pointer;
 }
 #one-on-one-wrapper {
     display: none;
+}
+#one-on-one, #join {
+    margin-right: 7px;
 }
