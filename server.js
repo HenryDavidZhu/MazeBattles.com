@@ -18,9 +18,15 @@ function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
 
     function roomInvite(guest) {
-    	var playerID = uniqid();
-    	roomMapping[playerID] = [user];
+    	var roomID = uniqid();
+    	roomMapping[roomID] = [user];
 
-    	console.log("playerID = " + playerID + " : " + roomMapping[playerID]);
+    	console.log("playerID = " + roomID + " : " + roomMapping[roomID]);
+
+    	// Have the user join the newly created room
+    	user.join(roomID);
+
+    	// Emit back to the user that the url has been generated
+    	user.emit("generated-url", roomID);
     }
 }

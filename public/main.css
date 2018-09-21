@@ -61,6 +61,10 @@ button {
 /* Submenus */
 #invite-menu {
     display: none;
+    font-size: 18px;
+}
+#join-menu {
+    display: none;
 }
 
 

@@ -51,7 +51,11 @@
             </div>
 
             <div id="invite-menu">
-              Generate url...
+              Generating room code...
+            </div>
+
+            <div id="join-menu">
+              <input type="text" placeholder="room code" />
             </div>
       </div>
       
@@ -80,11 +84,22 @@
             $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
 
             // Make the invite sub menu visible
+            $("#text-container").hide();
             $("#invite-menu").show();
             $("#invite-menu").addClass("animated fadeInRight");
 
             socket.emit("invite", true);
           });
+
+          $("#join").click(function() {
+            $("#join-menu").show();
+            $("#join-menu").addClass("animated fadeInRight");
+          });
+        });
+
+        socket.on("generated-url", function(data) {
+          console.log("data = " + data);
+          $("#invite-menu").text("Share this code with your friend: " + data);
         });
       </script>
 
