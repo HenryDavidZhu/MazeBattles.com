@@ -15,11 +15,11 @@ var roomMapping = {}; // Mapping of roomID to list of users withint hat room
 var uniqid = require('uniqid'); // Initialize the unique id generator
 
 function playerConnect(user) {
-    user.on("joining-room", joinRoom); // Once the user has connected, launch the addPlayer function
+    user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
 
-    function joinRoom(guest) {
+    function roomInvite(guest) {
     	var playerID = uniqid();
-    	roomMapping[playerID] = [guest];
+    	roomMapping[playerID] = [user];
 
     	console.log("playerID = " + playerID + " : " + roomMapping[playerID]);
     }

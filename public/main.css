@@ -58,6 +58,12 @@ button {
 }
 
 
+/* Submenus */
+#invite-menu {
+    display: none;
+}
+
+
 /* Styling for the play buttons */
 #one-on-one, #single-player, #opponent-progress, #join, #invite {
     background: rgba(255, 255, 255, 0.1);

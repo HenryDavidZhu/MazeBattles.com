@@ -28,7 +28,7 @@
             </div>
          </div>
 
-        <div class="whitespace"></div>    
+        <div class="whitespace"></div>  
 
          <div id="text-container">
                <div id="play-wrapper">
@@ -48,6 +48,10 @@
                      Invite
                   </button>
                </div>
+            </div>
+
+            <div id="invite-menu">
+              Generate url...
             </div>
       </div>
       
@@ -69,8 +73,17 @@
           $("#join").click(function() {
             $("#one-on-one-wrapper").removeClass("animated fadeInRight");
             $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+          });
 
-            socket.emit("joining-room", socket);
+          $("#invite").click(function() {
+            $("#one-on-one-wrapper").removeClass("animated fadeInRight");
+            $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+
+            // Make the invite sub menu visible
+            $("#invite-menu").show();
+            $("#invite-menu").addClass("animated fadeInRight");
+
+            socket.emit("invite", true);
           });
         });
       </script>
