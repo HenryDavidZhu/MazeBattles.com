@@ -51,7 +51,8 @@ button {
     background: transparent;
     border-radius: 7px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    border: 4px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    padding: 0;
 }
 #game-wrapper {
     padding-bottom: 4px;
@@ -61,7 +62,7 @@ button {
 /* Submenus */
 #invite-menu {
     display: none;
-    font-size: 18px;
+    font-size: 16px;
 }
 #join-menu {
     display: none;
@@ -92,4 +93,20 @@ button {
 }
 #one-on-one, #join {
     margin-right: 7px;
+}
+
+#join-menu input {
+    background: transparent;
+    outline: 0;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 3px 6px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    color: white;
+    width: 100%;
+    font-size: 17px;
+}
+
+#join-menu input::placeholder {
+    color: white;
 }

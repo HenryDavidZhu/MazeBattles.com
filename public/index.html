@@ -55,7 +55,7 @@
             </div>
 
             <div id="join-menu">
-              <input type="text" placeholder="room code" />
+              <input type="text" placeholder="room code (press enter / return to join)" />
             </div>
       </div>
       
@@ -75,6 +75,8 @@
           $("#one-on-one-wrapper").addClass("animated fadeInRight");
 
           $("#join").click(function() {
+            $("#one-on-one-wrapper").hide();
+            
             $("#one-on-one-wrapper").removeClass("animated fadeInRight");
             $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
           });
@@ -99,7 +101,7 @@
 
         socket.on("generated-url", function(data) {
           console.log("data = " + data);
-          $("#invite-menu").text("Share this code with your friend: " + data);
+          $("#invite-menu").html("Share this code with your friend: " + data + "<br>Stay on this page. You will be paired once your friend joins.");
         });
       </script>
 
