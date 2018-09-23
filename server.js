@@ -17,7 +17,7 @@ var uniqid = require('uniqid'); // Initialize the unique id generator
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
 
-    function roomInvite(guest) {
+    function roomInvite() {
     	var roomID = uniqid();
     	roomMapping[roomID] = [user];
 
@@ -28,5 +28,19 @@ function playerConnect(user) {
 
     	// Emit back to the user that the url has been generated
     	user.emit("generated-url", roomID);
+    }
+
+    user.on("room-code", checkRoomCode);
+
+    function checkRoomCode(roomCode) {
+    	// If the dictionary entry is null, it means that code is invalid
+    	console.log("roomCode = " + roomCode);
+
+    	if (!roomMapping[roomCode]) {
+    		user.emit("code-validity", false);
+    	} else {
+    		user.emit("code-validity", true);
+    		// Connect the user to the room
+    	}
     }
 }

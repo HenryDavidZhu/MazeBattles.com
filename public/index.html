@@ -22,6 +22,8 @@
           
       </nav>
 
+      <!-- Implement social media buttons plus theme, similar to bouncyballs.org -->
+
       <div id="content">
          <div id="game-wrapper">
             <div id="canvas-wrapper">
@@ -54,13 +56,19 @@
               Generating room code...
             </div>
 
+            <div id="game-panel">
+
+            </div>
+
             <div id="join-menu">
-              <input type="text" placeholder="room code (press enter / return to join)" />
+              <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
             </div>
       </div>
       
       <script type="text/javascript">
         $("#content").fadeIn();
+
+        // Retrieve the 
 
         $("#one-on-one").click(function() {
           // Display the new One-on-One layout
@@ -96,12 +104,45 @@
           $("#join").click(function() {
             $("#join-menu").show();
             $("#join-menu").addClass("animated fadeInRight");
+
+            var roomCode = document.getElementById("room-code");
+
+            roomCode.addEventListener("keyup", function(event) {
+              event.preventDefault();
+
+              if (event.keyCode === 13) { // The user pressed the enter / return key
+                console.log("user inputted room code");
+
+                // Begin verification process
+                // Step 1: first see if the input is empty or not
+                var codeLength = $("#room-code").val().length;
+
+                if (codeLength == 0) {
+                  // change to modal later
+                  alert("Please enter a code.");
+                } else {
+                  // send request to server containing code emitted
+                  socket.emit("room-code", $("#room-code").val());
+                }
+              }
+            });
           });
         });
 
         socket.on("generated-url", function(data) {
           console.log("data = " + data);
           $("#invite-menu").html("Share this code with your friend: " + data + "<br>Stay on this page. You will be paired once your friend joins.");
+        });
+
+        socket.on("code-validity", function(valid) {
+          if (!valid) {
+            alert("The code you entered is invalid");
+          } else {
+            $("#join-menu").removeClass("animated fadeInRight");
+            $("#join-menu").addClass("animated fadeOutLeft");
+
+            $("#game-panel").addClass("animated fadeInRight");
+          }
         });
       </script>
 
