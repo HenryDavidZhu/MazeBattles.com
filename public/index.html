@@ -57,7 +57,7 @@
             </div>
 
             <div id="game-panel">
-
+              Generating maze....
             </div>
 
             <div id="join-menu">
@@ -141,8 +141,13 @@
             $("#join-menu").removeClass("animated fadeInRight");
             $("#join-menu").addClass("animated fadeOutLeft");
 
+            $("#game-panel").show();
             $("#game-panel").addClass("animated fadeInRight");
           }
+        });
+
+        socket.on("initial-maze", function(initialMaze) {
+
         });
       </script>
 
