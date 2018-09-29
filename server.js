@@ -214,6 +214,27 @@ function playerConnect(user) {
     	} else {
     		user.emit("code-validity", true);
 
+    		var validToJoin = false;
+
+    		// Secondary validation: Ensure that the room has 1 user in it 
+    		// Do this in two ways:
+    		// (1) if the length of the array is 1, there can only be 1 user in the room
+    		// (2) if the length of the array is 2, but 1 of the elements is a maze, there can 
+    		// only be 1 user in that room
+    		if (roomMapping[roomCode].length == 1) {
+    			validtoJoin = true;
+    		}
+
+    		if (roomMapping[roomCode].length == 2) {
+                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) 
+    			validtoJoin = true;
+    		}
+
+            if (validtoJoin) {
+                // Emit to the users that they have been paired
+                io.to(roomCode).emit("paired", true);
+            }
+
     		// Connect the user to the room
     		user.join(roomCode);
 
