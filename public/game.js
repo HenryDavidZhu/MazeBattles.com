@@ -2,7 +2,7 @@ var inactivityChecker; // Checks whether the user has been inactive or not
 
 function Maze(widthCells, heightCells) {
   /*
-    Defines a maze object b
+    Defines a maze object based on its width and height
   */
   maze.widthCells = widthCells;
   maze.heightCells = heightCells;
@@ -10,17 +10,23 @@ function Maze(widthCells, heightCells) {
   maze.cellGraph = [];
 
   for (var i = 0; i < heightCells; i++) {
+    /*
+      Initializes the cell graph of a maze by adding empty rows
+    */
     maze.cellGraph.push([]);
   }
 }
 
 function Cell(cellSize, row, column) {
+  /*
+    Defines a cell object based on its dimensions and location on the cell graph
+  */
   this.cellSize = cellSize;
   this.column = column;
   this.row = row;
   this.xPos = column * cellSize;
   this.yPos = row * cellSize;
-  this.walls = [true, true, true, true];
+  this.walls = [true, true, true, true]; 
   this.visited = false;
   this.marked = false;
   this.examined = false;
@@ -68,12 +74,12 @@ $("#one-on-one").click(function () {
   $("#join").click(function () {
     $("#one-on-one-wrapper").hide();
 
-    $("#one-on-one-wrapper").removeClass("animated fadeInRight");
+    $("#one-on-one-wrapper").removeClass();
     $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
   });
 
   $("#invite").click(function () {
-    $("#one-on-one-wrapper").removeClass("animated fadeInRight");
+    $("#one-on-one-wrapper").removeClass();
     $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
 
     // Make the invite sub menu visible
@@ -112,22 +118,173 @@ $("#one-on-one").click(function () {
   });
 });
 
+var mazeDisplay = function(p) {
+    p.setup = function() {
+        var canvas = p.createCanvas(500, 400);
+        p.background(0, 0, 0);
+    }
+
+    p.displayMaze = function() {
+        for (var i = 0; i < maze.cellGraph.length; i++) {
+            for (var j = 0; j < maze.cellGraph[i].length; j++) {
+                p.stroke(255, 255, 255);
+                var cell = maze.cellGraph[i][j];
+                var numWalls = 0;
+
+                for (var e = 0; e < cell.walls.length; e++) {
+                    if (cell.walls[e]) {
+                        numWalls += 1;
+                    }
+                }
+
+                if (cell.walls[0] && cell.row != 0) { // Top
+                    p.line(cell.xPos, cell.yPos, cell.xPos + cell.cellSize, cell.yPos);
+                }
+                if (cell.walls[1] && cell.column != maze.widthCells - 1) { // Right
+                    p.line(cell.xPos + cell.cellSize, cell.yPos, cell.xPos + cell.cellSize, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[2] && cell.row != maze.heightCells - 1) { // Bottom
+                    p.line(cell.xPos + cell.cellSize, cell.yPos + cell.cellSize, cell.xPos, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[3] && cell.column != 0) { // Left
+                    p.line(cell.xPos, cell.yPos + cell.cellSize, cell.xPos, cell.yPos);
+                }
+                p.noStroke();
+            }
+        }
+
+        p.line(0, 400, 400, 400);
+    }
+
+    p.draw = function() {
+        p.clear();
+
+        if (maze) {
+            p.displayMaze();
+
+            if (complete) {
+                userPosition = maze.cellGraph[userY][userX];
+
+                p.fill("#eb42f4");
+                p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+            } else {
+                if (current) {
+                    p.noFill();
+                    p.stroke(0, 0, 0);
+                    p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
+                    p.fill(0, 0, 0);
+                }
+            }
+        }
+
+        p.fill(0, 0, 0);
+        p.ellipse(587.5, 387.5, 12.5, 12.5);
+    }
+
+    p.keyTyped = function() {
+        if (complete && solved) {
+            if (p.key === 'w' || p.key === 'W') {
+                if (userPosition && !userPosition.walls[0]) {
+                    userY -= 1;
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
+
+                    solvedPercentage = percentageSolved(solution, path);
+                }
+            }
+            if (p.key === 's' || p.key === 'S') {
+                if (userPosition && !userPosition.walls[2]) {
+                    userY += 1;
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
+
+                    solvedPercentage = percentageSolved(solution, path);
+                }
+            }
+            if (p.key === 'a' || p.key === 'A') {
+                if (userPosition && !userPosition.walls[3]) {
+                    userX -= 1;
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
+
+                    solvedPercentage = percentageSolved(solution, path);
+                }
+            }
+            if (p.key === 'd' || p.key === 'D') {
+                if (userPosition && !userPosition.walls[1]) {
+                    userX += 1;
+
+                    var cellString = userY + "-" + userX;
+
+                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                        path.push(cellString);
+                    }
+
+                    solvedPercentage = percentageSolved(solution, path);
+                }
+            }
+
+            $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race.");
+        }
+
+        userPosition = maze.cellGraph[userY][userX];
+        socket.emit("position", [socket.id, userPosition]);
+        socket.emit("solvedPercentage", [socket.id, solvedPercentage]);
+
+        clearTimeout(inactivityChecker);
+        inactivityChecker = setTimeout(inactivity, 30000);
+    }
+};
+
 socket.on("generated-url", function (data) {
   console.log("data = " + data);
   $("#invite-menu").html("Share this code with your friend: " + data + "<br>Stay on this page. You will be paired once your friend joins.");
 });
 
 socket.on("paired", function(data) {
+    solved = false;
+    solvedPercentage = 0;
+    opponentProgress = 0;
+    path = [];
+
+    userX = 0;
+    userY = 0;
+
+    if (inactivityChecker) {
+        clearTimeout(inactivityChecker);
+    }
+
+    complete = false;
+
     if (myp25 == null) {
         myp25 = new p5(mazeDisplay, "canvas2-wrapper");
     }
+
+    $("#invite-menu").removeClass();
+    $("#invite-menu").hide();
+    $("#invite-menu").addClass("animated fadeOutLeft");
+
+    $("#game-panel").show();
+    $("#game-panel").addClass("animated fadeInRight");
 });
 
 socket.on("code-validity", function (valid) {
   if (!valid) {
     alert("The code you entered is invalid");
   } else {
-    $("#join-menu").removeClass("animated fadeInRight");
+    $("#join-menu").removeClass();
     $("#join-menu").addClass("animated fadeOutLeft");
 
     $("#game-panel").show();
@@ -136,9 +293,20 @@ socket.on("code-validity", function (valid) {
 });
 
 socket.on("initial-maze", function (data) {
+  console.log("initial maze received");
   // Fade out the start maze
   $("#canvas-wrapper").hide();
+  $("#canvas2-wrapper").show();
+
   maze = data;
+});
+
+socket.on("complete", function(data) {
+    complete = true;
+    inactivityChecker = setTimeout(inactivity, 30000);
+
+    solution = solve(maze);
+    solved = true;
 });
 
 socket.on("modifyCell", function(data) {

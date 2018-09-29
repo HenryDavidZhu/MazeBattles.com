@@ -425,10 +425,11 @@ socket.on("paired", function(data) {
     $("#playing-against").css("display", "table");
     socket.emit("paired", socket.id);
 
-    $("#play").text("0:00 / Opponent Progress: 0%")
+    $("#play").text("0:00 / Opponent Progress: 0%");
     $("#play").fadeIn();
     $("#score-streak").fadeIn();
 
+    console.log("myp25 = " + myp25);
     if (myp25 == null) {
         myp25 = new p5(mazeDisplay, "canvas2-wrapper");
     }

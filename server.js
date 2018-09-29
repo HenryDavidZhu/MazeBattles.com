@@ -14,6 +14,9 @@ var roomMapping = {}; // Mapping of roomID to list of users within that room
 
 var uniqid = require('uniqid'); // Initialize the unique id generator
 
+// For each room, keep track of the number of cells visited (determines when generation of maze is complete)
+var roomsAndNumCellsVisited = {};
+
 function Maze(widthCells, heightCells) {
     this.widthCells = widthCells;
     this.heightCells = heightCells;
@@ -199,6 +202,9 @@ function playerConnect(user) {
     	// Have the user join the newly created room
     	user.join(roomID);
 
+        // Initialize the number of cells visited in the new room to 0
+        roomsAndNumCellsVisited[roomID] = 0;
+
     	// Emit back to the user that the url has been generated
     	user.emit("generated-url", roomID);
     }
@@ -210,11 +216,14 @@ function playerConnect(user) {
     	console.log("roomCode = " + roomCode);
 
     	if (!roomMapping[roomCode]) {
+            console.log("false code validity: roomMapping[" + roomCode + "] = " + roomMapping[roomCode]);
     		user.emit("code-validity", false);
     	} else {
     		user.emit("code-validity", true);
 
     		var validToJoin = false;
+
+            console.log("roomMapping[" + roomCode + "] = " + roomMapping[roomCode]);
 
     		// Secondary validation: Ensure that the room has 1 user in it 
     		// Do this in two ways:
@@ -226,9 +235,12 @@ function playerConnect(user) {
     		}
 
     		if (roomMapping[roomCode].length == 2) {
-                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) 
-    			validtoJoin = true;
+                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
+    		        validtoJoin = true;
+                }
     		}
+
+            console.log("validToJoin = " + validToJoin);
 
             if (validtoJoin) {
                 // Emit to the users that they have been paired
