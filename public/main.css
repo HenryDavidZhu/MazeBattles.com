@@ -49,7 +49,7 @@ button {
     background: black;
     border-radius: 7px;
     box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgb(70, 70, 70);
     padding: 0;
 }
 #canvas2-wrapper {
@@ -59,9 +59,10 @@ button {
     height: 400px;
     background: black;
     border-radius: 8px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
+    border: 2px solid rgb(70, 70, 70);
     padding: 0;
+    margin: 0;
 }
 
 #game-wrapper {
@@ -72,13 +73,18 @@ button {
 /* Submenus */
 #invite-menu {
     display: none;
-    font-size: 16px;
+    font-size: 17px;
+}
+.code {
+    font-family: "Courier New", Courier, monospace;
+    background: rgba(255, 255, 255, 0.2);
 }
 #join-menu {
     display: none;
 }
 #game-panel {
     display: none;
+    font-size: 17px;
 }
 
 
@@ -96,7 +102,7 @@ button {
     text-align: center;
     box-shadow: 0 6px 10px rgba(0,0,0,0.16), 0 6px 10px rgba(0,0,0,0.23);
     font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgb(70, 70, 70);
 }
 #one-on-one:hover, #single-player:hover, #join:hover, #invite:hover {
     cursor: pointer;
@@ -111,17 +117,18 @@ button {
 #join-menu input {
     background: transparent;
     outline: 0;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgb(0, 0, 0);
     border-radius: 5px;
     padding: 3px 6px;
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    color: white;
+    color: black;
     width: 100%;
     font-size: 17px;
+    width: 500px;
 }
 
 #join-menu input::placeholder {
-    color: white;
+    color: black;
 }
 
 /* Background text and widgets */
@@ -130,6 +137,26 @@ button {
     bottom: 10px;
     right: 10px;
     text-align: right;
-    font-size: 15px;
-    letter-spacing: 1px;
+    font-size: 16px;
+}
+
+#share-button {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+
+    border-radius: 50%;
+    background: black;
+    color: white;
+    border: 2px solid rgb(70, 70, 70);
+
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+
+    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
+}
+
+#share-button i {
+    vertical-align: middle;
 }

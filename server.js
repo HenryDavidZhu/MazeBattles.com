@@ -190,73 +190,118 @@ Maze.prototype.createMaze = function() {
 
 var initialMaze = new Maze(20, 16);
 
+function generateMaze(roomID) {
+    var numVisited = roomsAndNumCellsVisited[roomName] // Get the number of cells viisted in that room
+
+    if (numVisited < roomMapping[roomID][2].numCells) {
+        var cellRow = current.row;
+        var cellColumn = current.column;
+        var neighbor = linkMaze.getNeighbor(true, cellRow, cellColumn);
+
+        if (neighbor && !neighbor.visited) {
+            roomsAndStacks[roomName].push(current);
+            deleteWall(neighbor, current);
+
+            if (neighbor.getNumWalls() < 4) {
+                neighbor.visited = true;
+            }
+
+            userPair.emit("modifyCell", current);
+            userMatch.emit("modifyCell", current);
+            line += 1;
+
+            if (neighbor) {
+                userPair.emit("modifyCell", neighbor);
+                userMatch.emit("modifyCell", neighbor);
+            }
+
+            current = neighbor;
+            numVisited += 1;
+        } else if (roomsAndStacks[roomName].length > 0) {
+            current = roomsAndStacks[roomName].pop();
+        }
+
+        complete = false;
+        roomsAndVisitedCells[roomName] = numVisited;
+        roomsAndCurrent[roomName] = current;
+        linksAndMazes[roomName] = linkMaze;
+    } else {
+        complete = true;
+
+        io.sockets.in(roomID).emit("complete", true);
+
+        io.sockets.in(roomID).emit("completeGeneration", true);
+
+        //userMatch.completeGeneration = true;
+        //userPair.completeGeneration = true;
+    }
+}
+
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
 
     function roomInvite() {
-    	var roomID = uniqid();
-    	roomMapping[roomID] = [user];
+        var roomID = uniqid();
+        roomMapping[roomID] = [user];
 
-    	console.log("playerID = " + roomID + " : " + roomMapping[roomID]);
+        console.log("playerID = " + roomID + " : " + roomMapping[roomID]);
 
-    	// Have the user join the newly created room
-    	user.join(roomID);
+        // Have the user join the newly created room
+        user.join(roomID);
 
         // Initialize the number of cells visited in the new room to 0
         roomsAndNumCellsVisited[roomID] = 0;
 
-    	// Emit back to the user that the url has been generated
-    	user.emit("generated-url", roomID);
+        // Emit back to the user that the url has been generated
+        user.emit("generated-url", roomID);
     }
 
     user.on("room-code", checkRoomCode);
 
     function checkRoomCode(roomCode) {
-    	// If the dictionary entry is null, it means that code is invalid
-    	console.log("roomCode = " + roomCode);
+        // If the dictionary entry is null, it means that code is invalid
+        console.log("roomCode = " + roomCode);
 
-    	if (!roomMapping[roomCode]) {
+        if (!roomMapping[roomCode]) {
             console.log("false code validity: roomMapping[" + roomCode + "] = " + roomMapping[roomCode]);
-    		user.emit("code-validity", false);
-    	} else {
-    		user.emit("code-validity", true);
+            user.emit("code-validity", false);
+        } else {
+            user.emit("code-validity", true);
 
-    		var validToJoin = false;
+            var validToJoin = false;
 
             console.log("roomMapping[" + roomCode + "] = " + roomMapping[roomCode]);
+            console.log("roomMapping[" + roomCode + "].length = " + roomMapping[roomCode].length);
 
-    		// Secondary validation: Ensure that the room has 1 user in it 
-    		// Do this in two ways:
-    		// (1) if the length of the array is 1, there can only be 1 user in the room
-    		// (2) if the length of the array is 2, but 1 of the elements is a maze, there can 
-    		// only be 1 user in that room
-    		if (roomMapping[roomCode].length == 1) {
-    			validtoJoin = true;
-    		}
-
-    		if (roomMapping[roomCode].length == 2) {
-                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
-    		        validtoJoin = true;
-                }
-    		}
-
-            console.log("validToJoin = " + validToJoin);
-
-            if (validtoJoin) {
+            // Secondary validation: Ensure that the room has 1 user in it 
+            // Do this in two ways:
+            // (1) if the length of the array is 1, there can only be 1 user in the room
+            // (2) if the length of the array is 2, but 1 of the elements is a maze, there can 
+            // only be 1 user in that room
+            if (roomMapping[roomCode].length == 1) {
+                console.log("emitting paired function to room");
+                user.join(roomCode); // Connect the user to the room
                 // Emit to the users that they have been paired
-                io.to(roomCode).emit("paired", true);
+                io.sockets.in(roomCode).emit("paired", true);
             }
 
-    		// Connect the user to the room
-    		user.join(roomCode);
+            if (roomMapping[roomCode].length == 2) {
+                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
+                    user.join(roomCode); // Connect the user to the room
+                    // Emit to the users that they have been paired
+                    io.sockets.in(roomCode).emit("paired", true);
+                }
+            }
 
-    		// Add the maze as the third element to the array
-    		roomMapping[roomCode].push(initialMaze);
+            // Print out the users in that room
 
-    		// Emit to the user that the initial maze has been generated
-    		io.to(roomCode).emit("initial-maze", initialMaze);
+            // Add the maze as the third element to the array
+            roomMapping[roomCode].push(initialMaze);
 
-    		// Begin generation process
-    	}
+            // Emit to the user that the initial maze has been generated
+            io.to(roomCode).emit("initial-maze", initialMaze);
+
+            // Begin generation process
+        }
     }
 }

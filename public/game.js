@@ -125,6 +125,7 @@ var mazeDisplay = function(p) {
     }
 
     p.displayMaze = function() {
+        console.log("displaying maze!!!!");
         for (var i = 0; i < maze.cellGraph.length; i++) {
             for (var j = 0; j < maze.cellGraph[i].length; j++) {
                 p.stroke(255, 255, 255);
@@ -250,10 +251,13 @@ var mazeDisplay = function(p) {
 
 socket.on("generated-url", function (data) {
   console.log("data = " + data);
-  $("#invite-menu").html("Share this code with your friend: " + data + "<br>Stay on this page. You will be paired once your friend joins.");
+  $("#invite-menu").html("Share this code with your friend: <span class='code'>" + data 
+    + "</span><br>Stay on this page. You will be paired once your friend joins.");
 });
 
 socket.on("paired", function(data) {
+    console.log("paired with user!");
+
     solved = false;
     solvedPercentage = 0;
     opponentProgress = 0;
@@ -272,6 +276,9 @@ socket.on("paired", function(data) {
         myp25 = new p5(mazeDisplay, "canvas2-wrapper");
     }
 
+    $("#join-menu").removeClass();
+    $("#join-menu").addClass("animated fadeOutLeft");
+
     $("#invite-menu").removeClass();
     $("#invite-menu").hide();
     $("#invite-menu").addClass("animated fadeOutLeft");
@@ -280,15 +287,11 @@ socket.on("paired", function(data) {
     $("#game-panel").addClass("animated fadeInRight");
 });
 
+// Need to include logic that alerts the user when the room cannot be joined!
+
 socket.on("code-validity", function (valid) {
   if (!valid) {
     alert("The code you entered is invalid");
-  } else {
-    $("#join-menu").removeClass();
-    $("#join-menu").addClass("animated fadeOutLeft");
-
-    $("#game-panel").show();
-    $("#game-panel").addClass("animated fadeInRight");
   }
 });
 
