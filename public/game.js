@@ -125,7 +125,6 @@ var mazeDisplay = function(p) {
     }
 
     p.displayMaze = function() {
-        console.log("displaying maze!!!!");
         for (var i = 0; i < maze.cellGraph.length; i++) {
             for (var j = 0; j < maze.cellGraph[i].length; j++) {
                 p.stroke(255, 255, 255);
