@@ -11,13 +11,17 @@ var io = socket(server);
 io.sockets.on("connection", playerConnect);
 
 var roomMapping = {}; // Mapping of roomID to list of users within that room
+var roomsAndCurrent = {}; // An associative array that keeps track of the current cell in each room
 
 var uniqid = require('uniqid'); // Initialize the unique id generator
 
 // For each room, keep track of the number of cells visited (determines when generation of maze is complete)
 var roomsAndNumCellsVisited = {};
+var roomsAndStacks = {}; // An associative array that keeps track of the nodes that still have yet to be visited for each room
 
 var clearTimeoutsFor = []; // The list of rooms to remove from the system
+
+var userPositions = {}; // An associative array that ties each user with their current position
 
 function Maze(widthCells, heightCells) {
     this.widthCells = widthCells;
@@ -47,7 +51,7 @@ function Cell(cellSize, row, column) {
     this.marked = false; // Has the cell been visited by the maze solver
 }
 
-Cell.prototype.getNumWalls = function() {
+Cell.prototype.getNumWalls = function () {
     // Function that gets the number of walls surrounding the cell
 
     var numWalls = 0;
@@ -61,7 +65,7 @@ Cell.prototype.getNumWalls = function() {
     return numWalls;
 }
 
-Maze.prototype.getNeighbor = function(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
+Maze.prototype.getNeighbor = function (dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
     var neighbors = []; // The list of all the neighbors of that cell
     var coordinates = []; // The list of the coordinates of the neighbors of that cell
 
@@ -181,7 +185,7 @@ function isWall(cellA, cellB) {
     return true;
 }
 
-Maze.prototype.createMaze = function() {
+Maze.prototype.createMaze = function () {
     for (var i = 0; i < this.heightCells; i++) {
         for (var j = 0; j < this.widthCells; j++) {
             var cell = new Cell(25, i, j);
@@ -190,8 +194,6 @@ Maze.prototype.createMaze = function() {
     }
 }
 
-var initialMaze = new Maze(20, 16);
-
 function generateMaze(roomID) {
     if (clearTimeoutsFor.indexOf(roomID) > -1) {
         clearTimeout(generateMaze);
@@ -199,11 +201,15 @@ function generateMaze(roomID) {
     }
 
     var numVisited = roomsAndNumCellsVisited[roomID] // Get the number of cells viisted in that room
-    console.log(roomMapping[roomID][1]);
-    if (numVisited < roomMapping[roomID][2].numCells) {
+    var current = roomsAndCurrent[roomID];
+    console.log("current = roomsAndCurrent[" + roomID + "] =");
+
+    var roomMaze = roomMapping[roomID][1];
+
+    if (numVisited < roomMaze.numCells) {
         var cellRow = current.row;
         var cellColumn = current.column;
-        var neighbor = linkMaze.getNeighbor(true, cellRow, cellColumn);
+        var neighbor = roomMaze.getNeighbor(true, cellRow, cellColumn);
 
         if (neighbor && !neighbor.visited) {
             roomsAndStacks[roomID].push(current);
@@ -214,8 +220,6 @@ function generateMaze(roomID) {
             }
 
             io.sockets.in(roomID).emit("modifyCell", current);
-
-            line += 1;
 
             if (neighbor) {
                 io.sockets.in(roomID).emit("modifyCell", neighbor);
@@ -228,9 +232,9 @@ function generateMaze(roomID) {
         }
 
         complete = false;
-        roomsAndNumVisitedCells[roomID] = numVisited;
+        roomsAndNumCellsVisited[roomID] = numVisited;
         roomsAndCurrent[roomID] = current;
-        roomMapping[roomID][2] = linkMaze;
+        roomMapping[roomID][1] = roomMaze;
     } else {
         complete = true;
 
@@ -238,11 +242,12 @@ function generateMaze(roomID) {
         io.sockets.in(roomID).emit("completeGeneration", true);
     }
 
-    mazeGenerator = setTimeout(generateMaze, 20, id);
+    mazeGenerator = setTimeout(generateMaze, 20, roomID);
 }
 
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
+    user.score = 0;
 
     function roomInvite() {
         var roomID = uniqid();
@@ -289,10 +294,17 @@ function playerConnect(user) {
                 }
             }
 
-            // Print out the users in that room
+            var initialMaze = new Maze(20, 16);
+            initialMaze.createMaze();
 
-            // Add the maze as the third element to the array
+            // Add the maze as the second element to the array
             roomMapping[roomCode].push(initialMaze);
+
+            roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
+            roomsAndStacks[roomCode] = [];
+            roomsAndNumCellsVisited[roomCode] = 0;
+
+            console.log("roomsAndCurrent[" + roomCode + "] = " + initialMaze.cellGraph[0][0]);
 
             // Emit to the user that the initial maze has been generated
             io.to(roomCode).emit("initial-maze", initialMaze);
@@ -301,4 +313,30 @@ function playerConnect(user) {
             generateMaze(roomCode);
         }
     }
+}
+
+user.on("position", updatePosition);
+
+function updatePosition(roomID) { // Endgame logic applies to both winners and losers
+
+    /*
+    userPositions[roomID] = currentPosition;
+
+    if (currentPosition.row == 15 && currentPosition.column == 19) {
+        // Game has been won by current
+        if (userMatchings[roomID]) { // If the player wins, add 1 to their current score
+            userMatchings[roomID].score = userMatchings[roomID].score + 1;
+
+            userMatchings[roomID].canPair = false;
+            userMatchings[roomID].isPaired = false;
+            userMatchings[roomID].emit("winner", [roomID, userMatchings[roomID].score]);
+
+            if (links[userMatchings[roomID].id]) { // If the player loses, nothing happens to their score
+                links[userMatchings[roomID].id].canPair = false;
+                links[userMatchings[roomID].id].isPaired = false;
+                links[userMatchings[roomID].id].emit("winner", [roomID, links[userMatchings[roomID].id].score]);
+            }
+        }
+    }
+    */
 }

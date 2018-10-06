@@ -1,5 +1,210 @@
 var inactivityChecker; // Checks whether the user has been inactive or not
 
+function inactivity() {
+    socket.emit("activitytimeout", true);
+}
+
+function getNeighbor(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
+    var neighbors = []; // The list of all the neighbors of that cell
+    var coordinates = []; // The list of the coordinates of the neighbors of that cell
+
+    if (cellColumn > 0) { // If the cell isn't on the left side, there is a neighbor to the left
+        var neighbor = maze.cellGraph[cellRow][cellColumn - 1]; // Get the neighboring cell to the left
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow, cellColumn - 1]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWallPos([cellRow, cellColumn], [neighbor.row, neighbor.column])) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellColumn < maze.widthCells - 1) { // If the cell isn't on the right side, there is a neighbor to the right
+        var neighbor = maze.cellGraph[cellRow][cellColumn + 1]; // Get the neighboring cell to the right
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow, cellColumn + 1]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWallPos([cellRow, cellColumn], [neighbor.row, neighbor.column])) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellRow > 0) { // If the cell isn't on the top side, there is a neighbor to the top
+        var neighbor = maze.cellGraph[cellRow - 1][cellColumn]; // Get the neighboring cell to the top
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow - 1, cellColumn]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWallPos([cellRow, cellColumn], [neighbor.row, neighbor.column])) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+    if (cellRow < maze.heightCells - 1) { // If the cell isn't on the bottom side, there is a neighbor to the bottom
+        var neighbor = maze.cellGraph[cellRow + 1][cellColumn]; // Get the neighboring cell to the bottom
+
+        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+            if (!neighbor.visited) {
+                coordinates.push([cellRow + 1, cellColumn]);
+                neighbors.push(neighbor);
+            }
+        } else {
+            if (!isWallPos([cellRow, cellColumn], [neighbor.row, neighbor.column])) {
+                neighbors.push(neighbor);
+            }
+        }
+    }
+
+    if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
+        if (neighbors.length > 0) { // Make sure that their is a neighbor to draw from
+            var randomIndex = Math.floor(Math.random() * neighbors.length);
+            var randomNeighbor = neighbors[randomIndex]; // Get a random neighbor
+            return randomNeighbor;
+        } else {
+            return undefined;
+        }
+    } else { // If dfs is set to false, return all the neighbors
+        return neighbors;
+    }
+}
+
+function isWall(cellA, cellB) {
+    // Whether there's a wall or not depends on the orientation of the blocks
+    // If it's vertical, it has to be false between even numbers
+    // If it's horizontal, it has to be false between odd numbers
+    for (var j = 0; j < cellA.walls.length; j++) {
+        for (var k = 0; k < cellB.walls.length; k++) {
+            if (Math.abs(j - k) == 2 && !cellA.walls[j] && !cellB.walls[k]) {
+                var rA = cellA.row;
+                var cA = cellA.column;
+                var rB = cellB.row;
+                var cB = cellB.column
+                if ((rA - rB) == 1 && j == 0 || (rA - rB) == -1 && j == 2 || (cA - cB) == 1 && j == 3 || (cA - cB) == -1 && j == 1) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function isWallPos(cellAPos, cellBPos) {
+    // Whether there's a wall or not depends on the orientation of the blocks
+    // If it's vertical, it has to be false between even numbers
+    // If it's horizontal, it has to be false between odd numbers
+    var cellA = maze.cellGraph[cellAPos[0]][cellAPos[1]];
+    var cellB = maze.cellGraph[cellBPos[0]][cellBPos[1]];
+
+    for (var j = 0; j < cellA.walls.length; j++) {
+        for (var k = 0; k < cellB.walls.length; k++) {
+            if (Math.abs(j - k) == 2 && !cellA.walls[j] && !cellB.walls[k]) {
+                var rA = cellA.row;
+                var cA = cellA.column;
+                var rB = cellB.row;
+                var cB = cellB.column
+                if ((rA - rB) == 1 && j == 0 || (rA - rB) == -1 && j == 2 || (cA - cB) == 1 && j == 3 || (cA - cB) == -1 && j == 1) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+function equalCells(cell1, cell2) {
+    return cell1.row == cell2.row && cell1.column == cell2.column;
+}
+
+function solve(maze) {
+    var queue = new Queue();
+    var start = maze.cellGraph[0][0]; // Start position is the left corner of the maze
+    start.visited = true;
+    queue.enqueue(start);
+
+    var prev = {}; // Used for backtracking path
+
+    while (!queue.isEmpty()) {
+        var curr = queue.dequeue();
+
+        if (curr.row == 15 && curr.column == 19) {
+            break;
+        }
+
+        var neighbors = getNeighbor(false, curr.row, curr.column);
+
+        for (var i = 0; i < neighbors.length; i++) {
+            var neighbor = neighbors[i];
+
+            if (!neighbor.visited) {
+                queue.enqueue(neighbor);
+                neighbor.visited = true;
+                prev[neighbor.row + "-" + neighbor.column] = curr; // Reverse
+            }
+        }
+    }
+
+    // Reconstruct path
+    var path = [];
+    var iter = maze.cellGraph[15][19]; // Start at end point
+    var previous = prev[iter.row + "-" + iter.column];
+
+    while (iter != null) {
+        if (iter.row == 0 && iter.column == 0) {
+            break;
+        }
+
+        var cellString = iter.row + "-" + iter.column;
+        path.push(cellString);
+
+        iter = prev[iter.row + "-" + iter.column];
+    }
+
+    path = path.reverse();
+
+    return path;
+}
+
+function inPath(path, x, y) {
+    for (var i = 0; i < path.length; i++) {
+        var cell = path[i];
+
+        if (cell.column == x && cell.row == y) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function percentageSolved(solution, path) {//asdf
+    return (100 * path.length / solution.length);
+}
+
+function drawSolution(solution) {
+    if (solved) {
+        p.stroke("#eb42f4");
+
+        var prev = solution[0];
+        p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
+
+        for (var k = 1; k < solution.length; k++) {
+            var pathCell = solution[k];
+            p.line((prev.column) * 25 + 12.5, (prev.row) * 25 + 12.5, (pathCell.column) * 25 + 12.5, (pathCell.row) * 25 + 12.5);
+            prev = pathCell;
+        }
+    }
+}
+
 function Maze(widthCells, heightCells) {
   /*
     Defines a maze object based on its width and height
@@ -165,7 +370,7 @@ var mazeDisplay = function(p) {
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
-                p.fill("#eb42f4");
+                p.fill(255, 255, 255);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
             } else {
                 if (current) {
@@ -318,4 +523,8 @@ socket.on("modifyCell", function(data) {
         maze.cellGraph[current.row][current.column] = current;
         maze.cellGraph[current.row][current.column].visited = false;
     }
+});
+
+socket.on("completeGeneration", function(data) {
+    $("#game-panel").text("Opponent Progress: 0% / Time Elapsed: 0:00")
 });
