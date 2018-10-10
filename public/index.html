@@ -3,77 +3,65 @@
    <head>
       <meta charset="utf-8" />
       <title>MazeBattles.com | Multiplayer Maze Competition</title>
-
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
       <link href="main.css" rel="stylesheet">
-
       <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
-
       <script src="js/connect.js"></script> <!-- Script that connects to the node.js server -->
       <script src="queue.js"></script> 
       <script src="game.js"></script> <!-- Handles server requests and sends data to servers (logic processing) -->
    </head>
    <body>
-
       <div id="title">
-        mazebattles.com beta v1.0.0<br>
-        <a href="#">about</a>&nbsp;<a href="#">report a bug</a>
+         mazebattles.com beta v1.0.0<br>
+         use <span class="code">[a][w][s][d]</span> to move<br>
+         <a href="#">about</a>&nbsp;<a href="#">report a bug</a>
       </div>
-
       <div id="share-button">
-        <i class="material-icons">share</i>
+         <i class="material-icons">share</i>
       </div>
       <!-- Implement social media buttons plus theme, similar to bouncyballs.org -->
-
       <div id="content">
          <div id="game-wrapper">
             <div id="canvas-wrapper">
             </div>
-
             <div id="canvas2-wrapper">
             </div>
          </div>
-
-        <div class="whitespace"></div>  
-
+         <div class="whitespace"></div>
          <div id="text-container">
-               <div id="play-wrapper">
-                  <button id="one-on-one">
-                     One-on-One
-                  </button>
-                  <button id="single-player">
-                     Single-player
-                  </button>
-               </div>
-
-               <div id="one-on-one-wrapper">
-                  <button id="join">
-                     Join
-                  </button>
-                  <button id="invite">
-                     Invite
-                  </button>
-               </div>
+            <div id="play-wrapper">
+               <button id="one-on-one">
+               One-on-One
+               </button>
+               <button id="single-player">
+               Single-player
+               </button>
             </div>
-
-            <div id="invite-menu">
-              Generating room code...
+            <div id="one-on-one-wrapper">
+               <button id="join">
+               Join
+               </button>
+               <button id="invite">
+               Invite
+               </button>
             </div>
+         </div>
+         
+         <div id="invite-menu">
+            Generating room code...
+         </div>
+         <div id="game-panel">
+            Generating maze....
+         </div>
 
-            <div id="game-panel">
-              Generating maze....
-            </div>
-
-            <div id="join-menu">
-              <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
-            </div>
+         <div id="join-menu">
+            <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
+         </div>
       </div>
-      
       <script type="text/javascript" src="game.js"></script>
-
       <script src="maze.js"></script>
    </body>
 </html>

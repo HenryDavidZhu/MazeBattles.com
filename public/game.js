@@ -1,4 +1,5 @@
 var inactivityChecker; // Checks whether the user has been inactive or not
+var roomID = "";
 
 function inactivity() {
     socket.emit("activitytimeout", true);
@@ -370,8 +371,11 @@ var mazeDisplay = function(p) {
             if (complete) {
                 userPosition = maze.cellGraph[userY][userX];
 
-                p.fill(255, 255, 255);
+                p.fill(98, 244, 88);
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+
+                // Draw the path
+                // 
             } else {
                 if (current) {
                     p.noFill();
@@ -445,7 +449,8 @@ var mazeDisplay = function(p) {
         }
 
         userPosition = maze.cellGraph[userY][userX];
-        socket.emit("position", [socket.id, userPosition]);
+        console.log("emitting position");
+        socket.emit("position", [socket.id, roomID, userPosition]);
         socket.emit("solvedPercentage", [socket.id, solvedPercentage]);
 
         clearTimeout(inactivityChecker);
@@ -460,7 +465,7 @@ socket.on("generated-url", function (data) {
 });
 
 socket.on("paired", function(data) {
-    console.log("paired with user!");
+    roomID = data;
 
     solved = false;
     solvedPercentage = 0;
@@ -491,6 +496,38 @@ socket.on("paired", function(data) {
     $("#game-panel").addClass("animated fadeInRight");
 });
 
+socket.on("winner", function (winnerID) {
+  console.log("received winner event");
+  if (socket.id == winnerID) {
+    alert("You won the match.");
+    $("#canvas2-wrapper").removeClass();
+    $("#canvas2-wrapper").addClass("animated fadeOutLeft");
+
+    $("#game-panel").removeClass();
+    $("#game-panel").addClass("animated fadeOutLeft");
+  }
+});
+
+socket.on("scores", function (scoreMapping) {
+  var wonMatch = false;
+
+  for (var userID in scoreMapping) {
+    if (userID == socket.id) {
+      //$("#opponent-progress").text("You won the duel. The record is now ");
+      wonMatch = true;
+    }
+  }
+
+  if (wonMatch) {
+    $("#game-panel").html("You won the match. You have ___ wins while your opponent has ___ wins.")
+  } else {
+    $("#game-panel").html("You lost the match. You have ___ wins while your opponent has ___ wins.")
+  }
+  
+  //$("#game-panel").removeClass();
+  //$("#game-panel").addClass("animated fadeInRight");
+})
+
 // Need to include logic that alerts the user when the room cannot be joined!
 
 socket.on("code-validity", function (valid) {
@@ -504,6 +541,7 @@ socket.on("initial-maze", function (data) {
   // Fade out the start maze
   $("#canvas-wrapper").hide();
   $("#canvas2-wrapper").show();
+  $("#join-menu").hide();
 
   maze = data;
 });

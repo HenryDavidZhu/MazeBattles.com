@@ -146,7 +146,7 @@ var mazeIntro = function(p) {
     }
 
     Cell.prototype.mark = function() {
-        p.fill(255, 255, 255);
+        p.fill(98, 244, 88);
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
     }
 

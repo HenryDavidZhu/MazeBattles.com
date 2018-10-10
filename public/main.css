@@ -67,6 +67,7 @@ button {
 
 #game-wrapper {
     padding-bottom: 4px;
+    width: 500px;
 }
 
 
@@ -81,6 +82,7 @@ button {
 }
 #join-menu {
     display: none;
+    width: 500px;
 }
 #game-panel {
     display: none;
@@ -159,4 +161,11 @@ button {
 
 #share-button i {
     vertical-align: middle;
+}
+
+.code {
+    font-family: "Courier New", monospace;
+}
+
+#score-display {
 }

@@ -202,8 +202,6 @@ function generateMaze(roomID) {
 
     var numVisited = roomsAndNumCellsVisited[roomID] // Get the number of cells viisted in that room
     var current = roomsAndCurrent[roomID];
-    console.log("current = roomsAndCurrent[" + roomID + "] =");
-
     var roomMaze = roomMapping[roomID][1];
 
     if (numVisited < roomMaze.numCells) {
@@ -283,14 +281,14 @@ function playerConnect(user) {
             if (roomMapping[roomCode].length == 1) {
                 user.join(roomCode); // Connect the user to the room
                 // Emit to the users that they have been paired
-                io.sockets.in(roomCode).emit("paired", true);
+                io.sockets.in(roomCode).emit("paired", roomCode);
             }
 
             if (roomMapping[roomCode].length == 2) {
                 if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
                     user.join(roomCode); // Connect the user to the room
                     // Emit to the users that they have been paired
-                    io.sockets.in(roomCode).emit("paired", true);
+                    io.sockets.in(roomCode).emit("paired", roomCode);
                 }
             }
 
@@ -313,30 +311,48 @@ function playerConnect(user) {
             generateMaze(roomCode);
         }
     }
-}
 
-user.on("position", updatePosition);
+    user.on("position", updatePosition);
 
-function updatePosition(roomID) { // Endgame logic applies to both winners and losers
+    function updatePosition(data) { // Endgame logic applies to both winners and losers
+        console.log("receiving position");
+        userID = data[0];
+        roomID = data[1];
+        currentPosition = data[2];
 
-    /*
-    userPositions[roomID] = currentPosition;
+        userPositions[userID] = currentPosition;
+        roomData = roomMapping[roomID];
 
-    if (currentPosition.row == 15 && currentPosition.column == 19) {
-        // Game has been won by current
-        if (userMatchings[roomID]) { // If the player wins, add 1 to their current score
-            userMatchings[roomID].score = userMatchings[roomID].score + 1;
+        console.log("currentPosition.row, currentPosition.column = " + currentPosition.row + ", " + currentPosition.column);
 
-            userMatchings[roomID].canPair = false;
-            userMatchings[roomID].isPaired = false;
-            userMatchings[roomID].emit("winner", [roomID, userMatchings[roomID].score]);
+        if (currentPosition.row == 15 && currentPosition.column == 19) {
+            console.log("We have a winner!");
+            // The user has won the game
+            // If the room still is closed, find the reference to the winning player
+            // Add one to their score count
+            if (roomData) {
+                for (var i = 0; i < roomData.length; i++) {
+                    if (roomData[i].id == userID) {
+                        roomData[i].score = roomData[i].score + 1;
+                    }
+                }
+            }
 
-            if (links[userMatchings[roomID].id]) { // If the player loses, nothing happens to their score
-                links[userMatchings[roomID].id].canPair = false;
-                links[userMatchings[roomID].id].isPaired = false;
-                links[userMatchings[roomID].id].emit("winner", [roomID, links[userMatchings[roomID].id].score]);
+            // Emit the winner to the room
+            io.to(roomID).emit("winner", userID);
+
+            // Emit the scores of the users to the room
+            if (roomData) {
+                var scores = {};
+
+                for (var j = 0; j < roomData.length; j++) {
+                    if (roomData[j].score) {
+                        scores[roomData[j].id] = roomData[j].score;
+                    }
+
+                    io.to(roomID).emit("scores", scores);
+                }
             }
         }
     }
-    */
 }
