@@ -167,5 +167,6 @@ button {
     font-family: "Courier New", monospace;
 }
 
-#score-display {
+#title a:visited {
+    color: blue;
 }

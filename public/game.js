@@ -155,7 +155,7 @@ function solve(maze) {
     }
 
     // Reconstruct path
-    var path = [];
+    var path = ["0-0"];
     var iter = maze.cellGraph[15][19]; // Start at end point
     var previous = prev[iter.row + "-" + iter.column];
 
@@ -187,56 +187,42 @@ function inPath(path, x, y) {
     return false;
 }
 
-function percentageSolved(solution, path) {//asdf
+function percentageSolved(solution, path) { //asdf
     return (100 * path.length / solution.length);
 }
 
-function drawSolution(solution) {
-    if (solved) {
-        p.stroke("#eb42f4");
 
-        var prev = solution[0];
-        p.line(12.5, 12.5, prev.column * 25 + 12.5, prev.row * 25 + 12.5);
+function Maze(widthCells, heightCells) {
+    /*
+      Defines a maze object based on its width and height
+    */
+    maze.widthCells = widthCells;
+    maze.heightCells = heightCells;
+    this.numCells = widthCells * heightCells;
+    maze.cellGraph = [];
 
-        for (var k = 1; k < solution.length; k++) {
-            var pathCell = solution[k];
-            p.line((prev.column) * 25 + 12.5, (prev.row) * 25 + 12.5, (pathCell.column) * 25 + 12.5, (pathCell.row) * 25 + 12.5);
-            prev = pathCell;
-        }
+    for (var i = 0; i < heightCells; i++) {
+        /*
+          Initializes the cell graph of a maze by adding empty rows
+        */
+        maze.cellGraph.push([]);
     }
 }
 
-function Maze(widthCells, heightCells) {
-  /*
-    Defines a maze object based on its width and height
-  */
-  maze.widthCells = widthCells;
-  maze.heightCells = heightCells;
-  this.numCells = widthCells * heightCells;
-  maze.cellGraph = [];
-
-  for (var i = 0; i < heightCells; i++) {
-    /*
-      Initializes the cell graph of a maze by adding empty rows
-    */
-    maze.cellGraph.push([]);
-  }
-}
-
 function Cell(cellSize, row, column) {
-  /*
-    Defines a cell object based on its dimensions and location on the cell graph
-  */
-  this.cellSize = cellSize;
-  this.column = column;
-  this.row = row;
-  this.xPos = column * cellSize;
-  this.yPos = row * cellSize;
-  this.walls = [true, true, true, true]; 
-  this.visited = false;
-  this.marked = false;
-  this.examined = false;
-  this.parentCell = null;
+    /*
+      Defines a cell object based on its dimensions and location on the cell graph
+    */
+    this.cellSize = cellSize;
+    this.column = column;
+    this.row = row;
+    this.xPos = column * cellSize;
+    this.yPos = row * cellSize;
+    this.walls = [true, true, true, true];
+    this.visited = false;
+    this.marked = false;
+    this.examined = false;
+    this.parentCell = null;
 }
 
 var maze;
@@ -266,71 +252,71 @@ $("#content").fadeIn();
 // Retrieve the 
 
 $("#one-on-one").click(function () {
-  // Display the new One-on-One layout
-  // Two buttons: Joining a match and Inviting others to the match
-  // Fade out play-wrapper, and fade in the one-on-one-wrapper
-  $("#play-wrapper").addClass("animated fadeOutLeft");
+    // Display the new One-on-One layout
+    // Two buttons: Joining a match and Inviting others to the match
+    // Fade out play-wrapper, and fade in the one-on-one-wrapper
+    $("#play-wrapper").addClass("animated fadeOutLeft");
 
-  // Make the one-on-one-wrapper visible
-  $("#play-wrapper").hide();
-  $("#one-on-one-wrapper").show();
+    // Make the one-on-one-wrapper visible
+    $("#play-wrapper").hide();
+    $("#one-on-one-wrapper").show();
 
-  $("#one-on-one-wrapper").addClass("animated fadeInRight");
+    $("#one-on-one-wrapper").addClass("animated fadeInRight");
 
-  $("#join").click(function () {
-    $("#one-on-one-wrapper").hide();
+    $("#join").click(function () {
+        $("#one-on-one-wrapper").hide();
 
-    $("#one-on-one-wrapper").removeClass();
-    $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
-  });
-
-  $("#invite").click(function () {
-    $("#one-on-one-wrapper").removeClass();
-    $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
-
-    // Make the invite sub menu visible
-    $("#text-container").hide();
-    $("#invite-menu").show();
-    $("#invite-menu").addClass("animated fadeInRight");
-
-    socket.emit("invite", true);
-  });
-
-  $("#join").click(function () {
-    $("#join-menu").show();
-    $("#join-menu").addClass("animated fadeInRight");
-
-    var roomCode = document.getElementById("room-code");
-
-    roomCode.addEventListener("keyup", function (event) {
-      event.preventDefault();
-
-      if (event.keyCode === 13) { // The user pressed the enter / return key
-        console.log("user inputted room code");
-
-        // Begin verification process
-        // Step 1: first see if the input is empty or not
-        var codeLength = $("#room-code").val().length;
-
-        if (codeLength == 0) {
-          // change to modal later
-          alert("Please enter a code.");
-        } else {
-          // send request to server containing code emitted
-          socket.emit("room-code", $("#room-code").val());
-        }
-      }
+        $("#one-on-one-wrapper").removeClass();
+        $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
     });
-  });
+
+    $("#invite").click(function () {
+        $("#one-on-one-wrapper").removeClass();
+        $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+
+        // Make the invite sub menu visible
+        $("#text-container").hide();
+        $("#invite-menu").show();
+        $("#invite-menu").addClass("animated fadeInRight");
+
+        socket.emit("invite", true);
+    });
+
+    $("#join").click(function () {
+        $("#join-menu").show();
+        $("#join-menu").addClass("animated fadeInRight");
+
+        var roomCode = document.getElementById("room-code");
+
+        roomCode.addEventListener("keyup", function (event) {
+            event.preventDefault();
+
+            if (event.keyCode === 13) { // The user pressed the enter / return key
+                console.log("user inputted room code");
+
+                // Begin verification process
+                // Step 1: first see if the input is empty or not
+                var codeLength = $("#room-code").val().length;
+
+                if (codeLength == 0) {
+                    // change to modal later
+                    alert("Please enter a code.");
+                } else {
+                    // send request to server containing code emitted
+                    socket.emit("room-code", $("#room-code").val());
+                }
+            }
+        });
+    });
 });
 
-var mazeDisplay = function(p) {
-    p.setup = function() {
+var mazeDisplay = function (p) {
+    p.setup = function () {
         var canvas = p.createCanvas(500, 400);
         p.background(0, 0, 0);
     }
 
-    p.displayMaze = function() {
+    p.displayMaze = function () {
         for (var i = 0; i < maze.cellGraph.length; i++) {
             for (var j = 0; j < maze.cellGraph[i].length; j++) {
                 p.stroke(255, 255, 255);
@@ -362,7 +348,7 @@ var mazeDisplay = function(p) {
         p.line(0, 400, 400, 400);
     }
 
-    p.draw = function() {
+    p.draw = function () {
         p.clear();
 
         if (maze) {
@@ -375,31 +361,61 @@ var mazeDisplay = function(p) {
                 p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
 
                 // Draw the path
-                // 
+                if (path.length >= 1) {
+                    //if (solved) {
+                    p.stroke(98, 244, 88);
+
+                    var prev = path[0];
+
+                    var components = prev.split("-");
+
+                    var prevRow = parseInt(components[0]);
+                    var prevColumn = parseInt(components[1]);
+
+                    p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
+
+                    console.log(path);
+
+                    for (var k = 1; k < path.length; k++) {
+                        var pathCell = path[k];
+                        components = pathCell.split("-");
+                        var row = components[0];
+                        var column = components[1];
+
+                        console.log("line from " + prevColumn + ", " + prevRow + " to " + column + ", " + row);
+
+                        p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
+                        prev = pathCell.split("-");
+
+                        prevRow = prev[0];
+                        prevColumn = prev[1];
+                    }
+                }
             } else {
                 if (current) {
                     p.noFill();
-                    p.stroke(0, 0, 0);
-                    p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
+                    p.stroke(98, 244, 88);
+                    p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
                     p.fill(0, 0, 0);
                 }
             }
         }
-
-        p.fill(0, 0, 0);
-        p.ellipse(587.5, 387.5, 12.5, 12.5);
     }
 
-    p.keyTyped = function() {
-        if (complete && solved) {
+    p.keyTyped = function () {
+        if (complete) {
             if (p.key === 'w' || p.key === 'W') {
                 if (userPosition && !userPosition.walls[0]) {
                     userY -= 1;
 
                     var cellString = userY + "-" + userX;
 
-                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                    if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
+                    } else if (cellString == "0-0") {
+                        path = ["0-0"];
+                    } else {
+                        path.pop();
                     }
 
                     solvedPercentage = percentageSolved(solution, path);
@@ -411,8 +427,12 @@ var mazeDisplay = function(p) {
 
                     var cellString = userY + "-" + userX;
 
-                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                    if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
+                    } else if (cellString == "0-0") {
+                        path = ["0-0"];
+                    } else {
+                        path.pop();
                     }
 
                     solvedPercentage = percentageSolved(solution, path);
@@ -424,8 +444,12 @@ var mazeDisplay = function(p) {
 
                     var cellString = userY + "-" + userX;
 
-                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                    if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
+                    } else if (cellString == "0-0") {
+                        path = ["0-0"];
+                    } else {
+                        path.pop();
                     }
 
                     solvedPercentage = percentageSolved(solution, path);
@@ -437,8 +461,12 @@ var mazeDisplay = function(p) {
 
                     var cellString = userY + "-" + userX;
 
-                    if (solution.indexOf(cellString) > -1 && path.indexOf(cellString) == -1) {
+                    if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
+                    } else if (cellString == "0-0") {
+                        path = ["0-0"];
+                    } else {
+                        path.pop();
                     }
 
                     solvedPercentage = percentageSolved(solution, path);
@@ -459,18 +487,18 @@ var mazeDisplay = function(p) {
 };
 
 socket.on("generated-url", function (data) {
-  console.log("data = " + data);
-  $("#invite-menu").html("Share this code with your friend: <span class='code'>" + data 
-    + "</span><br>Stay on this page. You will be paired once your friend joins.");
+    console.log("data = " + data);
+    $("#invite-menu").html("Share this code with your friend: <span class='code'>" + data +
+        "</span><br>Stay on this page. You will be paired once your friend joins.");
 });
 
-socket.on("paired", function(data) {
+socket.on("paired", function (data) {
     roomID = data;
 
     solved = false;
     solvedPercentage = 0;
     opponentProgress = 0;
-    path = [];
+    path = ["0-0"];
 
     userX = 0;
     userY = 0;
@@ -497,56 +525,68 @@ socket.on("paired", function(data) {
 });
 
 socket.on("winner", function (winnerID) {
-  console.log("received winner event");
-  if (socket.id == winnerID) {
-    alert("You won the match.");
-    $("#canvas2-wrapper").removeClass();
-    $("#canvas2-wrapper").addClass("animated fadeOutLeft");
+    var win = false;
+    var winText = "You lost the match. Your record against your opponent is 0:0";
 
-    $("#game-panel").removeClass();
-    $("#game-panel").addClass("animated fadeOutLeft");
-  }
+    if (socket.id == winnerID) {
+        win = true;
+    }
+
+    if (!win) {
+        winText = "You won the match. Your record against your opponent is 0:0";
+    }
+
+    console.log("fading out game panel");
+    $("#game-panel").text("asdf");
+    //$("#game-panel").addClass("animated fadeOutLeft");
+
+
+    //$("#game-panel").removeClass();
+    //document.getElementById("game-panel").textContent = winText;
+    //$("#game-panel").show();
+    //$("#game-panel").addClass("animated fadeInRight");
+    //$("#game-panel").fadeIn();
 });
 
 socket.on("scores", function (scoreMapping) {
-  var wonMatch = false;
+    var wonMatch = false;
 
-  for (var userID in scoreMapping) {
-    if (userID == socket.id) {
-      //$("#opponent-progress").text("You won the duel. The record is now ");
-      wonMatch = true;
+    for (var userID in scoreMapping) {
+        if (userID == socket.id) {
+            //$("#opponent-progress").text("You won the duel. The record is now ");
+            wonMatch = true;
+        }
     }
-  }
 
-  if (wonMatch) {
-    $("#game-panel").html("You won the match. You have ___ wins while your opponent has ___ wins.")
-  } else {
-    $("#game-panel").html("You lost the match. You have ___ wins while your opponent has ___ wins.")
-  }
-  
-  //$("#game-panel").removeClass();
-  //$("#game-panel").addClass("animated fadeInRight");
+    if (wonMatch) {
+        $("#game-panel").html("You won the match. You have ___ wins while your opponent has ___ wins.")
+    } else {
+        $("#game-panel").html("You lost the match. You have ___ wins while your opponent has ___ wins.")
+    }
+
+    //$("#game-panel").removeClass();
+    //$("#game-panel").addClass("animated fadeInRight");
 })
 
 // Need to include logic that alerts the user when the room cannot be joined!
 
 socket.on("code-validity", function (valid) {
-  if (!valid) {
-    alert("The code you entered is invalid");
-  }
+    if (!valid) {
+        alert("The code you entered is invalid");
+    }
 });
 
 socket.on("initial-maze", function (data) {
-  console.log("initial maze received");
-  // Fade out the start maze
-  $("#canvas-wrapper").hide();
-  $("#canvas2-wrapper").show();
-  $("#join-menu").hide();
+    console.log("initial maze received");
+    // Fade out the start maze
+    $("#canvas-wrapper").hide();
+    $("#canvas2-wrapper").show();
+    $("#join-menu").hide();
 
-  maze = data;
+    maze = data;
 });
 
-socket.on("complete", function(data) {
+socket.on("complete", function (data) {
     complete = true;
     inactivityChecker = setTimeout(inactivity, 30000);
 
@@ -554,7 +594,7 @@ socket.on("complete", function(data) {
     solved = true;
 });
 
-socket.on("modifyCell", function(data) {
+socket.on("modifyCell", function (data) {
     current = data;
 
     if (maze) {
@@ -563,6 +603,6 @@ socket.on("modifyCell", function(data) {
     }
 });
 
-socket.on("completeGeneration", function(data) {
+socket.on("completeGeneration", function (data) {
     $("#game-panel").text("Opponent Progress: 0% / Time Elapsed: 0:00")
 });

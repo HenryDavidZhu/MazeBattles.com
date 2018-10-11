@@ -140,7 +140,7 @@ var mazeIntro = function(p) {
 
     Cell.prototype.highlight = function() {
         p.noFill();
-        p.stroke(255, 255, 255);
+        p.stroke(98, 244, 88);
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
         p.fill(255, 255, 255);
     }
