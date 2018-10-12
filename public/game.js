@@ -310,6 +310,22 @@ $("#one-on-one").click(function () {
     });
 });
 
+// star function borrowed from p5.js examples  
+function star(x, y, radius1, radius2, npoints) {
+  var angle = TWO_PI / npoints;
+  var halfAngle = angle/2.0;
+  beginShape();
+  for (var a = 0; a < TWO_PI; a += angle) {
+    var sx = x + cos(a) * radius2;
+    var sy = y + sin(a) * radius2;
+    vertex(sx, sy);
+    sx = x + cos(a+halfAngle) * radius1;
+    sy = y + sin(a+halfAngle) * radius1;
+    vertex(sx, sy);
+  }
+  endShape(CLOSE);
+}
+
 var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(500, 400);
@@ -374,15 +390,11 @@ var mazeDisplay = function (p) {
 
                     p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
 
-                    console.log(path);
-
                     for (var k = 1; k < path.length; k++) {
                         var pathCell = path[k];
                         components = pathCell.split("-");
                         var row = components[0];
                         var column = components[1];
-
-                        console.log("line from " + prevColumn + ", " + prevRow + " to " + column + ", " + row);
 
                         p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
                         prev = pathCell.split("-");
@@ -473,7 +485,7 @@ var mazeDisplay = function (p) {
                 }
             }
 
-            $("#opponent-progress").text("Opponent Progress: " + opponentProgress + "% | Race.");
+            //$("#game-panel").text("Opponent Progress: " + opponentProgress + "% | Race.");
         }
 
         userPosition = maze.cellGraph[userY][userX];
@@ -532,20 +544,18 @@ socket.on("winner", function (winnerID) {
         win = true;
     }
 
-    if (!win) {
+    if (win) {
         winText = "You won the match. Your record against your opponent is 0:0";
     }
 
-    console.log("fading out game panel");
-    $("#game-panel").text("asdf");
-    //$("#game-panel").addClass("animated fadeOutLeft");
+    $("#game-panel").fadeOut("fast", function() {
+        $("#score-panel").fadeIn("fast", function() {
+            $("#score-panel").text(winText);
+            console.log("Mechanism successful.");
+        });
+    });
 
-
-    //$("#game-panel").removeClass();
-    //document.getElementById("game-panel").textContent = winText;
-    //$("#game-panel").show();
-    //$("#game-panel").addClass("animated fadeInRight");
-    //$("#game-panel").fadeIn();
+    clearTimeout(inactivityChecker);
 });
 
 socket.on("scores", function (scoreMapping) {

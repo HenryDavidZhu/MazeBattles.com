@@ -6,7 +6,7 @@ var server = app.listen(3000);
 
 app.use(express.static("public"));
 
-var io = socket(server);
+var io = socket(server, {pingTimeout: 63000});
 
 io.sockets.on("connection", playerConnect);
 
@@ -354,5 +354,20 @@ function playerConnect(user) {
                 }
             }
         }
+    }
+
+    user.on("disconnect", disconnectUser);
+    user.on("activitytimeout", activityTimeout);
+
+    function disconnectUser(user) {
+        // Remove all users fromt that room (effectively destroying the room)
+
+        // Remove references from roomMapping, roomsAndCurrent, roomsAndNumCellsVisited, roomsAndStacks, userPositions
+
+        // Clear timeouts for users in the room 
+    }
+
+    function activityTimeout(user) {
+
     }
 }
