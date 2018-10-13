@@ -506,6 +506,7 @@ socket.on("generated-url", function (data) {
 
 socket.on("paired", function (data) {
     roomID = data;
+    socket.room = roomID;
 
     solved = false;
     solvedPercentage = 0;

@@ -252,6 +252,8 @@ function playerConnect(user) {
         roomMapping[roomID] = [user];
 
         // Have the user join the newly created room
+        user.room = roomID;
+        console.log(user.room);
         user.join(roomID);
 
         // Initialize the number of cells visited in the new room to 0
@@ -302,8 +304,6 @@ function playerConnect(user) {
             roomsAndStacks[roomCode] = [];
             roomsAndNumCellsVisited[roomCode] = 0;
 
-            console.log("roomsAndCurrent[" + roomCode + "] = " + initialMaze.cellGraph[0][0]);
-
             // Emit to the user that the initial maze has been generated
             io.to(roomCode).emit("initial-maze", initialMaze);
 
@@ -315,7 +315,6 @@ function playerConnect(user) {
     user.on("position", updatePosition);
 
     function updatePosition(data) { // Endgame logic applies to both winners and losers
-        console.log("receiving position");
         userID = data[0];
         roomID = data[1];
         currentPosition = data[2];
@@ -323,10 +322,7 @@ function playerConnect(user) {
         userPositions[userID] = currentPosition;
         roomData = roomMapping[roomID];
 
-        console.log("currentPosition.row, currentPosition.column = " + currentPosition.row + ", " + currentPosition.column);
-
         if (currentPosition.row == 15 && currentPosition.column == 19) {
-            console.log("We have a winner!");
             // The user has won the game
             // If the room still is closed, find the reference to the winning player
             // Add one to their score count
@@ -360,6 +356,7 @@ function playerConnect(user) {
     user.on("activitytimeout", activityTimeout);
 
     function disconnectUser(user) {
+        console.log("user.room = " + user.room);
         // Remove all users fromt that room (effectively destroying the room)
 
         // Remove references from roomMapping, roomsAndCurrent, roomsAndNumCellsVisited, roomsAndStacks, userPositions
