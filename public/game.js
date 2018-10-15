@@ -504,9 +504,13 @@ socket.on("generated-url", function (data) {
         "</span><br>Stay on this page. You will be paired once your friend joins.");
 });
 
+// When user is disconnected
+socket.on("disconnect", function (data) {
+    alert("Your opponent disconnected.");
+});
+
 socket.on("paired", function (data) {
     roomID = data;
-    socket.room = roomID;
 
     solved = false;
     solvedPercentage = 0;
