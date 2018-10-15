@@ -252,12 +252,10 @@ function playerConnect(user) {
         var roomID = uniqid();
         roomMapping[roomID] = [user];
 
-        console.log("userMatchings[" + user.id + "] = " + user);
+        user.room = roomID;
         userMatchings[user.id] = user;
 
         // Have the user join the newly created room
-        user.room = roomID;
-        console.log(user.room);
         user.join(roomID);
 
         // Initialize the number of cells visited in the new room to 0
@@ -286,6 +284,9 @@ function playerConnect(user) {
             // only be 1 user in that room
             if (roomMapping[roomCode].length == 1) {
                 user.join(roomCode); // Connect the user to the room
+                user.room = roomCode;
+
+                userMatchings[user.id] = user;
                 // Emit to the users that they have been paired
                 io.sockets.in(roomCode).emit("paired", roomCode);
             }
@@ -293,6 +294,10 @@ function playerConnect(user) {
             if (roomMapping[roomCode].length == 2) {
                 if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
                     user.join(roomCode); // Connect the user to the room
+                    user.room = roomCode;
+
+                    userMatchings[user.id] = user;
+
                     // Emit to the users that they have been paired
                     io.sockets.in(roomCode).emit("paired", roomCode);
                 }
@@ -360,41 +365,41 @@ function playerConnect(user) {
     user.on("activitytimeout", activityTimeout);
 
     function disconnectUser(inactivity) {
-        console.log("(1) - User disconnected.")
         if (userMatchings[user.id]) {
             var userRoom = userMatchings[user.id].room;
 
             // Emit to all users from room disconnect message
             var connectedUserID;
-
-            console.log("(2) - Fetch ids of users in room");
             console.log("userRoom = " + userRoom);
-            console.log("roomMapping[userRoom].length = " + roomMapping[userRoom].length);
-            console.log("roomMapping[userRoom][0].id = " + roomMapping[userRoom][0].id);
-            console.log("roomMapping[userRoom][2].id = " + roomMapping[userRoom][2].id);
 
-            if (roomMapping[userRoom][0].id && roomMapping[userRoom][0].id != user.id) {
-                connectedUserID = roomMapping[userRoom][2].id;
-                console.log("sending disconnect message to connected user");
-                roomMapping[userRoom][2].emit("disconnect", true);
-                roomMapping[userRoom][2].leave(userRoom);
-            } else {
-                connectedUserID = roomMapping[userRoom][0].id;
-                console.log("sending disconnect message to connected user");
-                roomMapping[userRoom][0].emit("disconnect", true);
-                roomMapping[userRoom][2].leave(userRoom);
+            if (roomMapping[userRoom]) {
+                console.log("roomMapping[" + userRoom + "].length = " + roomMapping[userRoom].length);
+
+                if (roomMapping[userRoom][0].id && roomMapping[userRoom][0].id != user.id) {
+                    console.log("roomMapping[" + userRoom + "][2].id = " + roomMapping[userRoom][2].id);
+                    connectedUserID = roomMapping[userRoom][2].id;
+                    roomMapping[userRoom][2].emit("disconnect", true);
+                    roomMapping[userRoom][2].leave(userRoom);
+                } else {
+                    connectedUserID = roomMapping[userRoom][0].id;
+                    roomMapping[userRoom][0].emit("disconnect", true);
+                    roomMapping[userRoom][2].leave(userRoom);
+                }
+
+                delete userMatchings[user.id];
+                delete userMatchings[connectedUserID];
+                delete userPositions[user.id];
+                delete userMatchings[connectedUserID];
+
+                delete roomMapping[userRoom];
+                console.log("deleting roomMapping[" + userRoom + "]");
+                delete roomsAndStacks[userRoom];
+                delete roomsAndNumVisited[userRoom];
+                delete roomsAndStacks[userRoom];
+
+                clearTimeoutsFor.push(user.id);
+                clearTimeoutsFor.push(connectedUserID);
             }
-
-            delete userMatchings[user.id];
-            delete userPositions[user.id];
-
-            delete roomMapping[userRoom];
-            delete roomsAndStacks[userRoom];
-            delete roomsAndNumVisited[userRoom];
-            delete roomsAndStacks[userRoom];
-
-            clearTimeoutsFor.push(user.id);
-            clearTimeoutsFor.push(connectedUserID);
 
         // Remove all users from that room (effectively destroying the room)
 
