@@ -386,16 +386,16 @@ function playerConnect(user) {
                     roomMapping[userRoom][2].leave(userRoom);
                 }
 
-                delete userMatchings[user.id];
-                delete userMatchings[connectedUserID];
-                delete userPositions[user.id];
-                delete userMatchings[connectedUserID];
-
                 delete roomMapping[userRoom];
                 console.log("deleting roomMapping[" + userRoom + "]");
                 delete roomsAndStacks[userRoom];
                 delete roomsAndNumVisited[userRoom];
                 delete roomsAndStacks[userRoom];
+
+                delete userMatchings[user.id];
+                delete userMatchings[connectedUserID];
+                delete userPositions[user.id];
+                delete userMatchings[connectedUserID];
 
                 clearTimeoutsFor.push(user.id);
                 clearTimeoutsFor.push(connectedUserID);
