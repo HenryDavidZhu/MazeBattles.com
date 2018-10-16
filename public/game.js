@@ -500,12 +500,12 @@ var mazeDisplay = function (p) {
 
 socket.on("generated-url", function (data) {
     console.log("data = " + data);
-    $("#invite-menu").html("Share this code with your friend: <span class='code'>" + data +
-        "</span><br>Stay on this page. You will be paired once your friend joins.");
+    $("#invite-menu").html("share this code with your friend: <span class='code'>" + data +
+        "</span><br>stay on this page. you will be paired once your friend joins.");
 });
 
 // When user is disconnected
-socket.on("disconnecting", function (data) {
+socket.on("opponentDisconnected", function (data) {
     alert("Your opponent disconnected.");
 });
 
@@ -619,5 +619,5 @@ socket.on("modifyCell", function (data) {
 });
 
 socket.on("completeGeneration", function (data) {
-    $("#game-panel").text("Opponent Progress: 0% / Time Elapsed: 0:00")
+    $("#game-panel").text("opponent progress: 0% / time elapsed: 0:00")
 });

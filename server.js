@@ -196,7 +196,6 @@ Maze.prototype.createMaze = function () {
 }
 
 function generateMaze(roomID) {
-    console.log(clearTimeoutsFor + " | " + roomID);
     if (clearTimeoutsFor.indexOf(roomID) > -1) {
         clearTimeout(generateMaze);
         return;
@@ -368,34 +367,25 @@ function playerConnect(user) {
     function disconnectUser(inactivity) {
         if (userMatchings[user.id]) {
             var userRoom = userMatchings[user.id].room;
+            io.to(roomCode).emit("opponentDisconnected", true);
+            /*
+            delete roomMapping[userRoom];
+            delete roomsAndStacks[userRoom];
+            delete roomsAndNumCellsVisited[userRoom];
 
-            // Emit to all users from room disconnect message
-            console.log("userRoom = " + userRoom);
-            console.log("roomMapping[" + userRoom + "] = " + roomMapping[userRoom]);
-            console.log("roomMapping[" + userRoom + "].length = " + roomMapping[userRoom].length);
+            delete userMatchings[user.id];
+            delete userMatchings[connectedUserID];
+            delete userPositions[user.id];
+            delete userMatchings[connectedUserID];
 
-            if (roomMapping[userRoom]) {
-                var connectedUserID = roomMapping[userRoom][0].id;
-
-                delete roomMapping[userRoom];
-                console.log("deleting roomMapping[" + userRoom + "]");
-                delete roomsAndStacks[userRoom];
-                delete roomsAndNumCellsVisited[userRoom];
-
-                delete userMatchings[user.id];
-                delete userMatchings[connectedUserID];
-                delete userPositions[user.id];
-                delete userMatchings[connectedUserID];
-
-                clearTimeoutsFor.push(userRoom);
-            }
+            clearTimeoutsFor.push(userRoom);*/
+        }
 
         // Remove all users from that room (effectively destroying the room)
 
         // Remove references from roomMapping, roomsAndCurrent, roomsAndNumCellsVisited, roomsAndStacks, userPositions
 
         // Clear timeouts for users in the room 
-        }
     }
 
     function activityTimeout(user) {
