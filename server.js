@@ -196,6 +196,7 @@ Maze.prototype.createMaze = function () {
 }
 
 function generateMaze(roomID) {
+    console.log(clearTimeoutsFor + " | " + roomID);
     if (clearTimeoutsFor.indexOf(roomID) > -1) {
         clearTimeout(generateMaze);
         return;
@@ -369,36 +370,24 @@ function playerConnect(user) {
             var userRoom = userMatchings[user.id].room;
 
             // Emit to all users from room disconnect message
-            var connectedUserID;
             console.log("userRoom = " + userRoom);
+            console.log("roomMapping[" + userRoom + "] = " + roomMapping[userRoom]);
+            console.log("roomMapping[" + userRoom + "].length = " + roomMapping[userRoom].length);
 
             if (roomMapping[userRoom]) {
-                console.log("roomMapping[" + userRoom + "].length = " + roomMapping[userRoom].length);
-
-                if (roomMapping[userRoom][0].id && roomMapping[userRoom][0].id != user.id) {
-                    console.log("roomMapping[" + userRoom + "][2].id = " + roomMapping[userRoom][2].id);
-                    connectedUserID = roomMapping[userRoom][2].id;
-                    roomMapping[userRoom][2].emit("disconnect", true);
-                    roomMapping[userRoom][2].leave(userRoom);
-                } else {
-                    connectedUserID = roomMapping[userRoom][0].id;
-                    roomMapping[userRoom][0].emit("disconnect", true);
-                    roomMapping[userRoom][2].leave(userRoom);
-                }
+                var connectedUserID = roomMapping[userRoom][0].id;
 
                 delete roomMapping[userRoom];
                 console.log("deleting roomMapping[" + userRoom + "]");
                 delete roomsAndStacks[userRoom];
-                delete roomsAndNumVisited[userRoom];
-                delete roomsAndStacks[userRoom];
+                delete roomsAndNumCellsVisited[userRoom];
 
                 delete userMatchings[user.id];
                 delete userMatchings[connectedUserID];
                 delete userPositions[user.id];
                 delete userMatchings[connectedUserID];
 
-                clearTimeoutsFor.push(user.id);
-                clearTimeoutsFor.push(connectedUserID);
+                clearTimeoutsFor.push(userRoom);
             }
 
         // Remove all users from that room (effectively destroying the room)

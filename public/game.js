@@ -505,7 +505,7 @@ socket.on("generated-url", function (data) {
 });
 
 // When user is disconnected
-socket.on("disconnect", function (data) {
+socket.on("disconnecting", function (data) {
     alert("Your opponent disconnected.");
 });
 
