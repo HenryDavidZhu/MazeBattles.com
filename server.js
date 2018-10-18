@@ -268,7 +268,15 @@ function playerConnect(user) {
     user.on("room-code", checkRoomCode);
 
     function checkRoomCode(roomCode) {
-        // If the dictionary entry is null, it means that code is invalid
+        var initialMaze = new Maze(20, 16);
+        initialMaze.createMaze();
+
+        // Add the maze as the second element to the array
+        roomMapping[roomCode].push(initialMaze);
+
+        roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
+        roomsAndStacks[roomCode] = [];
+        roomsAndNumCellsVisited[roomCode] = 0;
 
         if (!roomMapping[roomCode]) {
             user.emit("code-validity", false);
@@ -287,31 +295,28 @@ function playerConnect(user) {
                 user.room = roomCode;
 
                 userMatchings[user.id] = user;
+                console.log("userMatchings[" + user.id + "].room = " + userMatchings[user.id].room);
+
+                roomMapping[roomCode].push(userMatchings[user.id]);
+
                 // Emit to the users that they have been paired
                 io.sockets.in(roomCode).emit("paired", roomCode);
             }
 
             if (roomMapping[roomCode].length == 2) {
-                if (roomMapping[0].cellGraph || roomMapping[1].cellGraph) {
+                if (roomMapping[roomCode][0].cellGraph || roomMapping[roomCode][1].cellGraph) {
                     user.join(roomCode); // Connect the user to the room
                     user.room = roomCode;
 
                     userMatchings[user.id] = user;
+                    console.log("userMatchings[" + user.id + "].room = " + userMatchings[user.id].room);
+
+                    roomMapping[roomCode].push(userMatchings[user.id]);
 
                     // Emit to the users that they have been paired
                     io.sockets.in(roomCode).emit("paired", roomCode);
                 }
             }
-
-            var initialMaze = new Maze(20, 16);
-            initialMaze.createMaze();
-
-            // Add the maze as the second element to the array
-            roomMapping[roomCode].push(initialMaze);
-
-            roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
-            roomsAndStacks[roomCode] = [];
-            roomsAndNumCellsVisited[roomCode] = 0;
 
             // Emit to the user that the initial maze has been generated
             io.to(roomCode).emit("initial-maze", initialMaze);
@@ -367,18 +372,25 @@ function playerConnect(user) {
     function disconnectUser(inactivity) {
         if (userMatchings[user.id]) {
             var userRoom = userMatchings[user.id].room;
-            io.to(roomCode).emit("opponentDisconnected", true);
-            /*
+            io.to(userRoom).emit("opponentDisconnected", true);
+            
             delete roomMapping[userRoom];
             delete roomsAndStacks[userRoom];
             delete roomsAndNumCellsVisited[userRoom];
 
-            delete userMatchings[user.id];
-            delete userMatchings[connectedUserID];
-            delete userPositions[user.id];
-            delete userMatchings[connectedUserID];
+            var roomClient;
 
-            clearTimeoutsFor.push(userRoom);*/
+            io.of("/").in(userRoom).clients((error, clients) => {
+                if (error) throw error;
+                roomClient = clients[0].id;
+            })
+
+            delete userMatchings[user.id];
+            delete userMatchings[roomClient];
+            delete userPositions[user.id];
+            delete userMatchings[roomClient];
+
+            clearTimeoutsFor.push(userRoom);
         }
 
         // Remove all users from that room (effectively destroying the room)
