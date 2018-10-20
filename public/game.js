@@ -507,6 +507,16 @@ socket.on("generated-url", function (data) {
 // When user is disconnected
 socket.on("opponentDisconnected", function (data) {
     alert("Your opponent disconnected.");
+
+    //
+    $("#game-panel").removeClass();
+    $("#game-panel").addClass("animated fadeOutLeft");
+    $("#game-panel").removeClass();
+    //
+    $("#game-panel").addClass("animated fadeInRight");
+    $("#game-panel").text("your opponent disconnected from the match.");
+
+    $("#game-panel").fadeOut().delay(300).text("you will be redirected to the main page.").delay(300).fadeIn(300);
 });
 
 socket.on("paired", function (data) {

@@ -373,24 +373,31 @@ function playerConnect(user) {
         if (userMatchings[user.id]) {
             var userRoom = userMatchings[user.id].room;
             io.to(userRoom).emit("opponentDisconnected", true);
-            
-            delete roomMapping[userRoom];
-            delete roomsAndStacks[userRoom];
-            delete roomsAndNumCellsVisited[userRoom];
 
-            var roomClient;
+            if (roomMapping[userRoom]) {
+                var roomClient;
 
-            io.of("/").in(userRoom).clients((error, clients) => {
-                if (error) throw error;
-                roomClient = clients[0].id;
-            })
+                if (roomMapping[userRoom].length == 3) {
+                    io.of("/").in(userRoom).clients((error, clients) => {
+                        if (error) throw error;
+                        roomClient = clients[0].id;
+                    })
+                }
+
+                delete roomMapping[userRoom];
+                delete roomsAndStacks[userRoom];
+                delete roomsAndNumCellsVisited[userRoom];
+
+                if (roomClient) {
+                    delete userMatchings[roomClient];
+                    delete userMatchings[roomClient];
+                }
+
+                clearTimeoutsFor.push(userRoom);
+            } 
 
             delete userMatchings[user.id];
-            delete userMatchings[roomClient];
             delete userPositions[user.id];
-            delete userMatchings[roomClient];
-
-            clearTimeoutsFor.push(userRoom);
         }
 
         // Remove all users from that room (effectively destroying the room)
