@@ -508,15 +508,7 @@ socket.on("generated-url", function (data) {
 socket.on("opponentDisconnected", function (data) {
     alert("Your opponent disconnected.");
 
-    //
-    $("#game-panel").removeClass();
-    $("#game-panel").addClass("animated fadeOutLeft");
-    $("#game-panel").removeClass();
-    //
-    $("#game-panel").addClass("animated fadeInRight");
-    $("#game-panel").text("your opponent disconnected from the match.");
-
-    $("#game-panel").fadeOut().delay(300).text("you will be redirected to the main page.").delay(300).fadeIn(300);
+    $("#game-panel").fadeOut().html("your opponent has unfortunately disconnected.<br>you will be redirected to the main page.").fadeIn(300);
 });
 
 socket.on("paired", function (data) {
@@ -551,16 +543,33 @@ socket.on("paired", function (data) {
     $("#game-panel").addClass("animated fadeInRight");
 });
 
-socket.on("winner", function (winnerID) {
+socket.on("winner", function (data) {
     var win = false;
-    var winText = "You lost the match. Your record against your opponent is 0:0";
+    var winText = "";
+
+    var winnerID = data[0];
+    var scores = data[1];
 
     if (socket.id == winnerID) {
         win = true;
     }
 
+    var userScore;
+    var opponentScore;
+
+    for (var userID in scores) {
+        console.log("userID = " + userID + "scores[" + userID + "] = " + scores[userID]);
+        if (userID == socket.id) {
+            userScore = scores[userID];
+        } else {
+            opponentScore = scores[userID];
+        }
+    }
+
     if (win) {
-        winText = "You won the match. Your record against your opponent is 0:0";
+        winText = "You won the match. Your record against your opponent is " + userScore + ":" + opponentScore;
+    } else {
+        winText = "You lost the match. Your record against your opponent is " + userScore + ":" + opponentScore;
     }
 
     $("#game-panel").fadeOut("fast", function() {
@@ -572,26 +581,6 @@ socket.on("winner", function (winnerID) {
 
     clearTimeout(inactivityChecker);
 });
-
-socket.on("scores", function (scoreMapping) {
-    var wonMatch = false;
-
-    for (var userID in scoreMapping) {
-        if (userID == socket.id) {
-            //$("#opponent-progress").text("You won the duel. The record is now ");
-            wonMatch = true;
-        }
-    }
-
-    if (wonMatch) {
-        $("#game-panel").html("You won the match. You have ___ wins while your opponent has ___ wins.")
-    } else {
-        $("#game-panel").html("You lost the match. You have ___ wins while your opponent has ___ wins.")
-    }
-
-    //$("#game-panel").removeClass();
-    //$("#game-panel").addClass("animated fadeInRight");
-})
 
 // Need to include logic that alerts the user when the room cannot be joined!
 

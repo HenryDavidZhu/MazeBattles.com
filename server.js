@@ -201,47 +201,49 @@ function generateMaze(roomID) {
         return;
     }
 
-    var numVisited = roomsAndNumCellsVisited[roomID] // Get the number of cells viisted in that room
-    var current = roomsAndCurrent[roomID];
-    var roomMaze = roomMapping[roomID][1];
+    if (roomMapping[roomID]) {
+        var numVisited = roomsAndNumCellsVisited[roomID] // Get the number of cells viisted in that room
+        var current = roomsAndCurrent[roomID];
+        var roomMaze = roomMapping[roomID][1];
 
-    if (numVisited < roomMaze.numCells) {
-        var cellRow = current.row;
-        var cellColumn = current.column;
-        var neighbor = roomMaze.getNeighbor(true, cellRow, cellColumn);
+        if (numVisited < roomMaze.numCells) {
+            var cellRow = current.row;
+            var cellColumn = current.column;
+            var neighbor = roomMaze.getNeighbor(true, cellRow, cellColumn);
 
-        if (neighbor && !neighbor.visited) {
-            roomsAndStacks[roomID].push(current);
-            deleteWall(neighbor, current);
+            if (neighbor && !neighbor.visited) {
+                roomsAndStacks[roomID].push(current);
+                deleteWall(neighbor, current);
 
-            if (neighbor.getNumWalls() < 4) {
-                neighbor.visited = true;
+                if (neighbor.getNumWalls() < 4) {
+                    neighbor.visited = true;
+                }
+
+                io.sockets.in(roomID).emit("modifyCell", current);
+
+                if (neighbor) {
+                    io.sockets.in(roomID).emit("modifyCell", neighbor);
+                }
+
+                current = neighbor;
+                numVisited += 1;
+            } else if (roomsAndStacks[roomID].length > 0) {
+                current = roomsAndStacks[roomID].pop();
             }
 
-            io.sockets.in(roomID).emit("modifyCell", current);
+            complete = false;
+            roomsAndNumCellsVisited[roomID] = numVisited;
+            roomsAndCurrent[roomID] = current;
+            roomMapping[roomID][1] = roomMaze;
+        } else {
+            complete = true;
 
-            if (neighbor) {
-                io.sockets.in(roomID).emit("modifyCell", neighbor);
-            }
-
-            current = neighbor;
-            numVisited += 1;
-        } else if (roomsAndStacks[roomID].length > 0) {
-            current = roomsAndStacks[roomID].pop();
+            io.sockets.in(roomID).emit("complete", true);
+            io.sockets.in(roomID).emit("completeGeneration", true);
         }
 
-        complete = false;
-        roomsAndNumCellsVisited[roomID] = numVisited;
-        roomsAndCurrent[roomID] = current;
-        roomMapping[roomID][1] = roomMaze;
-    } else {
-        complete = true;
-
-        io.sockets.in(roomID).emit("complete", true);
-        io.sockets.in(roomID).emit("completeGeneration", true);
+        mazeGenerator = setTimeout(generateMaze, 20, roomID);
     }
-
-    mazeGenerator = setTimeout(generateMaze, 20, roomID);
 }
 
 function playerConnect(user) {
@@ -337,6 +339,8 @@ function playerConnect(user) {
         roomData = roomMapping[roomID];
 
         if (currentPosition.row == 15 && currentPosition.column == 19) {
+            console.log(user.id + " has won the game!");
+            
             // The user has won the game
             // If the room still is closed, find the reference to the winning player
             // Add one to their score count
@@ -348,21 +352,19 @@ function playerConnect(user) {
                 }
             }
 
-            // Emit the winner to the room
-            io.to(roomID).emit("winner", userID);
+            var scores = {};
 
             // Emit the scores of the users to the room
             if (roomData) {
-                var scores = {};
-
                 for (var j = 0; j < roomData.length; j++) {
+                    console.log("roomData[" + j + "].score = " + roomData[j].score);
                     if (roomData[j].score) {
                         scores[roomData[j].id] = roomData[j].score;
-                    }
-
-                    io.to(roomID).emit("scores", scores);
+                    } 
                 }
             }
+
+            io.to(roomID).emit("winner", [userID, scores]);
         }
     }
 
