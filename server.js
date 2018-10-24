@@ -249,6 +249,7 @@ function generateMaze(roomID) {
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
     user.score = 0;
+    console.log(user.id + ".score = " + user.score);
 
     function roomInvite() {
         var roomID = uniqid();
@@ -297,8 +298,6 @@ function playerConnect(user) {
                 user.room = roomCode;
 
                 userMatchings[user.id] = user;
-                console.log("userMatchings[" + user.id + "].room = " + userMatchings[user.id].room);
-
                 roomMapping[roomCode].push(userMatchings[user.id]);
 
                 // Emit to the users that they have been paired
@@ -311,8 +310,6 @@ function playerConnect(user) {
                     user.room = roomCode;
 
                     userMatchings[user.id] = user;
-                    console.log("userMatchings[" + user.id + "].room = " + userMatchings[user.id].room);
-
                     roomMapping[roomCode].push(userMatchings[user.id]);
 
                     // Emit to the users that they have been paired
@@ -338,9 +335,7 @@ function playerConnect(user) {
         userPositions[userID] = currentPosition;
         roomData = roomMapping[roomID];
 
-        if (currentPosition.row == 15 && currentPosition.column == 19) {
-            console.log(user.id + " has won the game!");
-            
+        if (currentPosition.row == 15 && currentPosition.column == 19) {            
             // The user has won the game
             // If the room still is closed, find the reference to the winning player
             // Add one to their score count
@@ -356,12 +351,8 @@ function playerConnect(user) {
 
             // Emit the scores of the users to the room
             if (roomData) {
-                for (var j = 0; j < roomData.length; j++) {
-                    console.log("roomData[" + j + "].score = " + roomData[j].score);
-                    if (roomData[j].score) {
-                        scores[roomData[j].id] = roomData[j].score;
-                    } 
-                }
+                scores[roomData[0].id] = roomData[0].score;
+                scores[roomData[2].id] = roomData[2].score;
             }
 
             io.to(roomID).emit("winner", [userID, scores]);

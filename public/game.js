@@ -1,5 +1,6 @@
 var inactivityChecker; // Checks whether the user has been inactive or not
 var roomID = "";
+var gameOver = false;
 
 function inactivity() {
     socket.emit("activitytimeout", true);
@@ -490,7 +491,11 @@ var mazeDisplay = function (p) {
 
         userPosition = maze.cellGraph[userY][userX];
         console.log("emitting position");
-        socket.emit("position", [socket.id, roomID, userPosition]);
+
+        if (!gameOver) {
+            socket.emit("position", [socket.id, roomID, userPosition]);
+        }
+
         socket.emit("solvedPercentage", [socket.id, solvedPercentage]);
 
         clearTimeout(inactivityChecker);
@@ -508,10 +513,18 @@ socket.on("generated-url", function (data) {
 socket.on("opponentDisconnected", function (data) {
     alert("Your opponent disconnected.");
 
+    $("#score-panel").fadeOut();
     $("#game-panel").fadeOut().html("your opponent has unfortunately disconnected.<br>you will be redirected to the main page.").fadeIn(300);
+    
+
+    setTimeout(function() {
+        window.location = "http://localhost:3000";
+    }, 3000);
 });
 
 socket.on("paired", function (data) {
+    gameOver = false;
+
     roomID = data;
 
     solved = false;
@@ -544,6 +557,8 @@ socket.on("paired", function (data) {
 });
 
 socket.on("winner", function (data) {
+    gameOver = true;
+
     var win = false;
     var winText = "";
 
@@ -557,6 +572,7 @@ socket.on("winner", function (data) {
     var userScore;
     var opponentScore;
 
+    console.log("scores.length = " + scores.length);
     for (var userID in scores) {
         console.log("userID = " + userID + "scores[" + userID + "] = " + scores[userID]);
         if (userID == socket.id) {
@@ -572,9 +588,11 @@ socket.on("winner", function (data) {
         winText = "You lost the match. Your record against your opponent is " + userScore + ":" + opponentScore;
     }
 
-    $("#game-panel").fadeOut("fast", function() {
-        $("#score-panel").fadeIn("fast", function() {
-            $("#score-panel").text(winText);
+    $("#game-panel").fadeOut(500, function() {
+        $("#score-panel").text(winText);
+        
+        $("#score-panel").fadeIn(500, function() {
+            
             console.log("Mechanism successful.");
         });
     });
