@@ -15,6 +15,7 @@
   "author": "henryzhu",
   "license": "ISC",
   "dependencies": {
+    "easytimer.js": "^2.3.0",
     "express": "^4.16.3",
     "socket.io": "^2.1.0",
     "socketio": "^1.0.0",

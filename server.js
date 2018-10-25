@@ -236,10 +236,12 @@ function generateMaze(roomID) {
             roomsAndCurrent[roomID] = current;
             roomMapping[roomID][1] = roomMaze;
         } else {
-            complete = true;
+            if (!complete) {
+                io.sockets.in(roomID).emit("complete", true);
+                io.sockets.in(roomID).emit("completeGeneration", true);
+            }
 
-            io.sockets.in(roomID).emit("complete", true);
-            io.sockets.in(roomID).emit("completeGeneration", true);
+            complete = true;
         }
 
         mazeGenerator = setTimeout(generateMaze, 20, roomID);
@@ -360,7 +362,7 @@ function playerConnect(user) {
     }
 
     user.on("disconnect", disconnectUser);
-    user.on("activitytimeout", activityTimeout);
+    user.on("activitytimeout", disconnectUser);
 
     function disconnectUser(inactivity) {
         if (userMatchings[user.id]) {
@@ -398,9 +400,5 @@ function playerConnect(user) {
         // Remove references from roomMapping, roomsAndCurrent, roomsAndNumCellsVisited, roomsAndStacks, userPositions
 
         // Clear timeouts for users in the room 
-    }
-
-    function activityTimeout(user) {
-
     }
 }

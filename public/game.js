@@ -127,55 +127,6 @@ function equalCells(cell1, cell2) {
     return cell1.row == cell2.row && cell1.column == cell2.column;
 }
 
-function solve(maze) {
-    var queue = new Queue();
-    var start = maze.cellGraph[0][0]; // Start position is the left corner of the maze
-    start.visited = true;
-    queue.enqueue(start);
-
-    var prev = {}; // Used for backtracking path
-
-    while (!queue.isEmpty()) {
-        var curr = queue.dequeue();
-
-        if (curr.row == 15 && curr.column == 19) {
-            break;
-        }
-
-        var neighbors = getNeighbor(false, curr.row, curr.column);
-
-        for (var i = 0; i < neighbors.length; i++) {
-            var neighbor = neighbors[i];
-
-            if (!neighbor.visited) {
-                queue.enqueue(neighbor);
-                neighbor.visited = true;
-                prev[neighbor.row + "-" + neighbor.column] = curr; // Reverse
-            }
-        }
-    }
-
-    // Reconstruct path
-    var path = ["0-0"];
-    var iter = maze.cellGraph[15][19]; // Start at end point
-    var previous = prev[iter.row + "-" + iter.column];
-
-    while (iter != null) {
-        if (iter.row == 0 && iter.column == 0) {
-            break;
-        }
-
-        var cellString = iter.row + "-" + iter.column;
-        path.push(cellString);
-
-        iter = prev[iter.row + "-" + iter.column];
-    }
-
-    path = path.reverse();
-
-    return path;
-}
-
 function inPath(path, x, y) {
     for (var i = 0; i < path.length; i++) {
         var cell = path[i];
@@ -187,11 +138,6 @@ function inPath(path, x, y) {
 
     return false;
 }
-
-function percentageSolved(solution, path) { //asdf
-    return (100 * path.length / solution.length);
-}
-
 
 function Maze(widthCells, heightCells) {
     /*
@@ -238,13 +184,7 @@ var gamecomplete = false;
 var userX = 0;
 var userY = 0;
 
-// Solving maze
-var solution;
-var solved = false;
-var solvePercentage = 0;
 var path = [];
-
-var displayedSolution = false;
 
 var opponentProgress = 0;
 
@@ -327,6 +267,13 @@ function star(x, y, radius1, radius2, npoints) {
   endShape(CLOSE);
 }
 
+socket.on("complete", function (data) {
+    complete = true;
+    inactivityChecker = setTimeout(inactivity, 30000);
+
+    console.log("maze complete");
+});
+
 var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(500, 400);
@@ -379,7 +326,6 @@ var mazeDisplay = function (p) {
 
                 // Draw the path
                 if (path.length >= 1) {
-                    //if (solved) {
                     p.stroke(98, 244, 88);
 
                     var prev = path[0];
@@ -430,8 +376,6 @@ var mazeDisplay = function (p) {
                     } else {
                         path.pop();
                     }
-
-                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 's' || p.key === 'S') {
@@ -447,8 +391,6 @@ var mazeDisplay = function (p) {
                     } else {
                         path.pop();
                     }
-
-                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'a' || p.key === 'A') {
@@ -464,8 +406,6 @@ var mazeDisplay = function (p) {
                     } else {
                         path.pop();
                     }
-
-                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
             if (p.key === 'd' || p.key === 'D') {
@@ -481,22 +421,15 @@ var mazeDisplay = function (p) {
                     } else {
                         path.pop();
                     }
-
-                    solvedPercentage = percentageSolved(solution, path);
                 }
             }
-
-            //$("#game-panel").text("Opponent Progress: " + opponentProgress + "% | Race.");
         }
 
         userPosition = maze.cellGraph[userY][userX];
-        console.log("emitting position");
 
         if (!gameOver) {
             socket.emit("position", [socket.id, roomID, userPosition]);
         }
-
-        socket.emit("solvedPercentage", [socket.id, solvedPercentage]);
 
         clearTimeout(inactivityChecker);
         inactivityChecker = setTimeout(inactivity, 30000);
@@ -511,8 +444,6 @@ socket.on("generated-url", function (data) {
 
 // When user is disconnected
 socket.on("opponentDisconnected", function (data) {
-    alert("Your opponent disconnected.");
-
     $("#score-panel").fadeOut();
     $("#game-panel").fadeOut().html("your opponent has unfortunately disconnected.<br>you will be redirected to the main page.").fadeIn(300);
     
@@ -522,14 +453,14 @@ socket.on("opponentDisconnected", function (data) {
     }, 3000);
 });
 
+socket.on("opponentPercentage", function(data) {
+    $("#game-panel").text("time elapsed: 0:00");
+});
+
 socket.on("paired", function (data) {
     gameOver = false;
-
     roomID = data;
 
-    solved = false;
-    solvedPercentage = 0;
-    opponentProgress = 0;
     path = ["0-0"];
 
     userX = 0;
@@ -618,14 +549,6 @@ socket.on("initial-maze", function (data) {
     maze = data;
 });
 
-socket.on("complete", function (data) {
-    complete = true;
-    inactivityChecker = setTimeout(inactivity, 30000);
-
-    solution = solve(maze);
-    solved = true;
-});
-
 socket.on("modifyCell", function (data) {
     current = data;
 
@@ -636,5 +559,5 @@ socket.on("modifyCell", function (data) {
 });
 
 socket.on("completeGeneration", function (data) {
-    $("#game-panel").text("opponent progress: 0% / time elapsed: 0:00")
+    $("#game-panel").text("time elapsed: 0:00")
 });
