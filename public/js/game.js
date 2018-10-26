@@ -2,6 +2,8 @@ var inactivityChecker; // Checks whether the user has been inactive or not
 var roomID = "";
 var gameOver = false;
 
+var timer = new Timer();
+
 function inactivity() {
     socket.emit("activitytimeout", true);
 }
@@ -268,7 +270,6 @@ function star(x, y, radius1, radius2, npoints) {
 }
 
 socket.on("complete", function (data) {
-    complete = true;
     inactivityChecker = setTimeout(inactivity, 30000);
 
     console.log("maze complete");
@@ -559,5 +560,10 @@ socket.on("modifyCell", function (data) {
 });
 
 socket.on("completeGeneration", function (data) {
-    $("#game-panel").text("time elapsed: 0:00")
+    timer.start();
+    timer.addEventListener("secondsUpdated", function(e) {
+        $("#game-panel").text("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
+    });
+    
+    complete = true;
 });
