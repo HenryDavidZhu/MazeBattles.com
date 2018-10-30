@@ -1,6 +1,10 @@
 var inactivityChecker; // Checks whether the user has been inactive or not
 var roomID = "";
+
 var gameOver = false;
+var gameOverTrigger = false;
+
+var solved = false;
 
 var timer = new Timer();
 
@@ -8,6 +12,8 @@ function inactivity() {
     socket.emit("activitytimeout", true);
 }
 
+// DFS is a parameter that specifies whether getNeighbor is going through the generation phase or
+// the search phase
 function getNeighbor(dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
     var neighbors = []; // The list of all the neighbors of that cell
     var coordinates = []; // The list of the coordinates of the neighbors of that cell
@@ -235,7 +241,6 @@ $("#one-on-one").click(function () {
             event.preventDefault();
 
             if (event.keyCode === 13) { // The user pressed the enter / return key
-                console.log("user inputted room code");
 
                 // Begin verification process
                 // Step 1: first see if the input is empty or not
@@ -254,30 +259,32 @@ $("#one-on-one").click(function () {
 });
 
 // star function borrowed from p5.js examples  
-function star(x, y, radius1, radius2, npoints) {
-  var angle = TWO_PI / npoints;
+function star(x, y, radius1, radius2, npoints, p) {
+  var angle = 2 * Math.PI / npoints;
   var halfAngle = angle/2.0;
-  beginShape();
-  for (var a = 0; a < TWO_PI; a += angle) {
-    var sx = x + cos(a) * radius2;
-    var sy = y + sin(a) * radius2;
-    vertex(sx, sy);
-    sx = x + cos(a+halfAngle) * radius1;
-    sy = y + sin(a+halfAngle) * radius1;
-    vertex(sx, sy);
+  p.beginShape();
+
+  for (var a = 0; a < 2 * Math.PI; a += angle) {
+    var sx = x + Math.cos(a) * radius2;
+    var sy = y + Math.sin(a) * radius2;
+    p.vertex(sx, sy);
+
+    sx = x + Math.cos(a+halfAngle) * radius1;
+    sy = y + Math.sin(a+halfAngle) * radius1;
+    p.vertex(sx, sy);
   }
-  endShape(CLOSE);
+
+  p.endShape(p.CLOSE);
 }
 
 socket.on("complete", function (data) {
     inactivityChecker = setTimeout(inactivity, 30000);
 
-    console.log("maze complete");
 });
 
 var mazeDisplay = function (p) {
     p.setup = function () {
-        var canvas = p.createCanvas(500, 400);
+        var canvas = p.createCanvas(600, 400);
         p.background(0, 0, 0);
     }
 
@@ -314,61 +321,75 @@ var mazeDisplay = function (p) {
     }
 
     p.draw = function () {
-        p.clear();
+        if (!gameOverTrigger) {
+            p.clear();
 
-        if (maze) {
-            p.displayMaze();
+            if (maze) {
+                p.displayMaze();
 
-            if (complete) {
-                userPosition = maze.cellGraph[userY][userX];
+                p.stroke(98, 244, 88);
 
-                p.fill(98, 244, 88);
-                p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+                if (!solved) {
+                    star(587.5, 387.5, 6, 1, 5, p);
+                }
 
-                // Draw the path
-                if (path.length >= 1) {
-                    p.stroke(98, 244, 88);
+                if (complete) {
+                    userPosition = maze.cellGraph[userY][userX];
 
-                    var prev = path[0];
+                    p.fill(98, 244, 88);
+                    p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
 
-                    var components = prev.split("-");
+                    // Draw the path
+                    if (path.length >= 1) {
+                        p.stroke(98, 244, 88);
 
-                    var prevRow = parseInt(components[0]);
-                    var prevColumn = parseInt(components[1]);
+                        var prev = path[0];
 
-                    p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
+                        var components = prev.split("-");
 
-                    for (var k = 1; k < path.length; k++) {
-                        var pathCell = path[k];
-                        components = pathCell.split("-");
-                        var row = components[0];
-                        var column = components[1];
+                        var prevRow = parseInt(components[0]);
+                        var prevColumn = parseInt(components[1]);
 
-                        p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
-                        prev = pathCell.split("-");
+                        p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
 
-                        prevRow = prev[0];
-                        prevColumn = prev[1];
+                        for (var k = 1; k < path.length; k++) {
+                            var pathCell = path[k];
+                            components = pathCell.split("-");
+                            var row = components[0];
+                            var column = components[1];
+
+                            p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
+                            prev = pathCell.split("-");
+
+                            prevRow = prev[0];
+                            prevColumn = prev[1];
+                        }
+                    }
+                } else {
+                    if (current) {
+                        p.noFill();
+                        p.stroke(98, 244, 88);
+                        p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
+                        p.fill(0, 0, 0);
                     }
                 }
-            } else {
-                if (current) {
-                    p.noFill();
-                    p.stroke(98, 244, 88);
-                    p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
-                    p.fill(0, 0, 0);
-                }
             }
+        }
+
+        if (gameOver) {
+            gameOverTrigger = true;
         }
     }
 
     p.keyTyped = function () {
         if (complete) {
+            var cellString = "";
+
             if (p.key === 'w' || p.key === 'W') {
                 if (userPosition && !userPosition.walls[0]) {
                     userY -= 1;
 
-                    var cellString = userY + "-" + userX;
+                    cellString = userY + "-" + userX;
 
                     if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
@@ -383,7 +404,7 @@ var mazeDisplay = function (p) {
                 if (userPosition && !userPosition.walls[2]) {
                     userY += 1;
 
-                    var cellString = userY + "-" + userX;
+                    cellString = userY + "-" + userX;
 
                     if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
@@ -398,7 +419,7 @@ var mazeDisplay = function (p) {
                 if (userPosition && !userPosition.walls[3]) {
                     userX -= 1;
 
-                    var cellString = userY + "-" + userX;
+                    cellString = userY + "-" + userX;
 
                     if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
@@ -413,7 +434,7 @@ var mazeDisplay = function (p) {
                 if (userPosition && !userPosition.walls[1]) {
                     userX += 1;
 
-                    var cellString = userY + "-" + userX;
+                    cellString = userY + "-" + userX;
 
                     if (path.indexOf(cellString) == -1) {
                         path.push(cellString);
@@ -423,6 +444,10 @@ var mazeDisplay = function (p) {
                         path.pop();
                     }
                 }
+            }
+
+            if (cellString == "15-23") {
+                solved = true;
             }
         }
 
@@ -438,7 +463,6 @@ var mazeDisplay = function (p) {
 };
 
 socket.on("generated-url", function (data) {
-    console.log("data = " + data);
     $("#invite-menu").html("share this code with your friend: <span class='code'>" + data +
         "</span><br>stay on this page. you will be paired once your friend joins.");
 });
@@ -454,12 +478,15 @@ socket.on("opponentDisconnected", function (data) {
     }, 3000);
 });
 
-socket.on("opponentPercentage", function(data) {
-    $("#game-panel").text("time elapsed: 0:00");
-});
-
 socket.on("paired", function (data) {
+    console.log("/////////////////////////////////////////////////////");
+
+
     gameOver = false;
+    gameOverTrigger = false;
+
+    solved = false;
+
     roomID = data;
 
     path = ["0-0"];
@@ -476,6 +503,8 @@ socket.on("paired", function (data) {
     if (myp25 == null) {
         myp25 = new p5(mazeDisplay, "canvas2-wrapper");
     }
+
+    $("#score-panel").fadeOut(500);
 
     $("#join-menu").removeClass();
     $("#join-menu").addClass("animated fadeOutLeft");
@@ -504,9 +533,7 @@ socket.on("winner", function (data) {
     var userScore;
     var opponentScore;
 
-    console.log("scores.length = " + scores.length);
     for (var userID in scores) {
-        console.log("userID = " + userID + "scores[" + userID + "] = " + scores[userID]);
         if (userID == socket.id) {
             userScore = scores[userID];
         } else {
@@ -515,21 +542,56 @@ socket.on("winner", function (data) {
     }
 
     if (win) {
-        winText = "You won the match. Your record against your opponent is " + userScore + ":" + opponentScore;
+        winText = "You won the match. Your record is <b>" + userScore + "</b>:" + opponentScore;
     } else {
-        winText = "You lost the match. Your record against your opponent is " + userScore + ":" + opponentScore;
+        winText = "You lost the match. Your record is <b>" + userScore + "</b>:" + opponentScore;
     }
 
     $("#game-panel").fadeOut(500, function() {
-        $("#score-panel").text(winText);
+        $("#score-panel").html(winText);
         
         $("#score-panel").fadeIn(500, function() {
             
-            console.log("Mechanism successful.");
         });
     });
 
+    setTimeout(function() {
+        $("#score-panel").fadeOut(500, function() {
+            // Change the html of the score-panel to the play again button
+            $("#score-panel").html("<div id='play-again' onclick='rematch()'>rematch!</div>&nbsp;<div id='quit' onclick='quit()'>quit</div>");
+
+            $("#score-panel").fadeIn(500, function() {
+
+            });
+        });
+    }, 4000);
+
     clearTimeout(inactivityChecker);
+});
+
+function quit() {
+    window.location = "http://localhost:3000";
+}
+
+function rematch() {
+    socket.emit("play-again", socket.id);
+
+        $("#score-panel").fadeOut(500, function() {
+            // Change the html of the score-panel to the play again button
+            $("#score-panel").html("You have requested a rematch. Waiting for your opponent to respond...");
+
+            $("#score-panel").fadeIn(500, function() {
+
+            });
+        });
+}
+
+$("#play-again").click(function() {
+    // Send requrest to opponent that user wants to play again
+    socket.emit("play-again", socket.id);
+
+    // If opponent approves, regenerate the maze
+
 });
 
 // Need to include logic that alerts the user when the room cannot be joined!
@@ -541,8 +603,10 @@ socket.on("code-validity", function (valid) {
 });
 
 socket.on("initial-maze", function (data) {
-    console.log("initial maze received");
+    timer.reset();
+    
     // Fade out the start maze
+    $("#game-panel").html("Generating maze...");
     $("#canvas-wrapper").hide();
     $("#canvas2-wrapper").show();
     $("#join-menu").hide();
@@ -552,6 +616,7 @@ socket.on("initial-maze", function (data) {
 
 socket.on("modifyCell", function (data) {
     current = data;
+    console.log("current.row, current.column = " + current.row + ", " + current.column);
 
     if (maze) {
         maze.cellGraph[current.row][current.column] = current;
@@ -567,3 +632,18 @@ socket.on("completeGeneration", function (data) {
     
     complete = true;
 });
+
+socket.on("rematch", function (data) {
+    $("#score-panel").fadeOut(500, function() {
+        // Change the html of the score-panel to the play again button
+        $("#score-panel").html("Your opponent has requested a rematch. Do you accept?<div class='whitespace'></div>" + 
+                "<div id='play-again' onclick='rematchagreement(true)'>yes</div>&nbsp;<div id='quit' onclick='rematchagreement(false)'>no</div>");
+
+        $("#score-panel").fadeIn(500, function() {
+        });
+    });
+});
+
+function rematchagreement(agree) {
+    socket.emit("rematchagreement", [socket.id, true]);
+}

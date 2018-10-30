@@ -248,6 +248,19 @@ function generateMaze(roomID) {
     }
 }
 
+function initializeRoomData(roomCode, initialMaze) {
+    // Add the maze as the second element to the array
+    if (roomMapping[roomCode].length == 1) {
+        roomMapping[roomCode].push(initialMaze);
+    } else {
+        roomMapping[roomCode][1] = initialMaze;
+    }
+    
+    roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
+    roomsAndStacks[roomCode] = [];
+    roomsAndNumCellsVisited[roomCode] = 0;   
+}
+
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
     user.score = 0;
@@ -273,22 +286,13 @@ function playerConnect(user) {
     user.on("room-code", checkRoomCode);
 
     function checkRoomCode(roomCode) {
-        var initialMaze = new Maze(20, 16);
+        var initialMaze = new Maze(24, 16);
         initialMaze.createMaze();
-
-        // Add the maze as the second element to the array
-        roomMapping[roomCode].push(initialMaze);
-
-        roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
-        roomsAndStacks[roomCode] = [];
-        roomsAndNumCellsVisited[roomCode] = 0;
 
         if (!roomMapping[roomCode]) {
             user.emit("code-validity", false);
         } else {
             user.emit("code-validity", true);
-
-            var validToJoin = false;
 
             // Secondary validation: Ensure that the room has 1 user in it 
             // Do this in two ways:
@@ -296,6 +300,8 @@ function playerConnect(user) {
             // (2) if the length of the array is 2, but 1 of the elements is a maze, there can 
             // only be 1 user in that room
             if (roomMapping[roomCode].length == 1) {
+                initializeRoomData(roomCode, initialMaze);
+
                 user.join(roomCode); // Connect the user to the room
                 user.room = roomCode;
 
@@ -307,6 +313,8 @@ function playerConnect(user) {
             }
 
             if (roomMapping[roomCode].length == 2) {
+                initializeRoomData(roomCode, initialMaze);
+
                 if (roomMapping[roomCode][0].cellGraph || roomMapping[roomCode][1].cellGraph) {
                     user.join(roomCode); // Connect the user to the room
                     user.room = roomCode;
@@ -337,7 +345,7 @@ function playerConnect(user) {
         userPositions[userID] = currentPosition;
         roomData = roomMapping[roomID];
 
-        if (currentPosition.row == 15 && currentPosition.column == 19) {            
+        if (currentPosition.row == 15 && currentPosition.column == 23) {            
             // The user has won the game
             // If the room still is closed, find the reference to the winning player
             // Add one to their score count
@@ -400,5 +408,44 @@ function playerConnect(user) {
         // Remove references from roomMapping, roomsAndCurrent, roomsAndNumCellsVisited, roomsAndStacks, userPositions
 
         // Clear timeouts for users in the room 
+    }
+
+    user.on("play-again", playAgain);
+
+    function playAgain(userID) {
+        var room = userMatchings[userID].room;
+
+        var opponent;
+
+        if (roomMapping[room][0].id == userID) {
+            opponent = roomMapping[room][2];
+        } else {
+            opponent = roomMapping[room][0];
+        }
+
+        opponent.emit("rematch", true);
+    }
+
+    user.on("rematchagreement", rematchAgreement);
+
+    function rematchAgreement(data) {
+        var socketID = data[0];
+        var agree = data[1];
+
+        var initialMaze = new Maze(24, 16);
+        initialMaze.createMaze();
+
+        if (agree) {
+            var room = userMatchings[socketID].room;
+            
+            initializeRoomData(room, initialMaze);
+            io.sockets.in(room).emit("paired", room);
+
+            // Emit to the user that the initial maze has been generated
+            io.to(room).emit("initial-maze", initialMaze);
+
+            // Begin generation process
+            generateMaze(room);
+        }
     }
 }

@@ -29,13 +29,13 @@ button {
 
 /* Whitespace */
 .whitespace {
-    height: 20px;
+    height: 10px;
 }
 
 
 /* Text syling */
 #text-container {
-    width: 500px;
+    width: 600px;
 }
 #play-wrapper, #one-on-one-wrapper {
     text-align: center;
@@ -67,7 +67,7 @@ button {
 
 #game-wrapper {
     padding-bottom: 4px;
-    width: 500px;
+    width: 600px;
 }
 
 
@@ -82,7 +82,7 @@ button {
 }
 #join-menu {
     display: none;
-    width: 500px;
+    width: 600px;
 }
 #game-panel {
     display: none;
@@ -93,13 +93,17 @@ button {
     font-size: 17px;
 }
 
+.whitespace {
+    height: 8px;
+}
+
 /* Styling for the play buttons */
-#one-on-one, #single-player, #opponent-progress, #join, #invite {
+#one-on-one, #single-player, #opponent-progress, #join, #invite, #play-again, #quit {
     background: black;
     color: white;
     display: inline-block;
     z-index: 5;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 15px;
     font-size: 16px;
     font-weight: bold;
@@ -109,7 +113,7 @@ button {
     font-weight: 700;
     border: 2px solid rgb(70, 70, 70);
 }
-#one-on-one:hover, #single-player:hover, #join:hover, #invite:hover {
+#one-on-one:hover, #single-player:hover, #join:hover, #invite:hover, #play-again:hover, #quit:hover {
     cursor: pointer;
 }
 #one-on-one-wrapper {
@@ -129,7 +133,7 @@ button {
     color: black;
     width: 100%;
     font-size: 17px;
-    width: 500px;
+    width: 600px;
 }
 
 #join-menu input::placeholder {

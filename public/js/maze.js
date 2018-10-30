@@ -29,7 +29,7 @@ var mazeIntro = function(p) {
     var printTimes = 0;
     var solved = false;
 
-    var maze = new Maze(20, 16);
+    var maze = new Maze(24, 16);
 
     Maze.prototype.createMaze = function() {
         for (var i = 0; i < this.heightCells; i++) {
@@ -43,7 +43,7 @@ var mazeIntro = function(p) {
     maze.createMaze();
 
     p.setup = function() {
-        var canvas = p.createCanvas(500, 400);
+        var canvas = p.createCanvas(600, 400);
         p.smooth();
     }
 
