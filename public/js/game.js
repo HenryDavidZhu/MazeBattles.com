@@ -195,12 +195,20 @@ var userY = 0;
 var path = [];
 
 var opponentProgress = 0;
+var mode;
 
 $("#content").fadeIn();
 
-// Retrieve the 
+$("#single-player").click(function() {
+    // Regenerate maze
+    // If win, ask to play again
+    // If no, redirect back to main page
+    // If yes, regenerate maze again
+});
 
 $("#one-on-one").click(function () {
+    mode = "one-on-one";
+
     // Display the new One-on-One layout
     // Two buttons: Joining a match and Inviting others to the match
     // Fade out play-wrapper, and fade in the one-on-one-wrapper
@@ -321,63 +329,70 @@ var mazeDisplay = function (p) {
     }
 
     p.draw = function () {
-        if (!gameOverTrigger) {
-            p.clear();
+        console.log("mode = " + mode);
+        if (mode == "one-on-one") {
+            if (!gameOverTrigger) {
+                p.clear();
 
-            if (maze) {
-                p.displayMaze();
+                if (maze) {
+                    p.displayMaze();
 
-                p.stroke(98, 244, 88);
+                    p.stroke(98, 244, 88);
 
-                if (!solved) {
-                    star(587.5, 387.5, 6, 1, 5, p);
-                }
-
-                if (complete) {
-                    userPosition = maze.cellGraph[userY][userX];
-
-                    p.fill(98, 244, 88);
-                    p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
-
-                    // Draw the path
-                    if (path.length >= 1) {
-                        p.stroke(98, 244, 88);
-
-                        var prev = path[0];
-
-                        var components = prev.split("-");
-
-                        var prevRow = parseInt(components[0]);
-                        var prevColumn = parseInt(components[1]);
-
-                        p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
-
-                        for (var k = 1; k < path.length; k++) {
-                            var pathCell = path[k];
-                            components = pathCell.split("-");
-                            var row = components[0];
-                            var column = components[1];
-
-                            p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
-                            prev = pathCell.split("-");
-
-                            prevRow = prev[0];
-                            prevColumn = prev[1];
-                        }
+                    if (!solved) {
+                        star(587.5, 387.5, 6, 1, 5, p);
                     }
-                } else {
-                    if (current) {
-                        p.noFill();
-                        p.stroke(98, 244, 88);
-                        p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
-                        p.fill(0, 0, 0);
+
+                    if (complete) {
+                        userPosition = maze.cellGraph[userY][userX];
+
+                        p.fill(98, 244, 88);
+                        p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+
+                        // Draw the path
+                        if (path.length >= 1) {
+                            p.stroke(98, 244, 88);
+
+                            var prev = path[0];
+
+                            var components = prev.split("-");
+
+                            var prevRow = parseInt(components[0]);
+                            var prevColumn = parseInt(components[1]);
+
+                            p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
+
+                            for (var k = 1; k < path.length; k++) {
+                                var pathCell = path[k];
+                                components = pathCell.split("-");
+                                var row = components[0];
+                                var column = components[1];
+
+                                p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
+                                prev = pathCell.split("-");
+
+                                prevRow = prev[0];
+                                prevColumn = prev[1];
+                            }
+                        }
+                    } else {
+                        if (current) {
+                            p.noFill();
+                            p.stroke(98, 244, 88);
+                            p.ellipse(current.xPos + current.cellSize / 2, current.yPos + current.cellSize / 2, current.cellSize / 2, current.cellSize / 2);
+                            p.fill(0, 0, 0);
+                        }
                     }
                 }
             }
+
+            if (gameOver) {
+                gameOverTrigger = true;
+            }
         }
 
-        if (gameOver) {
-            gameOverTrigger = true;
+        if (mode == "single-player") {
+            
         }
     }
 
@@ -470,8 +485,9 @@ socket.on("generated-url", function (data) {
 // When user is disconnected
 socket.on("opponentDisconnected", function (data) {
     $("#score-panel").fadeOut();
-    $("#game-panel").fadeOut().html("your opponent has unfortunately disconnected.<br>you will be redirected to the main page.").fadeIn(300);
-    
+
+    alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
+
 
     setTimeout(function() {
         window.location = "http://localhost:3000";
@@ -479,9 +495,6 @@ socket.on("opponentDisconnected", function (data) {
 });
 
 socket.on("paired", function (data) {
-    console.log("/////////////////////////////////////////////////////");
-
-
     gameOver = false;
     gameOverTrigger = false;
 
@@ -542,9 +555,9 @@ socket.on("winner", function (data) {
     }
 
     if (win) {
-        winText = "You won the match. Your record is <b>" + userScore + "</b>:" + opponentScore;
+        winText = "You won the match (" + timer.getTimeValues().toString(["minutes", "seconds"]) + ")! Your record is <b>" + userScore + "</b>:" + opponentScore;
     } else {
-        winText = "You lost the match. Your record is <b>" + userScore + "</b>:" + opponentScore;
+        winText = "You lost the match! Your record is <b>" + userScore + "</b>:" + opponentScore;
     }
 
     $("#game-panel").fadeOut(500, function() {
@@ -603,8 +616,9 @@ socket.on("code-validity", function (valid) {
 });
 
 socket.on("initial-maze", function (data) {
-    timer.reset();
-    
+    timer = new Timer();
+    complete = false;
+
     // Fade out the start maze
     $("#game-panel").html("Generating maze...");
     $("#canvas-wrapper").hide();
@@ -616,7 +630,8 @@ socket.on("initial-maze", function (data) {
 
 socket.on("modifyCell", function (data) {
     current = data;
-    console.log("current.row, current.column = " + current.row + ", " + current.column);
+
+    $("#game-panel").html("Generating maze...");
 
     if (maze) {
         maze.cellGraph[current.row][current.column] = current;
@@ -627,7 +642,9 @@ socket.on("modifyCell", function (data) {
 socket.on("completeGeneration", function (data) {
     timer.start();
     timer.addEventListener("secondsUpdated", function(e) {
-        $("#game-panel").text("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
+        if (complete) {
+            $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
+        }
     });
     
     complete = true;
