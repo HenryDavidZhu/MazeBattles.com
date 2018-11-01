@@ -151,16 +151,25 @@ function Maze(widthCells, heightCells) {
     /*
       Defines a maze object based on its width and height
     */
-    maze.widthCells = widthCells;
-    maze.heightCells = heightCells;
+    this.widthCells = widthCells;
+    this.heightCells = heightCells;
     this.numCells = widthCells * heightCells;
-    maze.cellGraph = [];
+    this.cellGraph = [];
 
     for (var i = 0; i < heightCells; i++) {
         /*
           Initializes the cell graph of a maze by adding empty rows
         */
-        maze.cellGraph.push([]);
+        this.cellGraph.push([]);
+    }
+}
+
+Maze.prototype.createMaze = function() {
+    for (var i = 0; i < this.heightCells; i++) {
+        for (var j = 0; j < this.widthCells; j++) {
+            var cell = new Cell(25, i, j);
+            this.cellGraph[i].push(cell);
+        }
     }
 }
 
@@ -181,7 +190,13 @@ function Cell(cellSize, row, column) {
 }
 
 var maze;
+
+var singlePlayerMaze;
+var stack = [];
+
 var current;
+var singlePlayerCurrent;
+
 var complete = false;
 var myp25;
 var userPosition;
@@ -204,6 +219,16 @@ $("#single-player").click(function() {
     // If win, ask to play again
     // If no, redirect back to main page
     // If yes, regenerate maze again
+    mode = "single-player";
+
+    singlePlayerMaze = new Maze(24, 16);
+    singlePlayerMaze.createMaze();
+
+    singlePlayerCurrent = singlePlayerMaze.cellGraph[0][0];
+
+    if (myp25 == null) {
+        myp25 = new p5(mazeDisplay, "canvas2-wrapper");
+    }
 });
 
 $("#one-on-one").click(function () {
@@ -290,6 +315,8 @@ socket.on("complete", function (data) {
 
 });
 
+
+// Following construct is for multi-player maze
 var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(600, 400);
@@ -328,8 +355,25 @@ var mazeDisplay = function (p) {
         p.line(0, 400, 400, 400);
     }
 
+    Cell.prototype.display = function() {
+        p.stroke(255, 255, 255);
+        if (this.walls[0] && this.row != 0) { // Top
+            p.line(this.xPos, this.yPos, this.xPos + this.cellSize, this.yPos);
+        }
+        if (this.walls[1] && this.column != maze.widthCells - 1) { // Right
+            p.line(this.xPos + this.cellSize, this.yPos, this.xPos + this.cellSize, this.yPos + this.cellSize);
+        }
+        if (this.walls[2] && this.row != maze.heightCells - 1) { // Bottom
+            p.line(this.xPos + this.cellSize, this.yPos + this.cellSize, this.xPos, this.yPos + this.cellSize);
+        }
+        if (this.walls[3] && this.column != 0) { // Left
+            p.line(this.xPos, this.yPos + this.cellSize, this.xPos, this.yPos);
+        }
+        p.noStroke();
+    }
+
     p.draw = function () {
-        console.log("mode = " + mode);
+        //console.log("mode = " + mode);
         if (mode == "one-on-one") {
             if (!gameOverTrigger) {
                 p.clear();
@@ -392,7 +436,35 @@ var mazeDisplay = function (p) {
         }
 
         if (mode == "single-player") {
-            
+            p.clear();
+            for (var i = 0; i < singlePlayerMaze.cellGraph.length; i++) {
+                for (var j = 0; j < singlePlayerMaze.cellGraph[i].length; j++) {
+                    singlePlayerMaze.cellGraph[i][j].display();
+                }
+            }
+
+            p.line(0, 400, 400, 400);
+
+            if (numVisited < singlePlayerMaze.numCells) {
+                var neighbor = singlePlayerCurrent.getNeighbor(true);
+
+                if (neighbor && !neighbor.visited) {
+                    neighbor.visited = true;
+
+                    // Draw a dot to indicate that the neighbor has been visited
+
+                    stack.push(singlePlayerCurrent);
+                    deleteWall(neighbor, singlePlayerCurrent);
+                    singlePlayerCurrent = neighbor;
+                    numVisited += 1;
+                } else if (stack.length > 0) {
+                    singlePlayerCurrent = stack.pop();
+                }
+                singlePlayerCurrent.highlight();
+            } else {
+                singlePlayerMaze.cellGraph[0][0].mark();
+                //maze.cellGraph[maze.heightCells - 1][maze.widthCells - 1].highlight();
+            }            
         }
     }
 
@@ -489,9 +561,7 @@ socket.on("opponentDisconnected", function (data) {
     alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
 
 
-    setTimeout(function() {
-        window.location = "http://localhost:3000";
-    }, 3000);
+    window.location = "http://localhost:3000";
 });
 
 socket.on("paired", function (data) {
