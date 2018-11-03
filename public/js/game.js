@@ -826,7 +826,7 @@ socket.on("opponentDisconnected", function (data) {
     alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
 
 
-    window.location = "http://localhost:3000";
+    window.location = "http://www.mazebattles.com/";
 });
 
 socket.on("paired", function (data) {
@@ -918,7 +918,7 @@ socket.on("winner", function (data) {
 });
 
 function quit() {
-    window.location = "http://localhost:3000";
+    window.location = "http://www.mazebattles.com/";
 }
 
 function replay() {
@@ -1032,6 +1032,6 @@ function rematchagreement(agree) {
     if (agree) {
         socket.emit("rematchagreement", [socket.id, true]);
     } else {
-        window.location = "http://localhost:3000";
+        window.location = "http://www.mazebattles.com/";
     }
 }
