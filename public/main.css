@@ -207,6 +207,21 @@ button {
     }
 }
 
+#amazon-container {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+#amazon-link {
+    color: black;
+    font-size: 15px;
+}
+
+#amazon-link:visited {
+    color: black;
+}
+
 .dots span {
     /**
      * Use the blink animation, which is defined above
