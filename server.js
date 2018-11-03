@@ -18,6 +18,8 @@ var uniqid = require('uniqid'); // Initialize the unique id generator
 // For each room, keep track of the number of cells visited (determines when generation of maze is complete)
 var roomsAndNumCellsVisited = {};
 var roomsAndStacks = {}; // An associative array that keeps track of the nodes that still have yet to be visited for each room
+var roomsAndComplete = {}; // An associative array that keeps track of whether the server has finished generating a maze for
+// a particular room
 
 var clearTimeoutsFor = []; // The list of rooms to remove from the system
 
@@ -236,7 +238,7 @@ function generateMaze(roomID) {
             roomsAndCurrent[roomID] = current;
             roomMapping[roomID][1] = roomMaze;
         } else {
-            if (!complete) {
+            if (!roomsAndComplete[roomID]) { // This is causing errors
                 io.sockets.in(roomID).emit("complete", true);
                 io.sockets.in(roomID).emit("completeGeneration", true);
             }
@@ -259,12 +261,12 @@ function initializeRoomData(roomCode, initialMaze) {
     roomsAndCurrent[roomCode] = initialMaze.cellGraph[0][0];
     roomsAndStacks[roomCode] = [];
     roomsAndNumCellsVisited[roomCode] = 0;   
+    roomsAndComplete[roomCode] = false;
 }
 
 function playerConnect(user) {
     user.on("invite", roomInvite); // Once the user has connected, launch the addPlayer function
     user.score = 0;
-    console.log(user.id + ".score = " + user.score);
 
     function roomInvite() {
         var roomID = uniqid();
@@ -390,6 +392,7 @@ function playerConnect(user) {
                 delete roomMapping[userRoom];
                 delete roomsAndStacks[userRoom];
                 delete roomsAndNumCellsVisited[userRoom];
+                delete roomsAndComplete[userRoom];
 
                 if (roomClient) {
                     delete userMatchings[roomClient];
