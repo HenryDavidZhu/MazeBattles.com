@@ -949,7 +949,7 @@ function replay() {
     $("#score-panel").removeClass();
     $("#score-panel").addClass("animated fadeOutLeft");
 
-    $("#game-panel").html("Gemerating maze<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
+    $("#game-panel").html("Generating maze<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
     $("#game-panel").show();
     $("#game-panel").addClass("animated fadeInRight");
 }
