@@ -36,7 +36,7 @@ button {
 
 /* Text syling */
 #text-container {
-    width: 600px;
+    width: 700px;
 }
 #play-wrapper, #one-on-one-wrapper {
     text-align: center;
@@ -68,7 +68,7 @@ button {
 
 #game-wrapper {
     padding-bottom: 4px;
-    width: 600px;
+    width: 700px;
 }
 
 
@@ -83,7 +83,7 @@ button {
 }
 #join-menu {
     display: none;
-    width: 600px;
+    width: 700px;
 }
 #game-panel {
     display: none;
@@ -134,7 +134,7 @@ button {
     color: black;
     width: 100%;
     font-size: 17px;
-    width: 600px;
+    width: 700px;
 }
 
 #join-menu input::placeholder {

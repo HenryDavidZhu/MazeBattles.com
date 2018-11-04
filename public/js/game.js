@@ -1,4 +1,3 @@
-var inactivityChecker; // Checks whether the user has been inactive or not
 var roomID = "";
 
 var gameOver = false;
@@ -19,10 +18,6 @@ var singlePlayerCompleteTrigger = true;
 
 var timer = new Timer();
 var singlePlayerTimer = new Timer();
-
-function inactivity() {
-    socket.emit("activitytimeout", true);
-}
 
 // DFS is a parameter that specifies whether getNeighbor is going through the generation phase or
 // the search phase
@@ -179,7 +174,7 @@ function Maze(widthCells, heightCells) {
 Maze.prototype.createMaze = function () {
     for (var i = 0; i < this.heightCells; i++) {
         for (var j = 0; j < this.widthCells; j++) {
-            var cell = new Cell(25, i, j);
+            var cell = new Cell(20, i, j);
             this.cellGraph[i].push(cell);
         }
     }
@@ -230,7 +225,7 @@ function initSinglePlayer() {
     // If yes, regenerate maze again
     mode = "single-player";
 
-    singlePlayerMaze = new Maze(24, 16);
+    singlePlayerMaze = new Maze(35, 20);
     singlePlayerMaze.createMaze();
 
     singlePlayerCurrent = singlePlayerMaze.cellGraph[0][0];
@@ -331,11 +326,6 @@ function star(x, y, radius1, radius2, npoints, p) {
     p.endShape(p.CLOSE);
 }
 
-socket.on("complete", function (data) {
-    inactivityChecker = setTimeout(inactivity, 30000);
-
-});
-
 function drawPath(p, path) {
     if (path.length >= 1) {
         p.stroke(98, 244, 88);
@@ -347,7 +337,7 @@ function drawPath(p, path) {
         var prevRow = parseInt(components[0]);
         var prevColumn = parseInt(components[1]);
 
-        p.line(12.5, 12.5, column * 25 + 12.5, row * 25 + 12.5);
+        p.line(10, 10, column * 20 + 10, row * 20 + 10);
 
         for (var k = 1; k < path.length; k++) {
             var pathCell = path[k];
@@ -355,7 +345,7 @@ function drawPath(p, path) {
             var row = components[0];
             var column = components[1];
 
-            p.line(prevColumn * 25 + 12.5, prevRow * 25 + 12.5, column * 25 + 12.5, row * 25 + 12.5);
+            p.line(prevColumn * 20 + 10, prevRow * 20 + 10, column * 20 + 10, row * 20 + 10);
             prev = pathCell.split("-");
 
             prevRow = prev[0];
@@ -367,7 +357,7 @@ function drawPath(p, path) {
 // Following construct is for multi-player maze
 var mazeDisplay = function (p) {
     p.setup = function () {
-        var canvas = p.createCanvas(600, 400);
+        var canvas = p.createCanvas(700, 400);
         p.background(0, 0, 0);
     }
 
@@ -539,7 +529,7 @@ var mazeDisplay = function (p) {
                     p.stroke(98, 244, 88);
 
                     if (!solved) {
-                        star(587.5, 387.5, 6, 1, 5, p);
+                        star(690, 390, 6, 1, 5, p);
                     }
 
                     if (complete) {
@@ -629,7 +619,7 @@ var mazeDisplay = function (p) {
             }
 
             if (!singlePlayerSolved) {
-                star(587.5, 387.5, 6, 1, 5, p);
+                star(690, 390, 6, 1, 5, p);
             }
         }
     }
@@ -700,7 +690,7 @@ var mazeDisplay = function (p) {
                     }
                 }
 
-                if (cellString == "15-23") {
+                if (cellString == "19-34") {
                     singlePlayerSolved = true;
                     singlePlayerComplete = false;
                     
@@ -797,7 +787,7 @@ var mazeDisplay = function (p) {
                     }
                 }
 
-                if (cellString == "15-23") {
+                if (cellString == "19-34") {
                     solved = true;
                 }
             }
@@ -807,9 +797,6 @@ var mazeDisplay = function (p) {
             if (!gameOver) {
                 socket.emit("position", [socket.id, roomID, userPosition]);
             }
-
-            clearTimeout(inactivityChecker);
-            inactivityChecker = setTimeout(inactivity, 30000);
         }
     }
 };
@@ -826,7 +813,7 @@ socket.on("opponentDisconnected", function (data) {
     alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
 
 
-    window.location = "http://www.mazebattles.com/";
+    location.href = "http://localhost:3000";
 });
 
 socket.on("paired", function (data) {
@@ -841,10 +828,6 @@ socket.on("paired", function (data) {
 
     userX = 0;
     userY = 0;
-
-    if (inactivityChecker) {
-        clearTimeout(inactivityChecker);
-    }
 
     complete = false;
 
@@ -913,12 +896,10 @@ socket.on("winner", function (data) {
             });
         });
     }, 3000);
-
-    clearTimeout(inactivityChecker);
 });
 
 function quit() {
-    window.location = "http://www.mazebattles.com/";
+    location.href = "http://localhost:3000";
 }
 
 function replay() {
@@ -938,7 +919,7 @@ function replay() {
     userY = 0;
     userX = 0;
 
-    singlePlayerMaze = new Maze(24, 16);
+    singlePlayerMaze = new Maze(35, 20);
     singlePlayerMaze.createMaze();
 
     singlePlayerCurrent = singlePlayerMaze.cellGraph[0][0];
@@ -1032,6 +1013,6 @@ function rematchagreement(agree) {
     if (agree) {
         socket.emit("rematchagreement", [socket.id, true]);
     } else {
-        window.location = "http://www.mazebattles.com/";
+        location.href = "http://localhost:3000";
     }
 }

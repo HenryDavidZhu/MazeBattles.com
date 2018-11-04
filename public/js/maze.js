@@ -29,12 +29,12 @@ var mazeIntro = function(p) {
     var printTimes = 0;
     var solved = false;
 
-    var maze = new Maze(24, 16);
+    var maze = new Maze(35, 20);
 
     Maze.prototype.createMaze = function() {
         for (var i = 0; i < this.heightCells; i++) {
             for (var j = 0; j < this.widthCells; j++) {
-                var cell = new Cell(25, i, j);
+                var cell = new Cell(20, i, j);
                 maze.cellGraph[i].push(cell);
             }
         }
@@ -43,7 +43,7 @@ var mazeIntro = function(p) {
     maze.createMaze();
 
     p.setup = function() {
-        var canvas = p.createCanvas(600, 400);
+        var canvas = p.createCanvas(700, 400);
         p.smooth();
     }
 

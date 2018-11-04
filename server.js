@@ -193,7 +193,7 @@ function isWall(cellA, cellB) {
 Maze.prototype.createMaze = function () {
     for (var i = 0; i < this.heightCells; i++) {
         for (var j = 0; j < this.widthCells; j++) {
-            var cell = new Cell(25, i, j);
+            var cell = new Cell(20, i, j);
             this.cellGraph[i].push(cell);
         }
     }
@@ -290,7 +290,7 @@ function playerConnect(user) {
     user.on("room-code", checkRoomCode);
 
     function checkRoomCode(roomCode) {
-        var initialMaze = new Maze(24, 16);
+        var initialMaze = new Maze(35, 20);
         initialMaze.createMaze();
 
         if (!roomMapping[roomCode]) {
@@ -349,7 +349,7 @@ function playerConnect(user) {
         userPositions[userID] = currentPosition;
         roomData = roomMapping[roomID];
 
-        if (currentPosition.row == 15 && currentPosition.column == 23) {            
+        if (currentPosition.row == 19 && currentPosition.column == 34) {            
             // The user has won the game
             // If the room still is closed, find the reference to the winning player
             // Add one to their score count
@@ -374,9 +374,8 @@ function playerConnect(user) {
     }
 
     user.on("disconnect", disconnectUser);
-    user.on("activitytimeout", disconnectUser);
 
-    function disconnectUser(inactivity) {
+    function disconnectUser() {
         if (userMatchings[user.id]) {
             var userRoom = userMatchings[user.id].room;
             io.to(userRoom).emit("opponentDisconnected", true);
@@ -437,7 +436,7 @@ function playerConnect(user) {
         var socketID = data[0];
         var agree = data[1];
 
-        var initialMaze = new Maze(24, 16);
+        var initialMaze = new Maze(35, 20);
         initialMaze.createMaze();
 
         if (agree) {
