@@ -10,6 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 * [NodeJS](https://nodejs.org/en/)
 * [SocketIO](https://maven.apache.org/) - Networking Library
+* [Express](https://expressjs.com/) - Networking Library
 * [TimerJS](https://rometools.github.io/rome/) - Used to display time elapsed
 
 ### Installing
