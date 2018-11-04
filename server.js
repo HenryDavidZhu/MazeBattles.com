@@ -6,11 +6,7 @@ var server = app.listen(process.env.PORT || 3000, function(){
   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
 
-app.use(express.static("public"));
-
-app.get('/.well-known/acme-challenge/gEnFQw_lTRmggNmu6oBdI3aGVnU75xxZhkjEXvjFU4Y', function(req, res) {
-  res.send('gEnFQw_lTRmggNmu6oBdI3aGVnU75xxZhkjEXvjFU4Y.GPohBqW3myu6BdoLLUeE9kd7DFNd4jqQ7VC4CRfXqKU');
-});
+app.use(express.static("public", { dotfiles: 'allow' }));
 
 var io = socket(server, {pingTimeout: 63000});
 
