@@ -1,6 +1,10 @@
 # MazeBattles.com
 
-MazeBattles.com is a site built with NodeJS and SocketIO where users race one-on-one against their friends to solve generated mazes as quickly as possible.
+MazeBattles.com is a site built with NodeJS and SocketIO where users race one-on-one against their friends to solve generated mazes as quickly as possible. Contributions are GREATLY WELCOMED. Issues that I currently face:
+- Make the generation of mazes faster.
+- Implement and algorithm that creates more complicated mazes.
+- Don't make people watch the generation of the maze (instead, implement a progress bar)
+- Allow users to hold down a directional key to move multiple steps in the same direction.
 
 ## Getting Started
 
