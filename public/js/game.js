@@ -813,7 +813,8 @@ socket.on("opponentDisconnected", function (data) {
     alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
 
 
-    location.href = "http://localhost:3000";
+    // location.href = "http://localhost:3000";
+    location.href = "/";
 });
 
 socket.on("paired", function (data) {
