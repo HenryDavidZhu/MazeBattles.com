@@ -629,7 +629,7 @@ var mazeDisplay = function (p) {
             if (singlePlayerComplete) {
                 var cellString = "";
 
-                if (p.key === 'w' || p.key === 'W') {
+                if (p.key === 'w' || p.key === 'W' || p.key === 'z' || p.key === 'Z') {
                     if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[0]) {
                         userY -= 1;
 
@@ -659,7 +659,7 @@ var mazeDisplay = function (p) {
                         }
                     }
                 }
-                if (p.key === 'a' || p.key === 'A') {
+                if (p.key === 'a' || p.key === 'A' || p.key === 'q' || p.key === 'Q') {
                     if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[3]) {
                         userX -= 1;
 
@@ -726,7 +726,7 @@ var mazeDisplay = function (p) {
             if (complete) {
                 var cellString = "";
 
-                if (p.key === 'w' || p.key === 'W') {
+                if (p.key === 'w' || p.key === 'W' || p.key === 'z' || p.key === 'Z') {
                     if (userPosition && !userPosition.walls[0]) {
                         userY -= 1;
 
@@ -756,7 +756,7 @@ var mazeDisplay = function (p) {
                         }
                     }
                 }
-                if (p.key === 'a' || p.key === 'A') {
+                if (p.key === 'a' || p.key === 'A' || p.key === 'q' || p.key === 'Q') {
                     if (userPosition && !userPosition.walls[3]) {
                         userX -= 1;
 
