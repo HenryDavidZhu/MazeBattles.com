@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+   <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>MazeBattles.com | Multiplayer Maze Competition</title>
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+      <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
+      <link href="main.css" rel="stylesheet">
+      <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+      <script src="js/connect.js"></script> <!-- Script that connects to the node.js server -->
+      <script src="js/queue.js"></script> 
+
+      <script src="js/easytimer.min.js"></script>
+
+      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-44986998-4"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-44986998-4');
+      </script>
+   </head>
+   <body>
+      <div class="navigation">
+         <a href="blog.html">blog</a>
+         <a href="github.html">github</a>
+         <a href="contact.html">donate</a>
+         <a href="contact.html">contact</a>
+      </div>
+
+      <div id="title">
+         use <span class="code">[a][w][s][d]</span> to move
+      </div>
+
+      <!-- Implement social media buttons plus theme, similar to bouncyballs.org -->
+      <div id="content">
+         <div id="game-wrapper">
+            <div id="canvas-wrapper">
+            </div>
+            <div id="canvas2-wrapper">
+            </div>
+         </div>
+         <div class="whitespace"></div>
+         <div id="text-container">
+            <div id="play-wrapper">
+               <button id="one-on-one">
+               one-on-one
+               </button>
+               <button id="single-player">
+               single-player
+               </button>
+            </div>
+            <div id="one-on-one-wrapper">
+               <button id="join">
+               join
+               </button>
+               <button id="invite">
+               invite
+               </button>
+            </div>
+         </div>
+         
+         <div id="invite-menu">
+            generating room code<span class="dots"><span class="dot">.</span class="dot"><span>.</span class="dot"><span>.</span></span>
+         </div>
+         <div id="game-panel">
+            generating maze<span class="dots"><span class="dot">.</span class="dot"><span>.</span class="dot"><span>.</span></span>
+         </div>
+         <div id="score-panel">
+         </div>
+
+         <div id="join-menu">
+            <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
+         </div>
+      </div>
+      <script type="text/javascript" src="js/maze.js"></script>
+      <script type="text/javascript" src="js/game.js"></script>
+   </body>
+</html>

@@ -1,0 +1,261 @@
+/* General styling*/
+html, body {
+    font-family: "Georgia", Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #FF416C;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #ff4d4d, #ff3f3f);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #ff4d4d, #ff3f3f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    
+    text-align: center;
+    font-size: 18px;
+    font-weight: normal;
+    overflow: hidden;
+    color: white;
+}
+#content {
+    z-index: 4;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    display: none;
+}
+.navigation {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    margin-top: 8px;
+}
+.navigation a {
+    color: white;
+    float: left;
+    text-align: center;
+    margin-left: 23px;
+    text-decoration: none;
+}
+.navigation a:hover, .navigation a:active, .navigation a:visited {
+    color: white;
+}
+button {
+    border: 5px;
+    outline: 0;
+    font-family: "Georgia";
+}
+
+/* Whitespace */
+.whitespace {
+    height: 10px;
+}
+
+
+/* Text syling */
+#text-container {
+    width: 700px;
+}
+#play-wrapper, #one-on-one-wrapper {
+    text-align: center;
+}
+
+/* Gameplay styling */
+#canvas-wrapper {
+    position: relative;
+    z-index: 4;
+    height: 460px;
+    background: transparent;
+    padding: 0;
+}
+#canvas2-wrapper {
+    display: none;
+    position: relative;
+    z-index: 4;
+    height: 460px;
+    background: transparent;
+
+    padding: 0;
+    margin: 0;
+}
+
+#game-wrapper {
+    padding-bottom: 4px;
+    width: 700px;
+}
+
+
+/* Submenus */
+#invite-menu {
+    display: none;
+    font-size: 17px;
+}
+.code {
+    font-family: "Georgia", Courier, monospace;
+    background: rgba(255, 255, 255, 0.2);
+}
+#join-menu {
+    display: none;
+    width: 700px;
+}
+#game-panel {
+    display: none;
+    font-size: 17px;
+    letter-spacing: 1px;
+}
+#score-panel {
+    display: none;
+    font-size: 17px;
+}
+
+.whitespace {
+    height: 8px;
+}
+
+/* Styling for the play buttons */
+#one-on-one, #single-player, #opponent-progress, #join, #invite, #play-again, #play-again-button, #quit-button, #quit {
+    background: transparent;
+    color: white;
+    display: inline-block;
+    z-index: 5;
+    padding: 8px 12px;
+    font-size: 16px;
+    font-weight: normal;
+    transition: all 0.2s ease 0s;
+    text-align: center;
+    border: 1px solid rgb(255, 255, 255);
+}
+#one-on-one:hover, #single-player:hover, #join:hover, #invite:hover, #play-again:hover, #play-again-button:hover, #quit-button:hover, #quit:hover {
+    cursor: pointer;
+}
+#one-on-one-wrapper {
+    display: none;
+}
+#one-on-one, #join {
+    margin-right: 7px;
+}
+
+#join-menu input {
+    background: transparent;
+    outline: 0;
+    border: 1px solid rgb(255, 255, 255);
+    padding: 3px 6px;
+    color: white;
+    width: 100%;
+    font-size: 17px;
+    width: 700px;
+}
+
+#join-menu input::placeholder {
+    color: white;
+}
+
+/* Background text and widgets */
+#title {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
+    font-size: 15px;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+
+#share-button {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+
+    background: transparent;
+    color: white;
+    border: 1px solid rgb(255, 255, 255);
+
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+#share-button i {
+    vertical-align: middle;
+}
+
+.code {
+    font-family: "Georgia", monospace;
+}
+
+#title a:visited {
+    color: blue;
+}
+
+/* DOTS DOTS DOTS DOTS DOTS DOTS (BORROWED FROM https://codepen.io/xwildeyes/pen/KpqVzN) */
+
+@keyframes blink {
+    /**
+     * At the start of the animation the dot
+     * has an opacity of .2
+     */
+    0% {
+      opacity: .2;
+    }
+    /**
+     * At 20% the dot is fully visible and
+     * then fades out slowly
+     */
+    20% {
+      opacity: 1;
+    }
+    /**
+     * Until it reaches an opacity of .2 and
+     * the animation can start again
+     */
+    100% {
+      opacity: .2;
+    }
+}
+
+#amazon-container {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+#amazon-link {
+    color: white;
+    font-size: 15px;
+}
+
+#amazon-link:visited {
+    color: white;
+}
+
+.dots span {
+    /**
+     * Use the blink animation, which is defined above
+     */
+    animation-name: blink;
+    /**
+     * The animation should take 1.4 seconds
+     */
+    animation-duration: 1.4s;
+    /**
+     * It will repeat itself forever
+     */
+    animation-iteration-count: infinite;
+    /**
+     * This makes sure that the starting style (opacity: .2)
+     * of the animation is applied before the animation starts.
+     * Otherwise we would see a short flash or would have
+     * to set the default styling of the dots to the same
+     * as the animation. Same applies for the ending styles.
+     */
+    animation-fill-mode: both;
+}
+
+.dots span:nth-child(2) {
+
+    animation-delay: .2s;
+}
+
+.dots span:nth-child(3) {
+
+    animation-delay: .4s;
+}

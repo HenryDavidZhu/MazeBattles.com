@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+   <head>
+      <style>
+
+      </style>
+   </head>
+
+   <body>
+      <p>The goal of maze genneration is to create the hardest maze possible as quickly as possible. There are
+      two things we need to determine here: the size of the maze and the algorithm we will use to generate the
+      maze.</p>
+
+      <p>For a maze of the same area, a square maze will be harder to solve than a rectangle maze. Here's why.
+      Let's say we have two mazes, both with area A. One of the mazes is a square (a by a). The other maze
+      is a rectangle (b by c).</p>
+
+      <p>For all our mazes, the user will start from the top left corner of the maze and attempt to navigate down
+      to the bottom right corner of the maze. Let's denote a movement to the right as R and a movement down as D.
+      No matter what the solution path is, the path always has to contain:</p>
+
+      <ul>
+         <li>
+            The number of Rs as the height of the maze
+         </li>
+
+         <li>
+            The number of Ds as the width of the maze
+         </li>
+      </ul>
+
+      <p>In other words, the length of our maze is n<sub>r</sub> + n<sub>d</sub>. But all we need to do is choose n<sub>r</sub>
+         spots for the Rs, as the remaining spots will have to be filled by the Ds. So the total number of paths can be denoted
+         by the expression 
+
+      <ul>
+   </body>
+</html>
