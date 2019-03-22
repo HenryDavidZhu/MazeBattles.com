@@ -934,14 +934,6 @@ function replay() {
 
     singlePlayerCurrent = singlePlayerMaze.cellGraph[0][0];
 
-   /* var myNode = document.getElementById("canvas2-wrapper");
-    while (myNode.firstChild) {
-        myNode.removeChild(myNode.firstChild);
-    }
-
-    $("#canvas2-wrapper").hide();
-    $("#canvas2-wrapper").show();*/
-
 
     singlePlayerPath = ["0-0"];
     numVisited = 0;
