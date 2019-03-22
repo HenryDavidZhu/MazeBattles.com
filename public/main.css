@@ -1,19 +1,19 @@
 /* General styling*/
 html, body {
-    font-family: "Georgia", Helvetica, Arial, sans-serif;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
+    color: white;
     width: 100%;
     height: 100%;
-    background: #FF416C;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #ff4d4d, #ff3f3f);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #ff4d4d, #ff3f3f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    
+    background: rgb(18, 18, 18);  /* fallback for old browsers */
+
     text-align: center;
-    font-size: 18px;
-    font-weight: normal;
+    font-size: 16px;
+    font-weight: 400;
     overflow: hidden;
-    color: white;
+    
+    letter-spacing: 1px;
 }
 #content {
     z-index: 4;
@@ -23,26 +23,9 @@ html, body {
     transform: translateX(-50%) translateY(-50%);
     display: none;
 }
-.navigation {
-    display: block;
-    width: 100%;
-    overflow: auto;
-    margin-top: 8px;
-}
-.navigation a {
-    color: white;
-    float: left;
-    text-align: center;
-    margin-left: 23px;
-    text-decoration: none;
-}
-.navigation a:hover, .navigation a:active, .navigation a:visited {
-    color: white;
-}
 button {
-    border: 5px;
+    border: 0;
     outline: 0;
-    font-family: "Georgia";
 }
 
 /* Whitespace */
@@ -64,7 +47,10 @@ button {
     position: relative;
     z-index: 4;
     height: 460px;
-    background: transparent;
+    background: black;
+    border-radius: 7px;
+    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
+    border: 2px solid rgb(70, 70, 70);
     padding: 0;
 }
 #canvas2-wrapper {
@@ -72,8 +58,10 @@ button {
     position: relative;
     z-index: 4;
     height: 460px;
-    background: transparent;
-
+    background: black;
+    border-radius: 8px;
+    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
+    border: 2px solid rgb(70, 70, 70);
     padding: 0;
     margin: 0;
 }
@@ -90,7 +78,7 @@ button {
     font-size: 17px;
 }
 .code {
-    font-family: "Georgia", Courier, monospace;
+    font-family: "Courier New", Courier, monospace;
     background: rgba(255, 255, 255, 0.2);
 }
 #join-menu {
@@ -100,7 +88,6 @@ button {
 #game-panel {
     display: none;
     font-size: 17px;
-    letter-spacing: 1px;
 }
 #score-panel {
     display: none;
@@ -113,16 +100,19 @@ button {
 
 /* Styling for the play buttons */
 #one-on-one, #single-player, #opponent-progress, #join, #invite, #play-again, #play-again-button, #quit-button, #quit {
-    background: transparent;
+    background: black;
     color: white;
     display: inline-block;
     z-index: 5;
     padding: 8px 12px;
+    border-radius: 15px;
     font-size: 16px;
-    font-weight: normal;
+    font-weight: bold;
     transition: all 0.2s ease 0s;
     text-align: center;
-    border: 1px solid rgb(255, 255, 255);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.16), 0 6px 10px rgba(0,0,0,0.23);
+    font-weight: 700;
+    border: 2px solid rgb(70, 70, 70);
 }
 #one-on-one:hover, #single-player:hover, #join:hover, #invite:hover, #play-again:hover, #play-again-button:hover, #quit-button:hover, #quit:hover {
     cursor: pointer;
@@ -137,16 +127,18 @@ button {
 #join-menu input {
     background: transparent;
     outline: 0;
-    border: 1px solid rgb(255, 255, 255);
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
     padding: 3px 6px;
-    color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    color: black;
     width: 100%;
     font-size: 17px;
     width: 700px;
 }
 
 #join-menu input::placeholder {
-    color: white;
+    color: black;
 }
 
 /* Background text and widgets */
@@ -165,13 +157,16 @@ button {
     height: 35px;
     line-height: 35px;
 
-    background: transparent;
+    border-radius: 50%;
+    background: black;
     color: white;
-    border: 1px solid rgb(255, 255, 255);
+    border: 2px solid rgb(70, 70, 70);
 
     position: absolute;
     bottom: 10px;
     left: 10px;
+
+    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
 }
 
 #share-button i {
@@ -179,7 +174,7 @@ button {
 }
 
 .code {
-    font-family: "Georgia", monospace;
+    font-family: "Courier New", monospace;
 }
 
 #title a:visited {
@@ -219,12 +214,12 @@ button {
 }
 
 #amazon-link {
-    color: white;
+    color: black;
     font-size: 15px;
 }
 
 #amazon-link:visited {
-    color: white;
+    color: black;
 }
 
 .dots span {
@@ -258,4 +253,10 @@ button {
 .dots span:nth-child(3) {
 
     animation-delay: .4s;
+}
+
+.navigation {
+    position: absolute;
+    top: 5px;
+    left: 5px;
 }
