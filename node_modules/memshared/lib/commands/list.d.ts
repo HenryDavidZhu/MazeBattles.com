@@ -1,0 +1,18 @@
+import { ArrayCallback, Callback } from "../callbacks";
+export declare function blpop(): void;
+export declare function brpop(): void;
+export declare function brpoplpush(): void;
+export declare function lindex(key: string, value: any, callback: Callback<number>): any;
+export declare function linsert(): void;
+export declare function llen(key: string, callback: Callback<number>): any;
+export declare function lpop(key: string, callback: Callback<any>): any;
+export declare function lpush(key: string, value: any, callback: Callback<number>): any;
+export declare function lpushx(key: string, value: any, callback: Callback<number>): any;
+export declare function lrange(key: string, start: number, stop: number, callback: ArrayCallback<any>): any;
+export declare function lrem(): void;
+export declare function lset(key: string, index: number, value: any, callback?: Callback<string>): string;
+export declare function ltrim(): void;
+export declare function rpop(key: string, callback: Callback<any>): any;
+export declare function rpoplpush(source: string, destination: string, callback: Callback<any>): any;
+export declare function rpush(key: string, value: any, callback: Callback<number>): any;
+export declare function rpushx(key: string, value: any, callback: Callback<number>): any;

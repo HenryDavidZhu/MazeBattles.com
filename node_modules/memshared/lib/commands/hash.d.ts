@@ -1,0 +1,16 @@
+import { ArrayCallback, Callback } from "../callbacks";
+export declare function hdel(key: string, field: string, callback?: Callback<string>): string;
+export declare function hexists(key: string, field: string, callback: Callback<boolean>): boolean;
+export declare function hget(key: string, field: string, callback: Callback<any>): any;
+export declare function hgetall(key: string, callback: ArrayCallback<any>): any[];
+export declare function hincrby(key: string, field: string, increment: number, callback?: Callback<number>): any;
+export declare function hincrbyfloat(): void;
+export declare function hkeys(key: string, callback: ArrayCallback<string>): string[];
+export declare function hlen(key: string, callback: Callback<number>): number;
+export declare function hmget(): void;
+export declare function hmset(): void;
+export declare function hset(key: string, field: string, value: any, callback?: Callback<boolean>): boolean;
+export declare function hsetnx(): void;
+export declare function hstrlen(): void;
+export declare function hvals(key: string, callback: ArrayCallback<any>): any[];
+export declare function hscan(): void;

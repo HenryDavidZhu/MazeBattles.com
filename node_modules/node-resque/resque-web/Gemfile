@@ -1,0 +1,7 @@
+source 'http://rubygems.org'
+
+gem 'rake'
+gem 'sinatra'
+gem 'resque'
+gem 'resque-scheduler'
+gem 'resque-retry'

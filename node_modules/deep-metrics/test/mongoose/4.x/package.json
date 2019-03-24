@@ -1,0 +1,9 @@
+{
+  "name": "v4",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^4"
+  }
+}

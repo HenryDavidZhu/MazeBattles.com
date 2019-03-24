@@ -1,0 +1,23 @@
+pipeline:
+  build:
+    image: node:8
+    environment:
+      - MQQT_URL=mqtt://mosquitto:1883
+      - MONGO_URL=mongodb://mongodb/test
+      - NODE_ENV=test
+    commands:
+      - sleep 10
+      - node -v
+      - yarn -v
+      - uname -r
+      - yarn install 2> /dev/null
+      - export PATH=$PATH:./node_modules/.bin/
+      - mocha test/mongoose/mongoose.mocha.js
+      - mocha test/mqtt/mqtt.mocha.js
+services:
+  mongodb:
+    image: tutum/mongodb:2.6
+    environment:
+      - AUTH=no
+  mosquitto:
+    image: ncarlier/mqtt

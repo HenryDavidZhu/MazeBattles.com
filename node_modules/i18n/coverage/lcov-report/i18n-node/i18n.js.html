@@ -1,0 +1,3596 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for i18n-node/i18n.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">i18n-node/</a> i18n.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.33% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>473/486</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">93.47% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>372/398</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">96.55% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>56/58</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">97.9% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>466/476</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+1080
+1081
+1082
+1083
+1084
+1085
+1086
+1087
+1088
+1089
+1090
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101
+1102
+1103
+1104
+1105
+1106
+1107
+1108
+1109
+1110
+1111
+1112
+1113
+1114
+1115
+1116
+1117
+1118
+1119
+1120
+1121
+1122
+1123
+1124
+1125
+1126
+1127
+1128
+1129
+1130
+1131
+1132
+1133
+1134
+1135
+1136
+1137
+1138
+1139
+1140
+1141
+1142
+1143
+1144
+1145
+1146
+1147
+1148
+1149
+1150
+1151
+1152
+1153
+1154
+1155
+1156
+1157
+1158
+1159
+1160
+1161
+1162
+1163
+1164
+1165
+1166
+1167
+1168
+1169
+1170
+1171
+1172
+1173
+1174
+1175
+1176
+1177
+1178</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">132×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">132×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">129×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-yes">537×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">201×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">97×</span>
+<span class="cline-any cline-yes">97×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">191×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-yes">37×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">39×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">34×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">34×</span>
+<span class="cline-any cline-yes">34×</span>
+<span class="cline-any cline-yes">34×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">166×</span>
+<span class="cline-any cline-yes">166×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-yes">20×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144×</span>
+<span class="cline-any cline-yes">115×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">115×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">115×</span>
+<span class="cline-any cline-yes">115×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144×</span>
+<span class="cline-any cline-yes">144×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-yes">154×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">154×</span>
+<span class="cline-any cline-yes">145×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">154×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">343×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-yes">132×</span>
+<span class="cline-any cline-yes">132×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">333×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">339×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">479×</span>
+<span class="cline-any cline-yes">416×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-yes">176×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">503×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">327×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">327×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">283×</span>
+<span class="cline-any cline-yes">283×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">327×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">226×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">226×</span>
+<span class="cline-any cline-yes">2486×</span>
+<span class="cline-any cline-yes">2486×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2486×</span>
+<span class="cline-any cline-yes">1173×</span>
+<span class="cline-any cline-yes">1173×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">226×</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">226×</span>
+<span class="cline-any cline-yes">119×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">107×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">33×</span>
+<span class="cline-any cline-yes">33×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">33×</span>
+<span class="cline-any cline-yes">31×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">47×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">54×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">21×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-yes">32×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44×</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-yes">48×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-yes">19×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">67×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-yes">511×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">516×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-yes">127×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">127×</span>
+<span class="cline-any cline-yes">103×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">103×</span>
+<span class="cline-any cline-yes">103×</span>
+<span class="cline-any cline-yes">95×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">682×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">682×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-yes">15×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">682×</span>
+<span class="cline-any cline-yes">536×</span>
+<span class="cline-any cline-yes">536×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">592×</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-yes">60×</span>
+<span class="cline-any cline-yes">60×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">995×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66×</span>
+<span class="cline-any cline-yes">492×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">999×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">999×</span>
+<span class="cline-any cline-yes">999×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">245×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">245×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">241×</span>
+<span class="cline-any cline-yes">172×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">241×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">178×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">928×</span>
+<span class="cline-any cline-yes">2408×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">997×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">997×</span>
+<span class="cline-any cline-yes">997×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">240×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">240×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">238×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">238×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">238×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">928×</span>
+<span class="cline-any cline-yes">84×</span>
+<span class="cline-any cline-yes">84×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">544×</span>
+<span class="cline-any cline-yes">530×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">530×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-yes">100×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-yes">94×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">638×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">638×</span>
+<span class="cline-any cline-yes">638×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">634×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">634×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1208×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
+ * @author      Created by Marcus Spiegel &lt;marcus.spiegel@gmail.com&gt; on 2011-03-25.
+ * @link        https://github.com/mashpie/i18n-node
+ * @license     http://opensource.org/licenses/MIT
+ *
+ * @version     0.8.2
+ */
+&nbsp;
+'use strict';
+&nbsp;
+// dependencies
+var vsprintf = require('sprintf-js').vsprintf,
+  fs = require('fs'),
+  url = require('url'),
+  path = require('path'),
+  debug = require('debug')('i18n:debug'),
+  warn = require('debug')('i18n:warn'),
+  error = require('debug')('i18n:error'),
+  Mustache = require('mustache'),
+  Messageformat = require('messageformat'),
+  MakePlural = require('make-plural/make-plural').load(
+    require('make-plural/data/plurals.json')
+  ),
+  parseInterval = require('math-interval-parser').default;
+&nbsp;
+// exports an instance
+module.exports = (function() {
+&nbsp;
+  var MessageformatInstanceForLocale = {},
+    PluralsForLocale = {},
+    locales = {},
+    api = {
+      '__': '__',
+      '__n': '__n',
+      '__l': '__l',
+      '__h': '__h',
+      '__mf': '__mf',
+      'getLocale': 'getLocale',
+      'setLocale': 'setLocale',
+      'getCatalog': 'getCatalog',
+      'getLocales': 'getLocales',
+      'addLocale': 'addLocale',
+      'removeLocale': 'removeLocale'
+    },
+    pathsep = path.sep, // ---&gt; means win support will be available in node 0.8.x and above
+    autoReload,
+    cookiename,
+    defaultLocale,
+    directory,
+    directoryPermissions,
+    extension,
+    fallbacks,
+    indent,
+    logDebugFn,
+    logErrorFn,
+    logWarnFn,
+    objectNotation,
+    prefix,
+    queryParameter,
+    register,
+    updateFiles,
+    syncFiles;
+&nbsp;
+  // public exports
+  var i18n = {};
+&nbsp;
+  i18n.locales = locales;
+&nbsp;
+  i18n.version = '0.8.2';
+&nbsp;
+  i18n.configure = function i18nConfigure(opt) {
+&nbsp;
+    // reset locales
+    locales = {};
+&nbsp;
+    // Provide custom API method aliases if desired
+    // This needs to be processed before the first call to applyAPItoObject()
+    if (opt.api &amp;&amp; typeof opt.api === 'object') {
+      for (var method in opt.api) {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (opt.api.hasOwnProperty(method)) {
+          var alias = opt.api[method];
+          if (typeof api[method] !== 'undefined') {
+            api[method] = alias;
+          }
+        }
+      }
+    }
+&nbsp;
+    // you may register i18n in global scope, up to you
+    if (typeof opt.register === 'object') {
+      register = opt.register;
+      // or give an array objects to register to
+      if (Array.isArray(opt.register)) {
+        register = opt.register;
+        register.forEach(function(r) {
+          applyAPItoObject(r);
+        });
+      } else {
+        applyAPItoObject(opt.register);
+      }
+    }
+&nbsp;
+    // sets a custom cookie name to parse locale settings from
+    cookiename = (typeof opt.cookie === 'string') ? opt.cookie : null;
+&nbsp;
+    // query-string parameter to be watched - @todo: add test &amp; doc
+    queryParameter = (typeof opt.queryParameter === 'string') ? opt.queryParameter : null;
+&nbsp;
+    // where to store json files
+    directory = (typeof opt.directory === 'string') ?
+      opt.directory : path.join(__dirname, 'locales');
+&nbsp;
+    // permissions when creating new directories
+    directoryPermissions = (typeof opt.directoryPermissions === 'string') ?
+      parseInt(opt.directoryPermissions, 8) : null;
+&nbsp;
+    // write new locale information to disk
+    updateFiles = (typeof opt.updateFiles === 'boolean') ? opt.updateFiles : true;
+&nbsp;
+    // sync locale information accros all files
+    syncFiles = (typeof opt.syncFiles === 'boolean') ? opt.syncFiles : false;
+&nbsp;
+    // what to use as the indentation unit (ex: "\t", "  ")
+    indent = (typeof opt.indent === 'string') ? <span class="branch-0 cbranch-no" title="branch not covered" >opt.indent </span>: '\t';
+&nbsp;
+    // json files prefix
+    prefix = (typeof opt.prefix === 'string') ? opt.prefix : '';
+&nbsp;
+    // where to store json files
+    extension = (typeof opt.extension === 'string') ? opt.extension : '.json';
+&nbsp;
+    // setting defaultLocale
+    defaultLocale = (typeof opt.defaultLocale === 'string') ? opt.defaultLocale : 'en';
+&nbsp;
+    // auto reload locale files when changed
+    autoReload = (typeof opt.autoReload === 'boolean') ? opt.autoReload : false;
+&nbsp;
+    // enable object notation?
+    objectNotation = (typeof opt.objectNotation !== 'undefined') ? opt.objectNotation : false;
+    if (objectNotation === true) objectNotation = '.';
+&nbsp;
+    // read language fallback map
+    fallbacks = (typeof opt.fallbacks === 'object') ? opt.fallbacks : {};
+&nbsp;
+    // setting custom logger functions
+    logDebugFn = (typeof opt.logDebugFn === 'function') ? <span class="branch-0 cbranch-no" title="branch not covered" >opt.logDebugFn </span>: debug;
+    logWarnFn = (typeof opt.logWarnFn === 'function') ? <span class="branch-0 cbranch-no" title="branch not covered" >opt.logWarnFn </span>: warn;
+    logErrorFn = (typeof opt.logErrorFn === 'function') ? <span class="branch-0 cbranch-no" title="branch not covered" >opt.logErrorFn </span>: error;
+&nbsp;
+    // when missing locales we try to guess that from directory
+    opt.locales = opt.locales || guessLocales(directory);
+&nbsp;
+    // implicitly read all locales
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (Array.isArray(opt.locales)) {
+&nbsp;
+      opt.locales.forEach(function(l) {
+        read(l);
+      });
+&nbsp;
+      // auto reload locale files when changed
+      if (autoReload) {
+&nbsp;
+        // watch changes of locale files (it's called twice because fs.watch is still unstable)
+        fs.watch(directory, function(event, filename) {
+          var localeFromFile = guessLocaleFromFile(filename);
+&nbsp;
+          if (localeFromFile &amp;&amp; opt.locales.indexOf(localeFromFile) &gt; -1) {
+            logDebug('Auto reloading locale file "' + filename + '".');
+            read(localeFromFile);
+          }
+&nbsp;
+        });
+      }
+    }
+  };
+&nbsp;
+  i18n.init = function i18nInit(request, response, next) {
+    if (typeof request === 'object') {
+&nbsp;
+      // guess requested language/locale
+      guessLanguage(request);
+&nbsp;
+      // bind api to req
+      applyAPItoObject(request);
+&nbsp;
+      // looks double but will ensure schema on api refactor
+      i18n.setLocale(request, request.locale);
+    } else {
+      return logError('i18n.init must be called with one parameter minimum, ie. i18n.init(req)');
+    }
+&nbsp;
+    if (typeof response === 'object') {
+      applyAPItoObject(response);
+&nbsp;
+      // and set that locale to response too
+      i18n.setLocale(response, request.locale);
+    }
+&nbsp;
+    // head over to next callback when bound as middleware
+    if (typeof next === 'function') {
+      return next();
+    }
+  };
+&nbsp;
+  i18n.__ = function i18nTranslate(phrase) {
+    var msg;
+    var argv = parseArgv(arguments);
+    var namedValues = argv[0];
+    var args = argv[1];
+&nbsp;
+    // called like __({phrase: "Hello", locale: "en"})
+    if (typeof phrase === 'object') {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof phrase.locale === 'string' &amp;&amp; typeof phrase.phrase === 'string') {
+        msg = translate(phrase.locale, phrase.phrase);
+      }
+    }
+    // called like __("Hello")
+    else {
+      // get translated message with locale from scope (deprecated) or object
+      msg = translate(getLocaleFromObject(this), phrase);
+    }
+&nbsp;
+    // postprocess to get compatible to plurals
+    if (typeof msg === 'object' &amp;&amp; msg.one) {
+      msg = msg.one;
+    }
+&nbsp;
+    // in case there is no 'one' but an 'other' rule
+    if (typeof msg === 'object' &amp;&amp; msg.other) {
+      msg = msg.other;
+    }
+&nbsp;
+    // head over to postProcessing
+    return postProcess(msg, namedValues, args);
+  };
+&nbsp;
+  i18n.__mf = function i18nMessageformat(phrase) {
+    var msg, mf, f;
+    var targetLocale = defaultLocale;
+    var argv = parseArgv(arguments);
+    var namedValues = argv[0];
+    var args = argv[1];
+&nbsp;
+    // called like __({phrase: "Hello", locale: "en"})
+    if (typeof phrase === 'object') {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof phrase.locale === 'string' &amp;&amp; typeof phrase.phrase === 'string') {
+        msg = phrase.phrase;
+        targetLocale = phrase.locale;
+      }
+    }
+    // called like __("Hello")
+    else {
+      // get translated message with locale from scope (deprecated) or object
+      msg = phrase;
+      targetLocale = getLocaleFromObject(this);
+    }
+&nbsp;
+    msg = translate(targetLocale, msg);
+    // --- end get msg
+&nbsp;
+    // now head over to Messageformat
+    // and try to cache instance
+    if (MessageformatInstanceForLocale[targetLocale]) {
+      mf = MessageformatInstanceForLocale[targetLocale];
+    } else {
+      mf = new Messageformat(targetLocale);
+      mf.compiledFunctions = {};
+      MessageformatInstanceForLocale[targetLocale] = mf;
+    }
+&nbsp;
+    // let's try to cache that function
+    if (mf.compiledFunctions[msg]) {
+      f = mf.compiledFunctions[msg];
+    } else {
+      f = mf.compile(msg);
+      mf.compiledFunctions[msg] = f;
+    }
+&nbsp;
+    return postProcess(f(namedValues), namedValues, args);
+  };
+&nbsp;
+  i18n.__l = function i18nTranslationList(phrase) {
+    var translations = [];
+    Object.keys(locales).sort().forEach(function(l) {
+      translations.push(i18n.__({ phrase: phrase, locale: l }));
+    });
+    return translations;
+  };
+&nbsp;
+  i18n.__h = function i18nTranslationHash(phrase) {
+    var translations = [];
+    Object.keys(locales).sort().forEach(function(l) {
+      var hash = {};
+      hash[l] = i18n.__({ phrase: phrase, locale: l });
+      translations.push(hash);
+    });
+    return translations;
+  };
+&nbsp;
+  i18n.__n = function i18nTranslatePlural(singular, plural, count) {
+    var msg, namedValues, targetLocale, args = [];
+&nbsp;
+    // Accept an object with named values as the last parameter
+    if (argsEndWithNamedObject(arguments)) {
+      namedValues = arguments[arguments.length - 1];
+      args = arguments.length &gt;= 5 ? <span class="branch-0 cbranch-no" title="branch not covered" >Array.prototype.slice.call(arguments, 3, -1) </span>: [];
+    } else {
+      namedValues = {};
+      args = arguments.length &gt;= 4 ? Array.prototype.slice.call(arguments, 3) : [];
+    }
+&nbsp;
+    // called like __n({singular: "%s cat", plural: "%s cats", locale: "en"}, 3)
+    if (typeof singular === 'object') {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (
+        typeof singular.locale === 'string' &amp;&amp;
+        typeof singular.singular === 'string' &amp;&amp;
+        typeof singular.plural === 'string'
+      ) {
+        targetLocale = singular.locale;
+        msg = translate(singular.locale, singular.singular, singular.plural);
+      }
+      args.unshift(count);
+&nbsp;
+      // some template engines pass all values as strings -&gt; so we try to convert them to numbers
+      if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
+        count = plural;
+      }
+&nbsp;
+      // called like __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3})
+      if (typeof singular.count === 'number' || typeof singular.count === 'string') {
+        count = singular.count;
+        args.unshift(plural);
+      }
+    } else {
+      // called like  __n('cat', 3)
+      if (typeof plural === 'number' || parseInt(plural, 10) + '' === plural) {
+        count = plural;
+&nbsp;
+        // we add same string as default
+        // which efectivly copies the key to the plural.value
+        // this is for initialization of new empty translations
+        plural = singular;
+&nbsp;
+        args.unshift(count);
+        args.unshift(plural);
+      }
+      // called like __n('%s cat', '%s cats', 3)
+      // get translated message with locale from scope (deprecated) or object
+      msg = translate(getLocaleFromObject(this), singular, plural);
+      targetLocale = getLocaleFromObject(this);
+    }
+&nbsp;
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (count === null) <span class="cstat-no" title="statement not covered" >count = namedValues.count;</span>
+&nbsp;
+    // enforce number
+    count = parseInt(count, 10);
+&nbsp;
+    // find the correct plural rule for given locale
+    if (typeof msg === 'object') {
+      var p;
+      // create a new Plural for locale
+      // and try to cache instance
+      if (PluralsForLocale[targetLocale]) {
+        p = PluralsForLocale[targetLocale];
+      } else {
+        // split locales with a region code
+        var lc = targetLocale.toLowerCase().split(/[_-\s]+/)
+          .filter(function(el){ return true &amp;&amp; el; });
+        // take the first part of locale, fallback to full locale
+        p = new MakePlural(lc[0] || <span class="branch-1 cbranch-no" title="branch not covered" >targetLocale)</span>;
+        PluralsForLocale[targetLocale] = p;
+      }
+&nbsp;
+      // fallback to 'other' on case of missing translations
+      msg = msg[p(count)] || msg.other;
+    }
+&nbsp;
+    // head over to postProcessing
+    return postProcess(msg, namedValues, args, count);
+  };
+&nbsp;
+  i18n.setLocale = function i18nSetLocale(object, locale, skipImplicitObjects) {
+&nbsp;
+    // when given an array of objects =&gt; setLocale on each
+    if (Array.isArray(object) &amp;&amp; typeof locale === 'string') {
+      for (var i = object.length - 1; i &gt;= 0; i--) {
+        i18n.setLocale(object[i], locale, true);
+      }
+      return i18n.getLocale(object[0]);
+    }
+&nbsp;
+    // defaults to called like i18n.setLocale(req, 'en')
+    var targetObject = object;
+    var targetLocale = locale;
+&nbsp;
+    // called like req.setLocale('en') or i18n.setLocale('en')
+    if (locale === undefined &amp;&amp; typeof object === 'string') {
+      targetObject = this;
+      targetLocale = object;
+    }
+&nbsp;
+    // consider a fallback
+    if (!locales[targetLocale] &amp;&amp; fallbacks[targetLocale]) {
+      targetLocale = fallbacks[targetLocale];
+    }
+&nbsp;
+    // now set locale on object
+    targetObject.locale = locales[targetLocale] ? targetLocale : defaultLocale;
+&nbsp;
+    // consider any extra registered objects
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof register === 'object') {
+      if (Array.isArray(register) &amp;&amp; !skipImplicitObjects) {
+        register.forEach(function(r) {
+          r.locale = targetObject.locale;
+        });
+      } else {
+        register.locale = targetObject.locale;
+      }
+    }
+&nbsp;
+    // consider res
+    if (targetObject.res &amp;&amp; !skipImplicitObjects) {
+&nbsp;
+      // escape recursion
+      // @see  - https://github.com/balderdashy/sails/pull/3631
+      //       - https://github.com/mashpie/i18n-node/pull/218
+      if (targetObject.res.locals) {
+        i18n.setLocale(targetObject.res, targetObject.locale, true);
+        i18n.setLocale(targetObject.res.locals, targetObject.locale, true);
+      } else {
+        i18n.setLocale(targetObject.res, targetObject.locale);
+      }
+    }
+&nbsp;
+    // consider locals
+    if (targetObject.locals &amp;&amp; !skipImplicitObjects) {
+&nbsp;
+      // escape recursion
+      // @see  - https://github.com/balderdashy/sails/pull/3631
+      //       - https://github.com/mashpie/i18n-node/pull/218
+      if (targetObject.locals.res) {
+        i18n.setLocale(targetObject.locals, targetObject.locale, true);
+        i18n.setLocale(targetObject.locals.res, targetObject.locale, true);
+      } else {
+        i18n.setLocale(targetObject.locals, targetObject.locale);
+      }
+    }
+&nbsp;
+    return i18n.getLocale(targetObject);
+  };
+&nbsp;
+  i18n.getLocale = function i18nGetLocale(request) {
+&nbsp;
+    // called like i18n.getLocale(req)
+    if (request &amp;&amp; request.locale) {
+      return request.locale;
+    }
+&nbsp;
+    // called like req.getLocale()
+    return this.locale || defaultLocale;
+  };
+&nbsp;
+  i18n.getCatalog = function i18nGetCatalog(object, locale) {
+    var targetLocale;
+&nbsp;
+    // called like i18n.getCatalog(req)
+    if (typeof object === 'object' &amp;&amp; typeof object.locale === 'string' &amp;&amp; locale === undefined) {
+      targetLocale = object.locale;
+    }
+&nbsp;
+    // called like i18n.getCatalog(req, 'en')
+    if (!targetLocale &amp;&amp; typeof object === 'object' &amp;&amp; typeof locale === 'string') {
+      targetLocale = locale;
+    }
+&nbsp;
+    // called like req.getCatalog('en')
+    if (!targetLocale &amp;&amp; locale === undefined &amp;&amp; typeof object === 'string') {
+      targetLocale = object;
+    }
+&nbsp;
+    // called like req.getCatalog()
+    if (!targetLocale &amp;&amp;
+      object === undefined &amp;&amp;
+      locale === undefined &amp;&amp;
+      typeof this.locale === 'string'
+    ) {
+      if (register &amp;&amp; register.GLOBAL) {
+        targetLocale = '';
+      } else {
+        targetLocale = this.locale;
+      }
+    }
+&nbsp;
+    // called like i18n.getCatalog()
+    if (targetLocale === undefined || targetLocale === '') {
+      return locales;
+    }
+&nbsp;
+    if (!locales[targetLocale] &amp;&amp; fallbacks[targetLocale]) {
+      targetLocale = fallbacks[targetLocale];
+    }
+&nbsp;
+    if (locales[targetLocale]) {
+      return locales[targetLocale];
+    } else {
+      logWarn('No catalog found for "' + targetLocale + '"');
+      return false;
+    }
+  };
+&nbsp;
+  i18n.getLocales = function i18nGetLocales() {
+    return Object.keys(locales);
+  };
+&nbsp;
+  i18n.addLocale = function i18nAddLocale(locale) {
+    read(locale);
+  };
+&nbsp;
+  i18n.removeLocale = function i18nRemoveLocale(locale) {
+    delete locales[locale];
+  };
+&nbsp;
+  // ===================
+  // = private methods =
+  // ===================
+&nbsp;
+  var postProcess = function(msg, namedValues, args, count) {
+&nbsp;
+    // test for parsable interval string
+    if ((/\|/).test(msg)) {
+      msg = parsePluralInterval(msg, count);
+    }
+&nbsp;
+    // replace the counter
+    if (typeof count === 'number') {
+      msg = vsprintf(msg, [parseInt(count, 10)]);
+    }
+&nbsp;
+    // if the msg string contains {{Mustache}} patterns we render it as a mini tempalate
+    if ((/{{.*}}/).test(msg)) {
+      msg = Mustache.render(msg, namedValues);
+    }
+&nbsp;
+    // if we have extra arguments with values to get replaced,
+    // an additional substition injects those strings afterwards
+    if ((/%/).test(msg) &amp;&amp; args &amp;&amp; args.length &gt; 0) {
+      msg = vsprintf(msg, args);
+    }
+&nbsp;
+    return msg;
+  };
+&nbsp;
+  var argsEndWithNamedObject = function(args) {
+    return (args.length &gt; 1 &amp;&amp;
+      args[args.length - 1] !== null &amp;&amp;
+      typeof args[args.length - 1] === 'object');
+  };
+&nbsp;
+  var parseArgv = function(args) {
+    var namedValues, returnArgs;
+&nbsp;
+    if (argsEndWithNamedObject(args)) {
+      namedValues = args[args.length - 1];
+      returnArgs = Array.prototype.slice.call(args, 1, -1);
+    } else {
+      namedValues = {};
+      returnArgs = args.length &gt;= 2 ? Array.prototype.slice.call(args, 1) : [];
+    }
+&nbsp;
+    return [namedValues, returnArgs];
+  };
+&nbsp;
+  /**
+   * registers all public API methods to a given response object when not already declared
+   */
+  var applyAPItoObject = function(object) {
+&nbsp;
+    var alreadySetted = true;
+&nbsp;
+    // attach to itself if not provided
+    for (var method in api) {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (api.hasOwnProperty(method)) {
+        var alias = api[method];
+&nbsp;
+        // be kind rewind, or better not touch anything already existing
+        if (!object[alias]) {
+          alreadySetted = false;
+          object[alias] = i18n[method].bind(object);
+        }
+      }
+    }
+&nbsp;
+    // set initial locale if not set
+    if (!object.locale) {
+      object.locale = defaultLocale;
+    }
+&nbsp;
+    // escape recursion
+    if (alreadySetted) {
+      return;
+    }
+&nbsp;
+    // attach to response if present (ie. in express)
+    if (object.res) {
+      applyAPItoObject(object.res);
+    }
+&nbsp;
+    // attach to locals if present (ie. in express)
+    if (object.locals) {
+      applyAPItoObject(object.locals);
+    }
+  };
+&nbsp;
+  /**
+   * tries to guess locales by scanning the given directory
+   */
+  var guessLocales = function(directory) {
+    var entries = fs.readdirSync(directory);
+    var localesFound = [];
+&nbsp;
+    for (var i = entries.length - 1; i &gt;= 0; i--) {
+      if (entries[i].match(/^\./)) continue;
+      var localeFromFile = guessLocaleFromFile(entries[i]);
+      if (localeFromFile) localesFound.push(localeFromFile);
+    }
+&nbsp;
+    return localesFound.sort();
+  };
+&nbsp;
+  /**
+   * tries to guess locales from a given filename
+   */
+  var guessLocaleFromFile = function(filename) {
+    var extensionRegex = new RegExp(extension + '$', 'g');
+    var prefixRegex = new RegExp('^' + prefix, 'g');
+&nbsp;
+    if (prefix &amp;&amp; !filename.match(prefixRegex)) return false;
+    if (extension &amp;&amp; !filename.match(extensionRegex)) return false;
+    return filename.replace(prefix, '').replace(extensionRegex, '');
+  };
+&nbsp;
+  /**
+   * guess language setting based on http headers
+   */
+&nbsp;
+  var guessLanguage = function(request) {
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof request === 'object') {
+      var languageHeader = request.headers? request.headers['accept-language'] : undefined,
+        languages = [],
+        regions = [];
+&nbsp;
+      request.languages = [defaultLocale];
+      request.regions = [defaultLocale];
+      request.language = defaultLocale;
+      request.region = defaultLocale;
+&nbsp;
+      // a query parameter overwrites all
+      if (queryParameter &amp;&amp; request.url) {
+        var urlObj = url.parse(request.url, true);
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (urlObj.query[queryParameter]) {
+          logDebug('Overriding locale from query: ' + urlObj.query[queryParameter]);
+          request.language = urlObj.query[queryParameter].toLowerCase();
+          return i18n.setLocale(request, request.language);
+        }
+      }
+&nbsp;
+      // a cookie overwrites headers
+      if (cookiename &amp;&amp; request.cookies &amp;&amp; request.cookies[cookiename]) {
+        request.language = request.cookies[cookiename];
+        return i18n.setLocale(request, request.language);
+      }
+&nbsp;
+      // 'accept-language' is the most common source
+      if (languageHeader) {
+        var acceptedLanguages = getAcceptedLanguagesFromHeader(languageHeader),
+          match, fallbackMatch, fallback;
+        for (var i = 0; i &lt; acceptedLanguages.length; i++) {
+          var lang = acceptedLanguages[i],
+            lr = lang.split('-', 2),
+            parentLang = lr[0],
+            region = lr[1];
+&nbsp;
+          // Check if we have a configured fallback set for this language.
+          if (fallbacks &amp;&amp; fallbacks[lang]) {
+            fallback = fallbacks[lang];
+            // Fallbacks for languages should be inserted
+            // where the original, unsupported language existed.
+            var acceptedLanguageIndex = acceptedLanguages.indexOf(lang);
+            var fallbackIndex = acceptedLanguages.indexOf(fallback);
+            if(fallbackIndex &gt; -1) {
+              acceptedLanguages.splice(fallbackIndex, 1);
+            }
+            acceptedLanguages.splice(acceptedLanguageIndex + 1, 0, fallback);
+          }
+&nbsp;
+          // Check if we have a configured fallback set for the parent language of the locale.
+          if (fallbacks &amp;&amp; fallbacks[parentLang]) {
+            fallback = fallbacks[parentLang];
+            // Fallbacks for a parent language should be inserted
+            // to the end of the list, so they're only picked
+            // if there is no better match.
+            if (acceptedLanguages.indexOf(fallback) &lt; 0) {
+              acceptedLanguages.push(fallback);
+            }
+          }
+&nbsp;
+          if (languages.indexOf(parentLang) &lt; 0) {
+            languages.push(parentLang.toLowerCase());
+          }
+          if (region) {
+            regions.push(region.toLowerCase());
+          }
+&nbsp;
+          if (!match &amp;&amp; locales[lang]) {
+            match = lang;
+            break;
+          }
+&nbsp;
+          if (!fallbackMatch &amp;&amp; locales[parentLang]) {
+            fallbackMatch = parentLang;
+          }
+        }
+&nbsp;
+        request.language = match || fallbackMatch || request.language;
+        request.region = regions[0] || request.region;
+        return i18n.setLocale(request, request.language);
+      }
+    }
+&nbsp;
+    // last resort: defaultLocale
+    return i18n.setLocale(request, defaultLocale);
+  };
+&nbsp;
+  /**
+   * Get a sorted list of accepted languages from the HTTP Accept-Language header
+   */
+  var getAcceptedLanguagesFromHeader = function(header) {
+    var languages = header.split(','),
+      preferences = {};
+    return languages.map(function parseLanguagePreference(item) {
+      var preferenceParts = item.trim().split(';q=');
+      if (preferenceParts.length &lt; 2) {
+        preferenceParts[1] = 1.0;
+      } else {
+        var quality = parseFloat(preferenceParts[1]);
+        preferenceParts[1] = quality ? quality : 0.0;
+      }
+      preferences[preferenceParts[0]] = preferenceParts[1];
+&nbsp;
+      return preferenceParts[0];
+    }).filter(function(lang) {
+      return preferences[lang] &gt; 0;
+    }).sort(function sortLanguages(a, b) {
+      return preferences[b] - preferences[a];
+    });
+  };
+&nbsp;
+  /**
+   * searches for locale in given object
+   */
+&nbsp;
+  var getLocaleFromObject = function(obj) {
+    var locale;
+    if (obj &amp;&amp; obj.scope) {
+      locale = obj.scope.locale;
+    }
+    if (obj &amp;&amp; obj.locale) {
+      locale = obj.locale;
+    }
+    return locale;
+  };
+&nbsp;
+  /**
+   * splits and parses a phrase for mathematical interval expressions
+   */
+  var parsePluralInterval = function(phrase, count) {
+    var returnPhrase = phrase;
+    var phrases = phrase.split(/\|/);
+&nbsp;
+    // some() breaks on 1st true
+    phrases.some(function(p) {
+      var matches = p.match(/^\s*([\(\)\[\]\d,]+)?\s*(.*)$/);
+&nbsp;
+      // not the same as in combined condition
+      if (matches[1]) {
+        if (matchInterval(count, matches[1]) === true) {
+          returnPhrase = matches[2];
+          return true;
+        }
+      } else {
+        returnPhrase = p;
+      }
+&nbsp;
+    });
+    return returnPhrase;
+  };
+&nbsp;
+  /**
+   * test a number to match mathematical interval expressions
+   * [0,2] - 0 to 2 (including, matches: 0, 1, 2)
+   * ]0,3[ - 0 to 3 (excluding, matches: 1, 2)
+   * [1]   - 1 (matches: 1)
+   * [20,] - all numbers ≥20 (matches: 20, 21, 22, ...)
+   * [,20] - all numbers ≤20 (matches: 20, 21, 22, ...)
+   */
+  var matchInterval = function(number, interval) {
+    interval = parseInterval(interval);
+    if (interval &amp;&amp; typeof number === 'number') {
+      if (interval.from.value === number) {
+        return interval.from.included;
+      }
+      if (interval.to.value === number) {
+        return interval.to.included;
+      }
+&nbsp;
+      return (Math.min(interval.from.value, number) === interval.from.value &amp;&amp;
+        Math.max(interval.to.value, number) === interval.to.value);
+    }
+    return false;
+  };
+&nbsp;
+  /**
+   * read locale file, translate a msg and write to fs if new
+   */
+  var translate = function(locale, singular, plural, skipSyncToAllFiles) {
+&nbsp;
+    // add same key to all translations
+    if (!skipSyncToAllFiles &amp;&amp; syncFiles) {
+      syncToAllFiles(singular, plural);
+    }
+&nbsp;
+    if (locale === undefined) {
+      logWarn('WARN: No locale found - check the context of the call to __(). Using ' +
+        defaultLocale + ' as current locale');
+      locale = defaultLocale;
+    }
+&nbsp;
+    if (!locales[locale] &amp;&amp; fallbacks[locale]) {
+      locale = fallbacks[locale];
+    }
+&nbsp;
+    // attempt to read when defined as valid locale
+    if (!locales[locale]) {
+      read(locale);
+    }
+&nbsp;
+    // fallback to default when missed
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!locales[locale]) {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      logWarn('WARN: Locale ' + locale +</span>
+        ' couldn\'t be read - check the context of the call to $__. Using ' +
+        defaultLocale + ' (default) as current locale');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      locale = defaultLocale;</span>
+<span class="cstat-no" title="statement not covered" >      read(locale);</span>
+    }
+&nbsp;
+    // dotnotaction add on, @todo: factor out
+    var defaultSingular = singular;
+    var defaultPlural = plural;
+    if (objectNotation) {
+      var indexOfColon = singular.indexOf(':');
+      // We compare against 0 instead of -1 because
+      // we don't really expect the string to start with ':'.
+      if (0 &lt; indexOfColon) {
+        defaultSingular = singular.substring(indexOfColon + 1);
+        singular = singular.substring(0, indexOfColon);
+      }
+      if (plural &amp;&amp; typeof plural !== 'number') {
+        indexOfColon = plural.indexOf(':');
+        if (0 &lt; indexOfColon) {
+          defaultPlural = plural.substring(indexOfColon + 1);
+          plural = plural.substring(0, indexOfColon);
+        }
+      }
+    }
+&nbsp;
+    var accessor = localeAccessor(locale, singular);
+    var mutator = localeMutator(locale, singular);
+&nbsp;
+    if (plural) {
+      if (!accessor()) {
+        mutator({
+          'one': defaultSingular || <span class="branch-1 cbranch-no" title="branch not covered" >singular,</span>
+          'other': defaultPlural || <span class="branch-1 cbranch-no" title="branch not covered" >plural</span>
+        });
+        write(locale);
+      }
+    }
+&nbsp;
+    if (!accessor()) {
+      mutator(defaultSingular || <span class="branch-1 cbranch-no" title="branch not covered" >singular)</span>;
+      write(locale);
+    }
+&nbsp;
+    return accessor();
+  };
+&nbsp;
+  /**
+   * initialize the same key in all locales
+   * when not already existing, checked via translate
+   */
+  var syncToAllFiles = function(singular, plural) {
+    // iterate over locales and translate again
+    // this will implicitly write/sync missing keys
+    // to the rest of locales
+    for (var l in locales) {
+      translate(l, singular, plural, true);
+    }
+  };
+&nbsp;
+  /**
+   * Allows delayed access to translations nested inside objects.
+   * @param {String} locale The locale to use.
+   * @param {String} singular The singular term to look up.
+   * @param {Boolean} [allowDelayedTraversal=true] Is delayed traversal of the tree allowed?
+   * This parameter is used internally. It allows to signal the accessor that
+   * a translation was not found in the initial lookup and that an invocation
+   * of the accessor may trigger another traversal of the tree.
+   * @returns {Function} A function that, when invoked, returns the current value stored
+   * in the object at the requested location.
+   */
+  var localeAccessor = function(locale, singular, allowDelayedTraversal) {
+    // Bail out on non-existent locales to defend against internal errors.
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!locales[locale]) <span class="cstat-no" title="statement not covered" >return Function.prototype;</span>
+&nbsp;
+    // Handle object lookup notation
+    var indexOfDot = objectNotation &amp;&amp; singular.lastIndexOf(objectNotation);
+    if (objectNotation &amp;&amp; (0 &lt; indexOfDot &amp;&amp; indexOfDot &lt; singular.length - 1)) {
+      // If delayed traversal wasn't specifically forbidden, it is allowed.
+      if (typeof allowDelayedTraversal === 'undefined') allowDelayedTraversal = true;
+      // The accessor we're trying to find and which we want to return.
+      var accessor = null;
+      // An accessor that returns null.
+      var nullAccessor = function() {
+        return null;
+      };
+      // Do we need to re-traverse the tree upon invocation of the accessor?
+      var reTraverse = false;
+      // Split the provided term and run the callback for each subterm.
+      singular.split(objectNotation).reduce(function(object, index) {
+        // Make the accessor return null.
+        accessor = nullAccessor;
+        // If our current target object (in the locale tree) doesn't exist or
+        // it doesn't have the next subterm as a member...
+        if (null === object || !object.hasOwnProperty(index)) {
+          // ...remember that we need retraversal (because we didn't find our target).
+          reTraverse = allowDelayedTraversal;
+          // Return null to avoid deeper iterations.
+          return null;
+        }
+        // We can traverse deeper, so we generate an accessor for this current level.
+        accessor = function() {
+          return object[index];
+        };
+        // Return a reference to the next deeper level in the locale tree.
+        return object[index];
+&nbsp;
+      }, locales[locale]);
+      // Return the requested accessor.
+      return function() {
+        // If we need to re-traverse (because we didn't find our target term)
+        // traverse again and return the new result (but don't allow further iterations)
+        // or return the previously found accessor if it was already valid.
+        return (reTraverse) ? localeAccessor(locale, singular, false)() : accessor();
+      };
+&nbsp;
+    } else {
+      // No object notation, just return an accessor that performs array lookup.
+      return function() {
+        return locales[locale][singular];
+      };
+    }
+  };
+&nbsp;
+  /**
+   * Allows delayed mutation of a translation nested inside objects.
+   * @description Construction of the mutator will attempt to locate the requested term
+   * inside the object, but if part of the branch does not exist yet, it will not be
+   * created until the mutator is actually invoked. At that point, re-traversal of the
+   * tree is performed and missing parts along the branch will be created.
+   * @param {String} locale The locale to use.
+   * @param {String} singular The singular term to look up.
+   * @param [Boolean} [allowBranching=false] Is the mutator allowed to create previously
+   * non-existent branches along the requested locale path?
+   * @returns {Function} A function that takes one argument. When the function is
+   * invoked, the targeted translation term will be set to the given value inside the locale table.
+   */
+  var localeMutator = function(locale, singular, allowBranching) {
+    // Bail out on non-existent locales to defend against internal errors.
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!locales[locale]) <span class="cstat-no" title="statement not covered" >return Function.prototype;</span>
+&nbsp;
+    // Handle object lookup notation
+    var indexOfDot = objectNotation &amp;&amp; singular.lastIndexOf(objectNotation);
+    if (objectNotation &amp;&amp; (0 &lt; indexOfDot &amp;&amp; indexOfDot &lt; singular.length - 1)) {
+      // If branching wasn't specifically allowed, disable it.
+      if (typeof allowBranching === 'undefined') allowBranching = false;
+      // This will become the function we want to return.
+      var accessor = null;
+      // An accessor that takes one argument and returns null.
+      var nullAccessor = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        return null;</span>
+      };
+      // Fix object path.
+      var fixObject = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        return {};</span>
+      };
+      // Are we going to need to re-traverse the tree when the mutator is invoked?
+      var reTraverse = false;
+      // Split the provided term and run the callback for each subterm.
+      singular.split(objectNotation).reduce(function(object, index) {
+        // Make the mutator do nothing.
+        accessor = nullAccessor;
+        // If our current target object (in the locale tree) doesn't exist or
+        // it doesn't have the next subterm as a member...
+        if (null === object || !object.hasOwnProperty(index)) {
+          // ...check if we're allowed to create new branches.
+          if (allowBranching) {
+            // Fix `object` if `object` is not Object.
+            if (null === object || typeof object !== 'object') {
+              object = fixObject();
+            }
+            // If we are allowed to, create a new object along the path.
+            object[index] = {};
+          } else {
+            // If we aren't allowed, remember that we need to re-traverse later on and...
+            reTraverse = true;
+            // ...return null to make the next iteration bail our early on.
+            return null;
+          }
+        }
+        // Generate a mutator for the current level.
+        accessor = function(value) {
+          object[index] = value;
+          return value;
+        };
+        // Generate a fixer for the current level.
+        fixObject = function() {
+          object[index] = {};
+          return object[index];
+        };
+&nbsp;
+        // Return a reference to the next deeper level in the locale tree.
+        return object[index];
+&nbsp;
+      }, locales[locale]);
+&nbsp;
+      // Return the final mutator.
+      return function(value) {
+        // If we need to re-traverse the tree
+        // invoke the search again, but allow branching
+        // this time (because here the mutator is being invoked)
+        // otherwise, just change the value directly.
+        return (reTraverse) ? localeMutator(locale, singular, true)(value) : accessor(value);
+      };
+&nbsp;
+    } else {
+      // No object notation, just return a mutator that performs array lookup and changes the value.
+      return function(value) {
+        locales[locale][singular] = value;
+        return value;
+      };
+    }
+  };
+&nbsp;
+  /**
+   * try reading a file
+   */
+  var read = function(locale) {
+    var localeFile = {},
+      file = getStorageFilePath(locale);
+    try {
+      logDebug('read ' + file + ' for locale: ' + locale);
+      localeFile = fs.readFileSync(file);
+      try {
+        // parsing filecontents to locales[locale]
+        locales[locale] = JSON.parse(localeFile);
+      } catch (parseError) {
+<span class="cstat-no" title="statement not covered" >        logError('unable to parse locales from file (maybe ' +</span>
+          file + ' is empty or invalid json?): ', parseError);
+      }
+    } catch (readError) {
+      // unable to read, so intialize that file
+      // locales[locale] are already set in memory, so no extra read required
+      // or locales[locale] are empty, which initializes an empty locale.json file
+&nbsp;
+      // since the current invalid locale could exist, we should back it up
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (fs.existsSync(file)) {
+<span class="cstat-no" title="statement not covered" >        logDebug('backing up invalid locale ' + locale + ' to ' + file + '.invalid');</span>
+<span class="cstat-no" title="statement not covered" >        fs.renameSync(file, file + '.invalid');</span>
+      }
+&nbsp;
+      logDebug('initializing ' + file);
+      write(locale);
+    }
+  };
+&nbsp;
+  /**
+   * try writing a file in a created directory
+   */
+  var write = function(locale) {
+    var stats, target, tmp;
+&nbsp;
+    // don't write new locale information to disk if updateFiles isn't true
+    if (!updateFiles) {
+      return;
+    }
+&nbsp;
+    // creating directory if necessary
+    try {
+      stats = fs.lstatSync(directory);
+    } catch (e) {
+      logDebug('creating locales dir in: ' + directory);
+      fs.mkdirSync(directory, directoryPermissions);
+    }
+&nbsp;
+    // first time init has an empty file
+    if (!locales[locale]) {
+      locales[locale] = {};
+    }
+&nbsp;
+    // writing to tmp and rename on success
+    try {
+      target = getStorageFilePath(locale);
+      tmp = target + '.tmp';
+      fs.writeFileSync(tmp, JSON.stringify(locales[locale], null, indent), 'utf8');
+      stats = fs.statSync(tmp);
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (stats.isFile()) {
+        fs.renameSync(tmp, target);
+      } else {
+<span class="cstat-no" title="statement not covered" >        logError('unable to write locales to file (either ' +</span>
+          tmp + ' or ' + target + ' are not writeable?): ');
+      }
+    } catch (e) {
+<span class="cstat-no" title="statement not covered" >      logError('unexpected error writing files (either ' +</span>
+        tmp + ' or ' + target + ' are not writeable?): ', e);
+    }
+  };
+&nbsp;
+  /**
+   * basic normalization of filepath
+   */
+  var getStorageFilePath = function(locale) {
+    // changed API to use .json as default, #16
+    var ext = extension || <span class="branch-1 cbranch-no" title="branch not covered" >'.json',</span>
+      filepath = path.normalize(directory + pathsep + prefix + locale + ext),
+      filepathJS = path.normalize(directory + pathsep + prefix + locale + '.js');
+    // use .js as fallback if already existing
+    try {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (fs.statSync(filepathJS)) {
+        logDebug('using existing file ' + filepathJS);
+        extension = '.js';
+        return filepathJS;
+      }
+    } catch (e) {
+      logDebug('will use ' + filepath);
+    }
+    return filepath;
+  };
+&nbsp;
+  /**
+   * Logging proxies
+   */
+  function logDebug(msg) {
+    logDebugFn(msg);
+  }
+&nbsp;
+  function logWarn(msg) {
+    logWarnFn(msg);
+  }
+&nbsp;
+  function logError(msg) {
+    logErrorFn(msg);
+  }
+&nbsp;
+  return i18n;
+&nbsp;
+}());</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Jun 21 2016 11:30:44 GMT+0200 (CEST)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

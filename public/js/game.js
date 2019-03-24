@@ -1016,7 +1016,7 @@ socket.on("modifyCell", function (data) {
 socket.on("completeGeneration", function (data) {
     timer.start();
     timer.addEventListener("secondsUpdated", function (e) {
-        if (complete) {
+        if (complete && gameOver) {
             $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
         }
     });

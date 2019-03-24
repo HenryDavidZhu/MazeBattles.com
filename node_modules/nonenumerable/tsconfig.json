@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "target": "es5",
+    "module": "commonjs",
+    "declaration": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true
+  },
+  "include": [
+    "src/**.ts"
+  ]
+}

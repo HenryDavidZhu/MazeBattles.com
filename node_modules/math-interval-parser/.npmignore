@@ -1,0 +1,10 @@
+coverage/
+src/
+typings/
+.editorconfig
+.gitattributes
+.travis.yml
+dts-bundle.bat
+tsconfig.json
+tsd.json
+tslint.json
