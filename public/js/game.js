@@ -348,6 +348,82 @@ function calculateCellDivision(wall) {
     return -1;
 }
 
+function movementController(key) {
+    /*
+        Controls all the logic behind the user's movement on the board
+    */
+
+    if (key === 'w' || key === 'W') {
+        console.log("W");
+        if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[0]) {
+            userY -= 1;
+
+            cellString = userY + "-" + userX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+    
+    if (key === 's' || key === 'S') {
+        console.log("S");
+        if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[2]) {
+            userY += 1;
+
+            cellString = userY + "-" + userX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (key === 'a' || key === 'A') {
+        console.log("A");
+        if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[3]) {
+            userX -= 1;
+
+            cellString = userY + "-" + userX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (key === 'd' || key === 'D') {
+        console.log("D");
+        if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[1]) {
+            userX += 1;
+
+            cellString = userY + "-" + userX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    return cellString;
+}
+
 // Following construct is for multi-player maze
 var mazeDisplay = function (p) {
     p.setup = function () {
@@ -613,8 +689,7 @@ var mazeDisplay = function (p) {
             p.ellipse(singlePlayerUserPosition.xPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.yPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2);
 
             drawPath(p, singlePlayerPath);
-
-
+            
             if (!singlePlayerSolved) {
                 star(singlePlayerMaze.numRows * 20 - 10, singlePlayerMaze.numColumns * 20 - 10, 6, 1, 5, p);
             }
@@ -627,73 +702,21 @@ var mazeDisplay = function (p) {
                 var cellString = "";
 
                 if (p.key === 'w' || p.key === 'W') {
-                    console.log("W");
-                    if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[0]) {
-                        userY -= 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (singlePlayerPath.indexOf(cellString) == -1) {
-                            singlePlayerPath.push(cellString);
-                        } else if (cellString == "0-0") {
-                            singlePlayerPath = ["0-0"];
-                        } else {
-                            singlePlayerPath.pop();
-                        }
-                    }
+                    cellString = movementController("w");
                 }
                 if (p.key === 's' || p.key === 'S') {
-                    console.log("S");
-                    if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[2]) {
-                        userY += 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (singlePlayerPath.indexOf(cellString) == -1) {
-                            singlePlayerPath.push(cellString);
-                        } else if (cellString == "0-0") {
-                            singlePlayerPath = ["0-0"];
-                        } else {
-                            singlePlayerPath.pop();
-                        }
-                    }
+                    cellString = movementController("S");
                 }
                 if (p.key === 'a' || p.key === 'A') {
-                    console.log("A");
-                    if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[3]) {
-                        userX -= 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (singlePlayerPath.indexOf(cellString) == -1) {
-                            singlePlayerPath.push(cellString);
-                        } else if (cellString == "0-0") {
-                            singlePlayerPath = ["0-0"];
-                        } else {
-                            singlePlayerPath.pop();
-                        }
-                    }
+                    cellString = movementController("A");
                 }
                 if (p.key === 'd' || p.key === 'D') {
-                    console.log("D");
-                    if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[1]) {
-                        userX += 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (singlePlayerPath.indexOf(cellString) == -1) {
-                            singlePlayerPath.push(cellString);
-                        } else if (cellString == "0-0") {
-                            singlePlayerPath = ["0-0"];
-                        } else {
-                            singlePlayerPath.pop();
-                        }
-                    }
+                    cellString = movementController("D");
                 }
 
-                var endPosition = (singlePlayerMaze.numRows - 1).toString() + "-" + (singlePlayerMaze.numColumns - 1).toString();
+                console.log("cellString = " + cellString);
 
-                console.log("endPosition = " + endPosition);
+                var endPosition = (singlePlayerMaze.numRows - 1).toString() + "-" + (singlePlayerMaze.numColumns - 1).toString();
 
                 if (cellString == endPosition) {
                     singlePlayerSolved = true;
@@ -707,12 +730,8 @@ var mazeDisplay = function (p) {
                         });
                     });
 
-                    console.log("fading out game panel");
-
                     setTimeout(function () {
                         $("#game-panel").fadeOut(500, function () {
-                            console.log("fading in score panel");
-
                             $("#score-panel").html("<button id='play-again-button' onclick='replay()'>Play Again?</button>&nbsp;<button id='quit-button' onclick='quit()'>Quit</button>");
                             $("#score-panel").removeClass();
                             $("#score-panel").show();
@@ -988,56 +1007,3 @@ socket.on("code-validity", function (valid) {
         alert("The code you entered is invalid");
     }
 });
-
-socket.on("initial-maze", function (data) {
-    timer = new Timer();
-    complete = false;
-
-    // Fade out the start maze
-    $("#game-panel").html("Generating maze<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
-    $("#canvas-wrapper").hide();
-    $("#canvas2-wrapper").show();
-    $("#join-menu").hide();
-
-    maze = data;
-});
-
-socket.on("modifyCell", function (data) {
-    current = data;
-
-    $("#game-panel").html("Generating maze<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
-
-    if (maze) {
-        maze.cellGraph[current.row][current.column] = current;
-        maze.cellGraph[current.row][current.column].visited = false;
-    }
-});
-
-socket.on("completeGeneration", function (data) {
-    timer.start();
-    timer.addEventListener("secondsUpdated", function (e) {
-        if (complete && gameOver) {
-            $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
-        }
-    });
-
-    complete = true;
-});
-
-socket.on("rematch", function (data) {
-    $("#score-panel").fadeOut(500, function () {
-        // Change the html of the score-panel to the play again button
-        $("#score-panel").html("Your opponent has requested a rematch. Do you accept?<div class='whitespace'></div>" +
-            "<div id='play-again' onclick='rematchagreement(true)'>yes</div>&nbsp;<div id='quit' onclick='rematchagreement(false)'>no</div>");
-
-        $("#score-panel").fadeIn(500, function () {});
-    });
-});
-
-function rematchagreement(agree) {
-    if (agree) {
-        socket.emit("rematchagreement", [socket.id, true]);
-    } else {
-        location.href = "http://localhost:3000";
-    }
-}

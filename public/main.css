@@ -76,10 +76,11 @@ button {
     display: none;
     font-size: 17px;
 }
+
 .code {
-    font-family: "Courier New", Courier, monospace;
     background: rgba(255, 255, 255, 0.2);
 }
+
 #join-menu {
     display: none;
     width: 700px;
@@ -170,10 +171,6 @@ button {
 
 #share-button i {
     vertical-align: middle;
-}
-
-.code {
-    font-family: "Courier New", monospace;
 }
 
 #title a:visited {

@@ -1,15 +1,15 @@
-var colyseus = require("colyseus");
-var http = require("http");
-var express = require("express");
-var port = process.env.port || 3000;
+const colyseus = require('colyseus');
+const http = require('http');
 
-var app = express();
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.static("public", { dotfiles: 'allow' }));
+const server = http.createServer(app);
+const gameServer = new colyseus.Server({server: server});
 
-var gameServer = new colyseus.Server({
-  server: http.createServer(app)
-});
+gameServer.register('tictactoe', require('./rooms/mazebattles'));
+server.listen(port);
 
-
-gameServer.listen(port);
+app.use(express.static("public"));
+console.log(`Listening on ws://localhost:${ port }`);
