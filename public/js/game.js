@@ -202,13 +202,6 @@ $("#one-on-one").click(function () {
 
     $("#one-on-one-wrapper").addClass("animated fadeInRight");
 
-    $("#join").click(function () {
-        $("#one-on-one-wrapper").hide();
-
-        $("#one-on-one-wrapper").removeClass();
-        $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
-    });
-
     $("#invite").click(function () {
         $("#one-on-one-wrapper").removeClass();
         $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
@@ -222,6 +215,11 @@ $("#one-on-one").click(function () {
     });
 
     $("#join").click(function () {
+        $("#one-on-one-wrapper").hide();
+
+        $("#one-on-one-wrapper").removeClass();
+        $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+
         $("#join-menu").show();
         $("#join-menu").addClass("animated fadeInRight");
 
@@ -241,7 +239,7 @@ $("#one-on-one").click(function () {
                     alert("Please enter a code.");
                 } else {
                     // send request to server containing code emitted
-                    socket.emit("room-code", $("#room-code").val());
+                    //socket.emit("room-code", $("#room-code").val());
                 }
             }
         });
@@ -256,6 +254,9 @@ function joinRoom(id) {
     console.log("roomID = " + roomID);
 
     let room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
+
+     $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
+        "</span><br>stay on this page. you will be automatically paired once your friend joins.");
 }
 
 // star function borrowed from p5.js examples  
