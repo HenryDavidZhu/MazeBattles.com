@@ -1,7 +1,5 @@
 var count = 0;
 
-
-
 var roomID = "";
 
 var gameOver = false;
@@ -34,6 +32,9 @@ var vectors = [
 ];
 
 var wallList = {}; // Structure of a wall [rol (num), col (num), direction (string)]
+
+var host = window.document.location.host.replace(/:.*/, '');
+var client = new Colyseus.Client(location.protocol.replace("http", "ws") + host + (location.port ? ':'+location.port : ''));
 
 function isWall(cellA, cellB) {
     // Whether there's a wall or not depends on the orientation of the blocks
@@ -189,7 +190,7 @@ $("#single-player").click(function () {
 
 $("#one-on-one").click(function () {
     mode = "one-on-one";
-
+    
     // Display the new One-on-One layout
     // Two buttons: Joining a match and Inviting others to the match
     // Fade out play-wrapper, and fade in the one-on-one-wrapper
@@ -246,6 +247,16 @@ $("#one-on-one").click(function () {
         });
     });
 });
+
+socket.on("generated-url", joinRoom);
+
+function joinRoom(id) {
+    roomID = id;
+
+    console.log("roomID = " + roomID);
+
+    let room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
+}
 
 // star function borrowed from p5.js examples  
 function star(x, y, radius1, radius2, npoints, p) {
@@ -827,104 +838,6 @@ var mazeDisplay = function (p) {
     }
 };
 
-socket.on("generated-url", function (data) {
-    $("#invite-menu").html("share this code with your friend: <span class='code'>" + data +
-        "</span><br>stay on this page. you will be paired once your friend joins.");
-});
-
-// When user is disconnected
-socket.on("opponentDisconnected", function (data) {
-    $("#score-panel").fadeOut();
-
-    alert("your opponent has unfortunately disconnected. you will be redirected to the main page.");
-
-
-    // location.href = "http://localhost:3000";
-    location.href = "/";
-});
-
-socket.on("paired", function (data) {
-    gameOver = false;
-    gameOverTrigger = false;
-
-    solved = false;
-
-    roomID = data;
-
-    path = ["0-0"];
-
-    userX = 0;
-    userY = 0;
-
-    complete = false;
-
-    if (myp25 == null) {
-        myp25 = new p5(mazeDisplay, "canvas2-wrapper");
-    }
-
-    $("#score-panel").fadeOut(500);
-
-    $("#join-menu").removeClass();
-    $("#join-menu").addClass("animated fadeOutLeft");
-
-    $("#invite-menu").removeClass();
-    $("#invite-menu").hide();
-    $("#invite-menu").addClass("animated fadeOutLeft");
-
-    $("#game-panel").show();
-    $("#game-panel").addClass("animated fadeInRight");
-});
-
-socket.on("winner", function (data) {
-    gameOver = true;
-
-    var win = false;
-    var winText = "";
-
-    var winnerID = data[0];
-    var scores = data[1];
-
-    if (socket.id == winnerID) {
-        win = true;
-    }
-
-    var userScore;
-    var opponentScore;
-
-    for (var userID in scores) {
-        if (userID == socket.id) {
-            userScore = scores[userID];
-        } else {
-            opponentScore = scores[userID];
-        }
-    }
-
-    if (win) {
-        winText = "You won the match (" + timer.getTimeValues().toString(["minutes", "seconds"]) + ")! Your record is <b>" + userScore + "</b>:" + opponentScore;
-    } else {
-        winText = "You lost the match! Your record is <b>" + userScore + "</b>:" + opponentScore;
-    }
-
-    $("#game-panel").fadeOut(500, function () {
-        $("#score-panel").html(winText);
-
-        $("#score-panel").fadeIn(500, function () {
-
-        });
-    });
-
-    setTimeout(function () {
-        $("#score-panel").fadeOut(500, function () {
-            // Change the html of the score-panel to the play again button
-            $("#score-panel").html("<div id='play-again' onclick='rematch()'>rematch!</div>&nbsp;<div id='quit' onclick='quit()'>quit</div>");
-
-            $("#score-panel").fadeIn(500, function () {
-
-            });
-        });
-    }, 3000);
-});
-
 function quit() {
     location.href = "http://localhost:3000";
 }
@@ -978,32 +891,3 @@ function replay() {
         }
     }
 }
-
-function rematch() {
-    socket.emit("play-again", socket.id);
-
-    $("#score-panel").fadeOut(500, function () {
-        // Change the html of the score-panel to the play again button
-        $("#score-panel").html("You have requested a rematch. Waiting for your opponent to respond<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
-
-        $("#score-panel").fadeIn(500, function () {
-
-        });
-    });
-}
-
-$("#play-again").click(function () {
-    // Send requrest to opponent that user wants to play again
-    socket.emit("play-again", socket.id);
-
-    // If opponent approves, regenerate the maze
-
-});
-
-// Need to include logic that alerts the user when the room cannot be joined!
-
-socket.on("code-validity", function (valid) {
-    if (!valid) {
-        alert("The code you entered is invalid");
-    }
-});
