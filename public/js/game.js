@@ -215,6 +215,8 @@ $("#one-on-one").click(function () {
     });
 
     $("#join").click(function () {
+        console.log("clicked join");
+
         $("#one-on-one-wrapper").hide();
 
         $("#one-on-one-wrapper").removeClass();
@@ -226,6 +228,8 @@ $("#one-on-one").click(function () {
         var roomCode = document.getElementById("room-code");
 
         roomCode.addEventListener("keyup", function (event) {
+            console.log("event.keyCode = " + event.keyCode);
+
             event.preventDefault();
 
             if (event.keyCode === 13) { // The user pressed the enter / return key
@@ -234,12 +238,49 @@ $("#one-on-one").click(function () {
                 // Step 1: first see if the input is empty or not
                 var codeLength = $("#room-code").val().length;
 
+                console.log("codeLength = " + codeLength);
+
                 if (codeLength == 0) {
                     // change to modal later
                     alert("Please enter a code.");
                 } else {
-                    // send request to server containing code emitted
-                    //socket.emit("room-code", $("#room-code").val());
+                    try {
+                        roomID = $("#room-code").val();
+
+                        let room = client.join(roomID, {create: false}); // Create a new room, and have that client join the room
+
+                        gameOver = false;
+                        gameOverTrigger = false;
+
+                        solved = false;
+
+                        path = ["0-0"];
+
+                        userX = 0;
+                        userY = 0;
+
+                        complete = false;
+
+                        if (myp25 == null) {
+                            myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+                        }
+
+                        $("#score-panel").fadeOut(500);
+
+                        $("#join-menu").removeClass();
+                        $("#join-menu").addClass("animated fadeOutLeft");
+
+                        $("#invite-menu").removeClass();
+                        $("#invite-menu").hide();
+                        $("#invite-menu").addClass("animated fadeOutLeft");
+
+                        $("#game-panel").show();
+                        $("#game-panel").addClass("animated fadeInRight");
+                    }
+                    catch (err) {
+                        alert("The code you entered is invalid.");
+                        console.log("err = " + err);
+                    }
                 }
             }
         });
@@ -256,7 +297,7 @@ function joinRoom(id) {
     let room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
 
      $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
-        "</span><br>stay on this page. you will be automatically paired once your friend joins.");
+        "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
 }
 
 // star function borrowed from p5.js examples  
