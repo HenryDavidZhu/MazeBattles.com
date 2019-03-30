@@ -17,10 +17,10 @@
   "license": "ISC",
   "dependencies": {
     "actionhero": "^19.1.2",
-    "colyseus": "^0.9.33",
-    "easytimer.js": "^2.3.0",
-    "express": "^4.16.3",
-    "socket.io": "^2.1.0",
+    "colyseus": "^0.10.1",
+    "easytimer.js": "^2.4.0",
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0",
     "socketio": "^1.0.0",
     "uniqid": "^5.0.3"
   },

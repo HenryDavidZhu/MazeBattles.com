@@ -180,7 +180,7 @@ const Room = require('colyseus').Room;
 
 const TURN_TIMEOUT = 10
 
-module.exports = class TicTacToe extends Room {
+module.exports = class MazeRoom extends Room {
 
   onInit () {
     this.maxClients = 2;
@@ -189,6 +189,8 @@ module.exports = class TicTacToe extends Room {
     this.maze = new Maze(35, 20);
     this.maze.createMaze();
 
+    console.log("initializing maze");
+
     this.setState({
       maze: this.maze,
       players: [] // Maps the client's id to its position in the maze
@@ -196,7 +198,6 @@ module.exports = class TicTacToe extends Room {
   }
 
   onJoin (client) {
-    this.state.players[client.sessionID] = [0, 0];
 
     console.log("this.players.length = " + this.players.length);
 
@@ -205,12 +206,13 @@ module.exports = class TicTacToe extends Room {
 
     if (this.players.length == this.maxClients) {
       // Lock this room for new users
-      this.lock();
+      //this.lock();
     }
   }
 
   onMessage (client, data) {
     // Receives position from the client
+    console.log("this.state = " + this.state);
     this.state.players[client.sessionID] = data;
 
     // Analyze if the client has won based on his or her position
@@ -220,6 +222,11 @@ module.exports = class TicTacToe extends Room {
   }
 
   onLeave (client) {
+      delete this.state.players[client.sessionID];
+
+      var winningPlayer = Object.keys(this.state.players)[0];
+
+      
   }
 
 }

@@ -35,6 +35,9 @@ var wallList = {}; // Structure of a wall [rol (num), col (num), direction (stri
 
 var host = window.document.location.host.replace(/:.*/, '');
 var client = new Colyseus.Client(location.protocol.replace("http", "ws") + host + (location.port ? ':'+location.port : ''));
+console.log("client parameter = " + location.protocol.replace("http", "ws") + host + (location.port ? ':'+location.port : ''));
+
+let room = null;
 
 function isWall(cellA, cellB) {
     // Whether there's a wall or not depends on the orientation of the blocks
@@ -155,6 +158,16 @@ var mode;
 
 $("#content").fadeIn();
 
+function attachListeners(room) {
+    room.onStateChange.addOnce(function(state) {
+      console.log("this is the first room state!", state);
+    });
+
+    room.onStateChange.add(function(state) {
+      console.log("the room state has been updated:", state);
+    });
+}
+
 function initSinglePlayer() {
     // Regenerate maze
     // If win, ask to play again
@@ -247,7 +260,8 @@ $("#one-on-one").click(function () {
                     try {
                         roomID = $("#room-code").val();
 
-                        let room = client.join(roomID, {create: false}); // Create a new room, and have that client join the room
+                        room = client.join(roomID, {create: false}); // Create a new room, and have that client join the room
+                        attachListeners(room);
 
                         gameOver = false;
                         gameOverTrigger = false;
@@ -262,7 +276,7 @@ $("#one-on-one").click(function () {
                         complete = false;
 
                         if (myp25 == null) {
-                            myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+                            //myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
                         }
 
                         $("#score-panel").fadeOut(500);
@@ -294,7 +308,11 @@ function joinRoom(id) {
 
     console.log("roomID = " + roomID);
 
-    let room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
+    room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
+    attachListeners(room);
+
+    // Add event listeners to the room
+    console.log("room.state.players = " + room.state.toString());
 
      $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
@@ -405,6 +423,7 @@ function movementController(key) {
     /*
         Controls all the logic behind the user's movement on the board
     */
+    console.log("key = " + key);
 
     if (key === 'w' || key === 'W') {
         console.log("W");
@@ -477,12 +496,20 @@ function movementController(key) {
     return cellString;
 }
 
+function isEmpty(str) {
+    return (!str || 0 === str.length);
+}
+
 // Following construct is for multi-player maze
 var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(700, 460);
         p.background(0, 0, 0);
 
+        if (room) {
+            singlePlayerMaze = room.maze;
+            console.log("singlePlayerMaze = " + singlePlayerMaze);
+        }
 
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
         var pos = getRandomPos(singlePlayerMaze.cellGraph[0].length, singlePlayerMaze.cellGraph.length);
@@ -753,6 +780,8 @@ var mazeDisplay = function (p) {
         if (mode == "single-player") {
             if (singlePlayerComplete) {
                 var cellString = "";
+
+                console.log("p.key = " + p.key);
 
                 if (p.key === 'w' || p.key === 'W') {
                     cellString = movementController("w");

@@ -17,7 +17,7 @@ app.use(express.static("public"));
 console.log(`Listening on ws://localhost:${ port }`);
 
 var socket = require("socket.io");
-var io = socket(server, {pingTimeout: 63000});
+var io = socket(server);
 
 io.sockets.on("connection", playerConnect);
 
