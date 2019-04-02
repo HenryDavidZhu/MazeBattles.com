@@ -259,3 +259,9 @@ button {
     top: 5px;
     left: 5px;
 }
+
+#social-media-buttons {
+    position: absolute;
+    top: 10px !important;
+    left: 10px !important;
+}

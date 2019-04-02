@@ -5,7 +5,7 @@
    <head>
       <meta charset="utf-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>MazeBattles.com | Multiplayer Maze Competition</title>
+      <title>MazeBattles.com | Race to solve mazes!</title>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
       <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
@@ -31,9 +31,11 @@
       <script type="text/javascript" src="js/colyseus.js"></script>
    </head>
    <body>
+      <div id="fb-root"></div>
+      <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.2"></script>
       <div id="title">
-         movement 1: <span class="code">[a][w][s][d]</span><br>
-         movement 2: <span class="conde">[UP][DOWN][LEFT][RIGHT]</span>
+         movement: <span class="code">[a][w][s][d]</span><br>
+         <b>navigate to the bottom right corner</b>
       </div>
 
       <!-- Implement social media buttons plus theme, similar to bouncyballs.org -->
@@ -76,6 +78,15 @@
          <div id="join-menu">
             <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
          </div>
+      </div>
+
+      <div id="social-media-buttons">
+         <div class="fb-share-button" data-href="http://www.mazebattles.com/" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.mazebattles.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
+
+         <a class="twitter-share-button"
+           href="https://twitter.com/intent/tweet?text=Hello%20world"
+           data-size="large">
+         Tweet</a>
       </div>
       <script type="text/javascript" src="js/maze.js"></script>
       <script type="text/javascript" src="js/game.js"></script>

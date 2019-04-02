@@ -1,146 +1,3 @@
-// MAZE LOGIC
-function Maze(widthCells, heightCells) {
-    this.widthCells = widthCells;
-    this.heightCells = heightCells;
-
-    this.numCells = widthCells * heightCells;
-
-    this.cellGraph = []; // 2-Dimensioanl Array that stores all the cells in the maze
-
-    for (var i = 0; i < heightCells; i++) { // Iterate through each row in the array
-        this.cellGraph.push([]); // Add a new empty row to the array
-    }
-}
-
-function Cell(cellSize, row, column) {
-    this.cellSize = cellSize;
-    this.column = column;
-
-    this.row = row;
-
-    this.xPos = column * cellSize;
-    this.yPos = row * cellSize;
-
-    this.walls = [true, true, true, true]; // bottom, left, top, right
-
-    this.visited = false; // Has the cell been visited by the maze generator
-    this.marked = false; // Has the cell been visited by the maze solver
-}
-
-Cell.prototype.getNumWalls = function () {
-    // Function that gets the number of walls surrounding the cell
-
-    var numWalls = 0;
-
-    for (var i = 0; i < this.walls.length; i++) { // Iterate through each wall
-        if (this.walls[i]) { // Check if a wall is present
-            numWalls += 1;
-        }
-    }
-
-    return numWalls;
-}
-
-Maze.prototype.getNeighbor = function (dfs, cellRow, cellColumn) { // Get all of the neighbors of a specific cell in the maze
-    var neighbors = []; // The list of all the neighbors of that cell
-    var coordinates = []; // The list of the coordinates of the neighbors of that cell
-
-    if (cellColumn > 0) { // If the cell isn't on the left side, there is a neighbor to the left
-        var neighbor = this.cellGraph[cellRow][cellColumn - 1]; // Get the neighboring cell to the left
-
-        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
-            if (!neighbor.visited) {
-                coordinates.push([cellRow, cellColumn - 1]);
-                neighbors.push(neighbor);
-            }
-        } else {
-            if (!isWall(this, neighbor)) {
-                neighbors.push(neighbor);
-            }
-        }
-    }
-    if (cellColumn < this.widthCells - 1) { // If the cell isn't on the right side, there is a neighbor to the right
-        var neighbor = this.cellGraph[cellRow][cellColumn + 1]; // Get the neighboring cell to the right
-
-        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
-            if (!neighbor.visited) {
-                coordinates.push([cellRow, cellColumn + 1]);
-                neighbors.push(neighbor);
-            }
-        } else {
-            if (!isWall(this, neighbor)) {
-                neighbors.push(neighbor);
-            }
-        }
-    }
-    if (cellRow > 0) { // If the cell isn't on the top side, there is a neighbor to the top
-        var neighbor = this.cellGraph[cellRow - 1][cellColumn]; // Get the neighboring cell to the top
-
-        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
-            if (!neighbor.visited) {
-                coordinates.push([cellRow - 1, cellColumn]);
-                neighbors.push(neighbor);
-            }
-        } else {
-            if (!isWall(this, neighbor)) {
-                neighbors.push(neighbor);
-            }
-        }
-    }
-    if (cellRow < this.heightCells - 1) { // If the cell isn't on the bottom side, there is a neighbor to the bottom
-        var neighbor = this.cellGraph[cellRow + 1][cellColumn]; // Get the neighboring cell to the bottom
-
-        if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
-            if (!neighbor.visited) {
-                coordinates.push([cellRow + 1, cellColumn]);
-                neighbors.push(neighbor);
-            }
-        } else {
-            if (!isWall(this, neighbor)) {
-                neighbors.push(neighbor);
-            }
-        }
-    }
-
-    if (dfs) { // If dfs = true, getNeighbor returns a random neighbor
-        if (neighbors.length > 0) { // Make sure that their is a neighbor to draw from
-            var randomIndex = Math.floor(Math.random() * neighbors.length);
-            var randomNeighbor = neighbors[randomIndex]; // Get a random neighbor
-            return randomNeighbor;
-        } else {
-            return undefined;
-        }
-    } else { // If dfs is set to false, return all the neighbors
-        return neighbors;
-    }
-}
-
-function deleteWall(current, neighbor) { // Delete the wall between two cells
-    var deltaX = current.column - neighbor.column; // Get the x distance between the two cells
-    var deltaY = current.row - neighbor.row; // Get the y distance between the two cells
-
-    if (deltaX == 1) { // Current is to the right of the neighbor
-        current.walls[3] = false;
-        neighbor.walls[1] = false;
-    }
-    if (deltaX == -1) { // Current is to the left of the neighbor
-        current.walls[1] = false;
-        neighbor.walls[3] = false;
-    }
-    if (deltaY == 1) { // Current is to the bottom of the neighbor
-        current.walls[0] = false;
-        neighbor.walls[2] = false;
-    }
-    if (deltaY == -1) { // Current is to the top of the neighbor
-        current.walls[2] = false;
-        neighbor.walls[0] = false;
-    }
-}
-
-function equalCells(cell1, cell2) {
-    return cell1.row == cell2.row && cell1.column == cell2.column;
-}
-
 function isWall(cellA, cellB) {
     // Whether there's a wall or not depends on the orientation of the blocks
     // If it's vertical, it has to be false between even numbers
@@ -161,72 +18,120 @@ function isWall(cellA, cellB) {
     return true;
 }
 
-Maze.prototype.createMaze = function () {
-    for (var i = 0; i < this.heightCells; i++) {
-        for (var j = 0; j < this.widthCells; j++) {
-            var cell = new Cell(20, i, j);
-            this.cellGraph[i].push(cell);
+function Maze(numRows, numColumns) {
+    /*
+        Defines a maze given the number of rows and the number of columns in the maze
+    */
+    this.numColumns = numColumns;
+    this.numRows = numRows;
+    this.numCells = numRows * numColumns;
+    this.cellGraph = [];
+
+    for (var i = 0; i < numRows; i++) { // For every single row
+        this.cellGraph.push([]); // Start out with an empty row
+    }
+}
+
+Maze.prototype.createMaze = function () { // Build an empty maze
+    for (var i = 0; i < this.numRows; i++) { // Iterate through every row
+        for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
+            var cell = new Cell(20, i, j); // Create a new size at row i and column j with size 20
+            this.cellGraph[i].push(cell); // Add the cell to the row
         }
     }
+}
+
+Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
+    /*
+        The frontier walls of a cell is defined as all the walls of the adjacent cells
+    */
+
+    /*
+    Coordinates of adjacent cells:
+    Up [cellRow - 1, cellColumn]
+    Down [cellRow + 1, cellColumn]
+    Right [cellRow, cellColumn + 1]
+    Left [cellRow, cellColumn - 1]
+    */
+    var coordinates = [
+        [cellRow - 1, cellColumn],
+        [cellRow + 1, cellColumn],
+        [cellRow, cellColumn + 1],
+        [cellRow, cellColumn - 1]
+    ];
+
+    var computedFrontier = []; // List of frontier cells
+
+    var originalCell = this.cellGraph[cellRow][cellColumn]; // We want to calculate the frontier of the original cell
+
+    for (var i = 0; i < coordinates.length; i++) {
+        // Get the coordinates of the adjacent cell
+        var coordinate = coordinates[i];
+        var row = coordinate[0];
+        var col = coordinate[1];
+
+        // See if a cell exists at that area 
+        // If there is a cell that exists, add all of the walls of the cell to the computedFrontier array
+        if (row >= 0 && row < this.cellGraph.length && col >= 0 && col < this.cellGraph[0].length) {
+            var cell = this.cellGraph[parseInt(row)][parseInt(col)];
+
+            for (var j = 0; j < directions.length; j++) {
+                computedFrontier.push([cell.row, cell.column, directions[j]]);
+            }
+        }
+    }
+
+
+    return computedFrontier;
+}
+
+function Cell(cellSize, row, column) {
+    this.cellSize = cellSize; // The width and height of the cell
+
+    this.column = column;
+    this.row = row;
+
+    this.xPos = column * cellSize;
+    this.yPos = row * cellSize;
+
+
+    this.walls = [true, true, true, true]; // 0 = top, 1 = right, 2 = bottom, 3 = left
+    this.visited = false; // Whether the cell has been traversed or not
 }
 
 
 
 
+const Room = require("colyseus").Room;
 
+export class MazeRoom extends Room {
+    // this room supports only 4 clients connected
 
-// NETWORKING LOGIC
-const Room = require('colyseus').Room;
+    onInit (options) {
+      this.maxClients = 2;
+      this.maze = new Maze(23, 35);
+      this.maze.createMaze();
 
-const TURN_TIMEOUT = 10
+      console.log("BasicRoom created!", options);
 
-module.exports = class MazeRoom extends Room {
-
-  onInit () {
-    this.maxClients = 2;
-    this.endPosition = [22, 34];
-
-    this.maze = new Maze(35, 20);
-    this.maze.createMaze();
-
-    console.log("initializing maze");
-
-    this.setState({
-      maze: this.maze,
-      players: [] // Maps the client's id to its position in the maze
-    })
-  }
-
-  onJoin (client) {
-
-    console.log("this.players.length = " + this.players.length);
-
-    // Emit the newly created maze to the client
-    
-
-    if (this.players.length == this.maxClients) {
-      // Lock this room for new users
-      //this.lock();
+      this.broadcast(this.maze);
     }
-  }
 
-  onMessage (client, data) {
-    // Receives position from the client
-    console.log("this.state = " + this.state);
-    this.state.players[client.sessionID] = data;
-
-    // Analyze if the client has won based on his or her position
-    if (data[0] == this.endPosition[0] && data[1] == this.endPosition[1]) {
-    
+    onJoin (client) {
+        this.broadcast(`${ client.sessionId } joined.`);
     }
-  }
 
-  onLeave (client) {
-      delete this.state.players[client.sessionID];
+    onLeave (client) {
+        this.broadcast(`${ client.sessionId } left.`);
+    }
 
-      var winningPlayer = Object.keys(this.state.players)[0];
+    onMessage (client, data) {
+        console.log("BasicRoom received message from", client.sessionId, ":", data);
+        this.broadcast(`(${ client.sessionId }) ${ data.message }`);
+    }
 
-      
-  }
+    onDispose () {
+        console.log("Dispose BasicRoom");
+    }
 
 }

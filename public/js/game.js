@@ -1,5 +1,3 @@
-var count = 0;
-
 var roomID = "";
 
 var gameOver = false;
@@ -32,12 +30,6 @@ var vectors = [
 ];
 
 var wallList = {}; // Structure of a wall [rol (num), col (num), direction (string)]
-
-var host = window.document.location.host.replace(/:.*/, '');
-var client = new Colyseus.Client(location.protocol.replace("http", "ws") + host + (location.port ? ':'+location.port : ''));
-console.log("client parameter = " + location.protocol.replace("http", "ws") + host + (location.port ? ':'+location.port : ''));
-
-let room = null;
 
 function isWall(cellA, cellB) {
     // Whether there's a wall or not depends on the orientation of the blocks
@@ -158,16 +150,6 @@ var mode;
 
 $("#content").fadeIn();
 
-function attachListeners(room) {
-    room.onStateChange.addOnce(function(state) {
-      console.log("this is the first room state!", state);
-    });
-
-    room.onStateChange.add(function(state) {
-      console.log("the room state has been updated:", state);
-    });
-}
-
 function initSinglePlayer() {
     // Regenerate maze
     // If win, ask to play again
@@ -203,7 +185,7 @@ $("#single-player").click(function () {
 
 $("#one-on-one").click(function () {
     mode = "one-on-one";
-    
+
     // Display the new One-on-One layout
     // Two buttons: Joining a match and Inviting others to the match
     // Fade out play-wrapper, and fade in the one-on-one-wrapper
@@ -228,94 +210,89 @@ $("#one-on-one").click(function () {
     });
 
     $("#join").click(function () {
-        console.log("clicked join");
+            $("#one-on-one-wrapper").hide();
 
-        $("#one-on-one-wrapper").hide();
+            $("#one-on-one-wrapper").removeClass();
+            $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
 
-        $("#one-on-one-wrapper").removeClass();
-        $("#one-on-one-wrapper").addClass("animated fadeOutLeft");
+            $("#join-menu").show();
+            $("#join-menu").addClass("animated fadeInRight");
 
-        $("#join-menu").show();
-        $("#join-menu").addClass("animated fadeInRight");
+            var roomCode = document.getElementById("room-code");
 
-        var roomCode = document.getElementById("room-code");
+            roomCode.addEventListener("keyup", function (event) {
+                    event.preventDefault();
 
-        roomCode.addEventListener("keyup", function (event) {
-            console.log("event.keyCode = " + event.keyCode);
+                    if (event.keyCode === 13) { // The user pressed the enter / return key
 
-            event.preventDefault();
+                        // Begin verification process
+                        // Step 1: first see if the input is empty or not
+                        var codeLength = $("#room-code").val().length;
 
-            if (event.keyCode === 13) { // The user pressed the enter / return key
-
-                // Begin verification process
-                // Step 1: first see if the input is empty or not
-                var codeLength = $("#room-code").val().length;
-
-                console.log("codeLength = " + codeLength);
-
-                if (codeLength == 0) {
-                    // change to modal later
-                    alert("Please enter a code.");
-                } else {
-                    try {
-                        roomID = $("#room-code").val();
-
-                        room = client.join(roomID, {create: false}); // Create a new room, and have that client join the room
-                        attachListeners(room);
-
-                        gameOver = false;
-                        gameOverTrigger = false;
-
-                        solved = false;
-
-                        path = ["0-0"];
-
-                        userX = 0;
-                        userY = 0;
-
-                        complete = false;
-
-                        if (myp25 == null) {
-                            //myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+                        if (codeLength == 0) {
+                            // change to modal later
+                            alert("Please enter a code.");
+                        } else {
+                            //try {
+                            roomID = $("#room-code").val();
+                            socket.emit("join", roomID);
                         }
-
-                        $("#score-panel").fadeOut(500);
-
-                        $("#join-menu").removeClass();
-                        $("#join-menu").addClass("animated fadeOutLeft");
-
-                        $("#invite-menu").removeClass();
-                        $("#invite-menu").hide();
-                        $("#invite-menu").addClass("animated fadeOutLeft");
-
-                        $("#game-panel").show();
-                        $("#game-panel").addClass("animated fadeInRight");
-                    }
-                    catch (err) {
-                        alert("The code you entered is invalid.");
-                        console.log("err = " + err);
+                        //catch (err) {
+                        //    alert("The code you entered is invalid.");
+                        //    console.log("err = " + err);
+                        //}
                     }
                 }
-            }
-        });
+            });
     });
 });
 
-socket.on("generated-url", joinRoom);
+socket.on("generated-url", createRoom);
 
-function joinRoom(id) {
+function createRoom(id) {
     roomID = id;
 
-    console.log("roomID = " + roomID);
-
-    room = client.join(roomID, {create: true}); // Create a new room, and have that client join the room
-    attachListeners(room);
-
     // Add event listeners to the room
-    console.log("room.state.players = " + room.state.toString());
-
-     $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
+    $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
+}
+
+socket.on("invalid", alertError);
+
+function alertError() {
+    console.log("The code you entered is invalid.");
+}
+
+socket.on("paired", initializeGame);
+
+function initializeGame() {
+    gameOver = false;
+    gameOverTrigger = false;
+
+    solved = false;
+
+    path = ["0-0"];
+
+    userX = 0;
+    userY = 0;
+
+    complete = false;
+
+    if (myp25 == null) {
+        //myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+    }
+
+    $("#score-panel").fadeOut(500);
+
+    $("#join-menu").removeClass();
+    $("#join-menu").addClass("animated fadeOutLeft");
+
+    $("#invite-menu").removeClass();
+    $("#invite-menu").hide();
+    $("#invite-menu").addClass("animated fadeOutLeft");
+
+    $("#game-panel").show();
+    $("#game-panel").addClass("animated fadeInRight");
 }
 
 // star function borrowed from p5.js examples  
@@ -423,10 +400,7 @@ function movementController(key) {
     /*
         Controls all the logic behind the user's movement on the board
     */
-    console.log("key = " + key);
-
     if (key === 'w' || key === 'W') {
-        console.log("W");
         if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[0]) {
             userY -= 1;
 
@@ -441,9 +415,8 @@ function movementController(key) {
             }
         }
     }
-    
+
     if (key === 's' || key === 'S') {
-        console.log("S");
         if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[2]) {
             userY += 1;
 
@@ -460,7 +433,6 @@ function movementController(key) {
     }
 
     if (key === 'a' || key === 'A') {
-        console.log("A");
         if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[3]) {
             userX -= 1;
 
@@ -477,7 +449,6 @@ function movementController(key) {
     }
 
     if (key === 'd' || key === 'D') {
-        console.log("D");
         if (singlePlayerUserPosition && !singlePlayerUserPosition.walls[1]) {
             userX += 1;
 
@@ -505,11 +476,6 @@ var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(700, 460);
         p.background(0, 0, 0);
-
-        if (room) {
-            singlePlayerMaze = room.maze;
-            console.log("singlePlayerMaze = " + singlePlayerMaze);
-        }
 
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
         var pos = getRandomPos(singlePlayerMaze.cellGraph[0].length, singlePlayerMaze.cellGraph.length);
@@ -603,6 +569,12 @@ var mazeDisplay = function (p) {
         if (deltaY == -1) { // Current is to the top of the neighbor
             current.walls[2] = false;
             neighbor.walls[0] = false;
+        }
+    }
+
+    function updateTime() {
+        if (singlePlayerComplete) {
+            $("#game-panel").html("time elapsed: " + singlePlayerTimer.getTimeValues().toString(["minutes", "seconds"]));
         }
     }
 
@@ -727,13 +699,6 @@ var mazeDisplay = function (p) {
 
             p.clear();
 
-            // COUNT ONLY USED FOR DEBUGGING PURPOSES
-            count += 1;
-
-            if (count == 1) {
-                console.log(singlePlayerMaze);
-            }
-
             // Draw the maze
             for (var i = 0; i < singlePlayerMaze.cellGraph.length; i++) { // Iterate through row
                 for (var j = 0; j < singlePlayerMaze.cellGraph[i].length; j++) { // Iterate through every column
@@ -754,11 +719,7 @@ var mazeDisplay = function (p) {
 
                 singlePlayerTimer.reset();
                 singlePlayerTimer.start();
-                singlePlayerTimer.addEventListener("secondsUpdated", function (e) {
-                    if (singlePlayerComplete) {
-                        $("#game-panel").html("time elapsed: " + singlePlayerTimer.getTimeValues().toString(["minutes", "seconds"]));
-                    }
-                });
+                singlePlayerTimer.addEventListener("secondsUpdated", updateTime);
 
                 singlePlayerTimeElapsedFadeIn = true;
             }
@@ -769,7 +730,7 @@ var mazeDisplay = function (p) {
             p.ellipse(singlePlayerUserPosition.xPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.yPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2);
 
             drawPath(p, singlePlayerPath);
-            
+
             if (!singlePlayerSolved) {
                 star(singlePlayerMaze.numRows * 20 - 10, singlePlayerMaze.numColumns * 20 - 10, 6, 1, 5, p);
             }
@@ -780,8 +741,6 @@ var mazeDisplay = function (p) {
         if (mode == "single-player") {
             if (singlePlayerComplete) {
                 var cellString = "";
-
-                console.log("p.key = " + p.key);
 
                 if (p.key === 'w' || p.key === 'W') {
                     cellString = movementController("w");
@@ -796,13 +755,13 @@ var mazeDisplay = function (p) {
                     cellString = movementController("D");
                 }
 
-                console.log("cellString = " + cellString);
-
                 var endPosition = (singlePlayerMaze.numRows - 1).toString() + "-" + (singlePlayerMaze.numColumns - 1).toString();
 
                 if (cellString == endPosition) {
                     singlePlayerSolved = true;
-                    singlePlayerComplete = false;
+                    singlePlayerTimeElapsedFadeIn = true;
+
+                    singlePlayerTimer.removeEventListener("secondsUpdated", updateTime);
 
                     $("#game-panel").fadeOut(500, function () {
                         $("#game-panel").html("You solved the maze in " + singlePlayerTimer.getTimeValues().toString(["minutes", "seconds"]) + "!");
@@ -901,7 +860,7 @@ var mazeDisplay = function (p) {
             userPosition = maze.cellGraph[userY][userX];
 
             if (!gameOver) {
-                socket.emit("position", [socket.id, roomID, userPosition]);
+                //socket.emit("position", [socket.id, roomID, userPosition]);
             }
         }
 
