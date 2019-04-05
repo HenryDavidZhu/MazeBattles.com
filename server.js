@@ -1,3 +1,4 @@
+//-----------------------------------------------------------------------------------------------------------------------------------------
 function isWall(cellA, cellB) {
     // Whether there's a wall or not depends on the orientation of the blocks
     // If it's vertical, it has to be false between even numbers
@@ -17,11 +18,12 @@ function isWall(cellA, cellB) {
     }
     return true;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------
 
+
+//------------------------------------------------------------------------------------------------------------------------------------------
 function Maze(numRows, numColumns) {
-    /*
-        Defines a maze given the number of rows and the number of columns in the maze
-    */
+    // Defines a maze given the number of rows and the number of columns in the maze
     this.numColumns = numColumns;
     this.numRows = numRows;
     this.numCells = numRows * numColumns;
@@ -31,7 +33,9 @@ function Maze(numRows, numColumns) {
         this.cellGraph.push([]); // Start out with an empty row
     }
 }
+//------------------------------------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------------------------------------------------------------------------------------------------
 Maze.prototype.createMaze = function () { // Build an empty maze
     for (var i = 0; i < this.numRows; i++) { // Iterate through every row
         for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
@@ -40,7 +44,9 @@ Maze.prototype.createMaze = function () { // Build an empty maze
         }
     }
 }
+//------------------------------------------------------------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------------------------------------------------------------
 Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
     /*
         The frontier walls of a cell is defined as all the walls of the adjacent cells
@@ -81,10 +87,11 @@ Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
         }
     }
 
-
     return computedFrontier;
 }
+//------------------------------------------------------------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------------------------------------------------------------
 function Cell(cellSize, row, column) {
     this.cellSize = cellSize; // The width and height of the cell
 
@@ -98,19 +105,80 @@ function Cell(cellSize, row, column) {
     this.walls = [true, true, true, true]; // 0 = top, 1 = right, 2 = bottom, 3 = left
     this.visited = false; // Whether the cell has been traversed or not
 }
+//------------------------------------------------------------------------------------------------------------------------------------------
+function deleteWall(current, neighbor) {
+    var deltaX = current.column - neighbor.column;
+    var deltaY = current.row - neighbor.row;
 
+    if (deltaX == 1) { // Current is to the right of the neighbor
+        current.walls[3] = false;
+        neighbor.walls[1] = false;
+    }
+    if (deltaX == -1) { // Current is to the left of the neighbor
+        current.walls[1] = false;
+        neighbor.walls[3] = false;
+    }
+    if (deltaY == 1) { // Current is to the bottom of the neighbor
+        current.walls[0] = false;
+        neighbor.walls[2] = false;
+    }
+    if (deltaY == -1) { // Current is to the top of the neighbor
+        current.walls[2] = false;
+        neighbor.walls[0] = false;
+    }
+}
+//------
+    function calculateCellDivision(wall) {
+        // Calculate the two cells that the wall divides
+        // For example:
+        // If the wall is [10, 11, "N"]
+        // The two cells that the wall divides are (10, 11) and (9, 11)
+
+        var row = wall[0]; 
+        var col = wall[1];
+
+        var cell1 = maze.cellGraph[row][col]; // Get the cell of the wall
+
+        // Get the corresponding vector based upon the direction of the wall
+        var vectorIndex = directions.indexOf(wall[2]);
+
+        // Add the vector to the position of cell1
+        var cell2Row = parseInt(cell1.row) + vectors[vectorIndex][0];
+        var cell2Column = parseInt(cell1.column) + vectors[vectorIndex][1];
+
+        if (cell2Row < 0 || cell2Row >= maze.cellGraph.length || cell2Column < 0 || cell2 >= maze.cellGraph[0].length) {
+            return -1;
+        }
+
+        var cell2 = maze.cellGraph[cell2Row][cell2Column]; // Get the corresponding cell
+
+        var cellsVisited = 0;
+        var unvisitedCell;
+
+        if (cell1.visited) {
+            cellsVisited += 1;
+            unvisitedCell = cell2;
+        }
+
+        if (!cell2) { // This means that the wall is a border wall
+            return -1;
+        }
+
+        if (cell2.visited) {
+            cellsVisited += 1;
+            unvisitedCell = cell1;
+        }
+
+        if (cellsVisited == 1) {
+            return [cell1, cell2, cellsVisited, unvisitedCell];
+        }
+
+        return -1;
+    }
 
 class System {
     constructor() {
-        this.openRooms = {};
-        this.closedRooms = {};
-    }
-}
-
-class Room {
-    constructor() {
-        this.maze = null;
-        this.playerPositions = {};
+        this.rooms = {};
     }
 }
 
@@ -123,34 +191,154 @@ var socket = require("socket.io");
 var uniqid = require("uniqid");
 
 var app = express();
-var server = app.listen(process.env.PORT || 3000, function(){
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+var server = app.listen(process.env.PORT || 3000, function () {
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
 
-app.use(express.static("public", { dotfiles: 'allow' }));
+app.use(express.static("public", {
+    dotfiles: 'allow'
+}));
 
-var io = socket(server, {pingTimeout: 63000});
-
-
-
+var io = socket(server, {
+    pingTimeout: 63000
+});
 io.sockets.on("connection", playerConnect);
+
+
+class Room {
+    constructor() {
+        this.maze = null;
+        this.playerPositions = {};
+        this.playerIDs = [];
+        this.maxUsers = 2;
+        this.wallList = {}; // Structure of a wall [rol (num), col (num), direction (string)]
+        this.open = true;
+    }
+
+    connectUser(userID) {
+        console.log("connecting user " + userID);
+        this.playerPositions[userID] = [0, 0];
+
+        if (Object.keys(this.playerPositions).length == this.maxUsers) {
+            this.playerIDs = Object.keys(this.playerPositions);
+
+            // Generate the maze
+            this.maze = new Maze(23, 35);
+            this.maze.createMaze();
+            this.generateMaze();
+            console.log("this.maze.cellGraph = " + this.maze.cellGraph);
+
+            for (var i = 0; i < this.playerIDs.length; i++) {
+                console.log("emiting maze to player " + this.playerIDs[i]);
+                console.log("this.maze.cellGraph[0][0].walls = " + this.maze.cellGraph[0][0].walls);
+                io.to(this.playerIDs[i]).emit("maze", this.maze);
+                io.to(this.playerIDs[i]).emit("paired", true);
+            }
+
+            this.open = false;
+        }
+    }
+
+    generateMaze() {
+        while (Object.keys(this.wallList).length > 0) { // While there are still walls in the list
+            // Pick a random wall of the list
+            var wallListKeys = $.map(this.wallList, function (value, key) {
+                return key;
+            });
+
+            var randomKey = wallListKeys[Math.floor(Math.random() * wallListKeys.length)];
+
+            var randomWall = this.wallList[randomKey];
+
+            var components = calculateCellDivision(randomWall);
+
+            if (components != -1) {
+
+                var numVisited = components[2];
+
+                var cell1 = components[0];
+                var cell2 = components[1];
+
+                // If only one of the two cells that the wall divides is visited, then:
+                //  1. Make the wall a passage and mark the unvisited cell as part of the maze.
+                //  2. Add the neighboring walls of the cell to the wall list.
+                //     Remove the wall from the list.
+                if (numVisited == 1) {
+                    console.log("numVisited == 1");
+                    deleteWall(cell1, cell2);
+
+                    var unvisitedCell = this.maze.cellGraph[components[3].row][components[3].column];
+                    unvisitedCell.visited = true;
+
+                    var unvisitedString = unvisitedCell.row + "|" + unvisitedCell.column;
+
+                    // Add the neighboring walls of the cell to the wall list
+                    // Format of the walls (by index):
+                    // 0 = top, 1 = right, 2 = bottom, 3 = left
+                    var computedFrontierWalls = this.maze.computeFrontierWalls(unvisitedCell.row, unvisitedCell.column);
+
+                    for (var k = 0; k < computedFrontierWalls.length; k++) {
+                        var computedWall = computedFrontierWalls[k];
+                        var keyString = computedWall[0].toString() + computedWall[1].toString() + computedWall[2];
+
+                        if (!this.wallList[keyString]) {
+                            this.wallList[keyString] = computedWall;
+                        }
+                    }
+
+                    // Calculate the corresponding cell
+                    var direction = randomWall[2];
+                    var directionIndex = directions.indexOf(direction);
+                    var oppositeDirectionIndex = -1;
+
+                    if (directionIndex == 0) {
+                        oppositeDirectionIndex = 2;
+                    }
+                    if (directionIndex == 2) {
+                        oppositeDirectionIndex = 0;
+                    }
+                    if (directionIndex == 1) {
+                        oppositeDirectionIndex = 3;
+                    }
+                    if (directionIndex == 3) {
+                        oppositeDirectionIndex = 1;
+                    }
+
+                    var vector = vectors[directionIndex];
+
+                    var correspondingString = (randomWall[0] + vector[0]).toString() + (randomWall[1] + vector[1]).toString() + directions[oppositeDirectionIndex];
+                }
+            }
+
+            delete this.wallList[randomKey];
+            delete this.wallList[correspondingString];
+        }
+
+        console.log("this.maze.cellGraph[0][0].walls = " + this.maze.cellGraph[0][0].walls);
+    }
+}
+
 
 function playerConnect(user) {
     user.on("invite", createRoom);
 
     function createRoom() {
         var roomID = uniqid();
-        system.openRooms[roomID] = new Room();
+        system.rooms[roomID] = new Room();
+        system.rooms[roomID].connectUser(user.id);
+
         user.emit("generated-url", roomID);
     }
 
     user.on("join", joinRoom);
 
-    function joinRoom() {
-        if (system.openRooms[roomID]) {
-            socket.emit("paired", true);
+    function joinRoom(roomID) {
+        console.log("system.rooms[" + roomID + "] = " + system.rooms[roomID]);
+
+        if (system.rooms[roomID] && system.rooms[roomID].open) {
+            system.rooms[roomID].connectUser(user.id);
         } else {
-            socket.emit("invalid", true);
+            user.emit("invalid", true);
         }
     }
 }
