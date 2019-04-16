@@ -268,7 +268,7 @@ button {
     left: 10px !important;
 }
 
-/* MEDIA QUERIES */
+/* MEDIA QUERIES 
 @media only screen and (max-width: 750px) {
     #display-error {
         display: inline;
@@ -285,4 +285,4 @@ button {
     #full-wrapper {
         display: none;
     }
-}
+}*/
