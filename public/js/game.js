@@ -13,10 +13,8 @@ var singlePlayerSolved = false;
 var maze;
 var singlePlayerCurrent;
 var singlePlayerTimeElapsedFadeIn = false;
-var singlePlayerCompleteTrigger = true;
 
 var timer = new Timer();
-var singlePlayerTimer = new Timer();
 
 // The directions and vectors arrays correspond to each other
 // For example, the first element of directions is "N" and the first element of vectors also represents a 
@@ -153,6 +151,19 @@ var mode;
 
 $("#content").fadeIn();
 
+
+
+
+    function updateTime() {
+        if (singlePlayerComplete) {
+            $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
+        }
+    }
+
+
+
+
+
 function initSinglePlayer() {
     // Regenerate maze
     // If win, ask to play again
@@ -250,6 +261,7 @@ socket.on("lost", lostMatch);
 
 function lostMatch() {
     locked = true;
+    singlePlayerComplete = false;
 
     $("#game-panel").fadeOut(500, function () {
         // Change the html of the score-panel to the play again button
@@ -291,7 +303,9 @@ function alertError() {
 
 socket.on("paired", initializeGame);
 
-function initializeGame() {
+function initializeGame(room, initialized) {
+    roomID = room;
+
     gameOver = false;
     gameOverTrigger = false;
 
@@ -304,9 +318,15 @@ function initializeGame() {
 
     complete = false;
 
-    $("#canvas-wrapper").hide();
-    $("#canvas2-wrapper").show();
-    myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+    locked = false; // enable user movement
+
+    if (!initialized) {
+        $("#canvas-wrapper").hide();
+        $("#canvas2-wrapper").show();
+        myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+    } else {
+
+    }
 
     $("#score-panel").fadeOut(500);
 
@@ -325,6 +345,20 @@ function initializeGame() {
     $("#game-panel").html("Time Elapsed: 0:00");
     $("#game-panel").show();
     $("#game-panel").addClass("animated fadeInRight");
+
+    $("#game-panel").fadeOut(500, function () {
+        // Change the html of the score-panel to the play again button
+        $("#game-panel").html("Time Elapsed: 0:00");
+
+        $("#game-panel").fadeIn(500, function () {
+
+        });
+    });
+
+    singlePlayerComplete = true;
+    timer.reset();
+    timer.start();
+    timer.addEventListener("secondsUpdated", updateTime);
 }
 
 socket.on("maze", downloadMaze);
@@ -699,12 +733,6 @@ var mazeDisplay = function (p) {
         }
     }
 
-    function updateTime() {
-        if (singlePlayerComplete) {
-            $("#game-panel").html("time elapsed: " + singlePlayerTimer.getTimeValues().toString(["minutes", "seconds"]));
-        }
-    }
-
     p.draw = function () {
         if (mode == "one-on-one") {
             if (!gameOverTrigger) {
@@ -755,9 +783,9 @@ var mazeDisplay = function (p) {
                     });
                 });
 
-                singlePlayerTimer.reset();
-                singlePlayerTimer.start();
-                singlePlayerTimer.addEventListener("secondsUpdated", updateTime);
+                timer.reset();
+                timer.start();
+                timer.addEventListener("secondsUpdated", updateTime);
 
                 singlePlayerTimeElapsedFadeIn = true;
             }
@@ -796,13 +824,13 @@ var mazeDisplay = function (p) {
                         singlePlayerSolved = true;
                         singlePlayerTimeElapsedFadeIn = true;
 
-                        singlePlayerTimer.removeEventListener("secondsUpdated", updateTime);
+                        timer.removeEventListener("secondsUpdated", updateTime);
 
                         // Lock the movement controls
                         locked = true;
 
                         $("#game-panel").fadeOut(500, function () {
-                            $("#game-panel").html("You solved the maze in " + singlePlayerTimer.getTimeValues().toString(["minutes", "seconds"]) + "!");
+                            $("#game-panel").html("You solved the maze in " + timer.getTimeValues().toString(["minutes", "seconds"]) + "!");
 
                             $("#game-panel").fadeIn(500, function () {
 
@@ -894,18 +922,19 @@ var mazeDisplay = function (p) {
                     solved = true;
                     socket.emit("winner", roomID);
 
-                    $("#game-panel").fadeOut(500, function() {
+                    $("#game-panel").fadeOut(500, function () {
                         $("#game-panel").html("You won the match!");
                         $("#game-panel").fadeIn(500);
+                        singlePlayerComplete = false;
                         locked = true;
                     });
 
-                     setTimeout(function () {
+                    setTimeout(function () {
                         $("#game-panel").fadeOut(500, function () {
                             $("#game-panel").html("Waiting for your opponent to request a rematch<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
                             $("#game-panel").fadeIn(500);
                         });
-                    }, 3000);                   
+                    }, 3000);
                 }
             }
 
@@ -937,10 +966,9 @@ function replay() {
     mode = "single-player";
     singlePlayerSolved = false;
     singlePlayerComplete = false;
-    singlePlayerCompleteTrigger = true;
     singlePlayerTimeElapsedFadeIn = false;
 
-    singlePlayerTimer = new Timer();
+    timer = new Timer();
 
     singlePlayerUserPosition = "0-0";
     userY = 0;
@@ -1010,6 +1038,7 @@ function rematch() {
 }
 
 
+
 socket.on("rematchrequest", handleRematch);
 
 function handleRematch() {
@@ -1037,9 +1066,21 @@ function handleRematch() {
 function acceptRematch(accept) {
     if (accept) {
         // Regenerate the maze
-        socket.emit("acceptRematch", true);
-        initializeGame();
-    } else {
+        maze = new Maze(23, 35);
+        maze.createMaze();
+        maze = generateMaze(maze);
 
+        socket.emit("acceptRematch", true, maze, roomID);
     }
+}
+
+
+
+
+
+socket.on("disconnectedUser", userDisconnect);
+
+function userDisconnect() {
+    alert("Your opponent has disconnected from the match.");
+    location.href = "http://www.mazebattles.com/"
 }

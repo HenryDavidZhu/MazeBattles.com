@@ -1,3 +1,7 @@
+// CUSTOM DATA STRUCTURE: BIDIRECITONAL MAP
+
+
+
 // The indexes of the directions and vectors arrays correspond to each other
 var directions = ["N", "E", "S", "W"];
 
@@ -188,6 +192,7 @@ function getRandomPos(widthCells, heightCells) {
 class System {
     constructor() {
         this.rooms = {};
+        this.clientMappings = {};
     }
 }
 
@@ -231,18 +236,21 @@ class Room {
         this.open = true;
     }
 
-    connectUser(userID) {
-        this.playerPositions[userID] = [0, 0];
+    connectUser(userID, roomID) {
+        if (this.open) {
+            this.playerPositions[userID] = [0, 0];
+            system.clientMappings[userID] = roomID;
 
-        if (Object.keys(this.playerPositions).length == this.maxUsers) {
-            this.playerIDs = Object.keys(this.playerPositions);
+            if (Object.keys(this.playerPositions).length == this.maxUsers) {
+                this.playerIDs = Object.keys(this.playerPositions);
 
-            for (var i = 0; i < this.playerIDs.length; i++) {
-                io.to(this.playerIDs[i]).emit("maze", this.maze);
-                io.to(this.playerIDs[i]).emit("paired", true);
+                for (var i = 0; i < this.playerIDs.length; i++) {
+                    io.to(this.playerIDs[i]).emit("maze", this.maze);
+                    io.to(this.playerIDs[i]).emit("paired", roomID, false);
+                }
+
+                this.open = false;
             }
-
-            this.open = false;
         }
     }
 
@@ -265,8 +273,6 @@ class Room {
         }
 
         while (Object.keys(this.wallList).length > 0) { // While there are still walls in the list
-            console.log("Object.keys(this.wallList).length = " + Object.keys(this.wallList).length);
-
             // Pick a random wall of the list
             var wallListKeys = Object.keys(this.wallList);
 
@@ -346,7 +352,7 @@ function playerConnect(user) {
     function createRoom(generatedMaze) {
         var roomID = uniqid();
         system.rooms[roomID] = new Room();
-        system.rooms[roomID].connectUser(user.id);
+        system.rooms[roomID].connectUser(user.id, roomID); // YAAASSS
         system.rooms[roomID].maze = generatedMaze;
 
 
@@ -357,7 +363,7 @@ function playerConnect(user) {
 
     function joinRoom(roomID) {
         if (system.rooms[roomID] && system.rooms[roomID].open) {
-            system.rooms[roomID].connectUser(user.id);
+            system.rooms[roomID].connectUser(user.id, roomID);
         } else {
             user.emit("invalid", true);
         }
@@ -393,8 +399,27 @@ function playerConnect(user) {
     user.on("disconnect", disconnectedUser);
 
     function disconnectedUser() {
-        console.log("user disconnected.");
+        if (system.clientMappings[user.id]) {
+            console.log("user disconnected");
+            // Figure out the opponent of the user
+            var roomID = system.clientMappings[user.id];
+
+            var opponent = system.rooms[roomID].playerIDs[0];
+
+            if (opponent == user.id) {
+                opponent = system.rooms[roomID].playerIDs[1];
+            }
+
+            io.to(opponent).emit("disconnectedUser", true);
+
+            // Destroy the room and references between the client ids and the room ids
+            delete system.clientMappings[user.id];
+            delete system.clientMappings[opponent];
+            delete system.rooms[roomID];
+        }
     }
+
+
 
     user.on("rematch", sendRematchRequest);
 
@@ -412,9 +437,16 @@ function playerConnect(user) {
 
     user.on("acceptRematch", acceptRematchHandler);
 
-    function acceptRematchHandler(accept) {
+    function acceptRematchHandler(accept, maze, roomID) {
         if (accept) {
             // If the user accepts the rematch
+            var room = system.rooms[roomID];
+            room.maze = maze;
+
+            for (var i = 0; i < room.playerIDs.length; i++) {
+                io.to(room.playerIDs[i]).emit("maze", room.maze);
+                io.to(room.playerIDs[i]).emit("paired", roomID, true);
+            }
         } else {
             // Destroy the room
         }
