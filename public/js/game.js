@@ -173,6 +173,11 @@ function initSinglePlayer() {
 
     maze = new Maze(23, 35);
     maze.createMaze();
+                singlePlayerComplete = false;
+
+            maze = generateMaze(maze);
+
+            singlePlayerComplete = true;
 
     singlePlayerCurrent = maze.cellGraph[0][0];
 
@@ -757,12 +762,6 @@ var mazeDisplay = function (p) {
         }
 
         if (mode == "single-player") {
-            singlePlayerComplete = false;
-
-            maze = generateMaze(maze);
-
-            singlePlayerComplete = true;
-
             p.clear();
 
             // Draw the maze
@@ -976,6 +975,11 @@ function replay() {
 
     maze = new Maze(23, 35);
     maze.createMaze();
+                singlePlayerComplete = false;
+
+            maze = generateMaze(maze);
+
+            singlePlayerComplete = true;
 
     singlePlayerCurrent = maze.cellGraph[0][0];
 
