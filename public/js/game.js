@@ -1,3 +1,6 @@
+
+
+
 // MODULIZE DRAW FUNCTION FOR SINGLE-PLAYER
 
 var roomID = "";
@@ -753,6 +756,8 @@ var mazeDisplay = function (p) {
 
                     // Draw the path
                     drawPath(p, path);
+
+                    p.ellipse(maze.numColumns * 20 - 10, maze.numRows * 20 - 10, 5, 5);
                 }
             }
 
@@ -795,6 +800,9 @@ var mazeDisplay = function (p) {
             p.ellipse(singlePlayerUserPosition.xPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.yPos + singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2, singlePlayerUserPosition.cellSize / 2);
 
             drawPath(p, singlePlayerPath);
+
+            //console.log("maze.numColumns * 20 + 10 = " + (maze.numColumns * 20 + 10) + ", maze.numRows * 20 + 10 = " + (maze.numRows * 20 + 10));
+            p.ellipse(maze.numColumns * 20 - 10, maze.numRows * 20 - 10, 5, 5);
         }
     }
 
