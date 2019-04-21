@@ -46,7 +46,7 @@ function Maze(numRows, numColumns) {
 Maze.prototype.createMaze = function () { // Build an empty maze
     for (var i = 0; i < this.numRows; i++) { // Iterate through every row
         for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
-            var cell = new Cell(20, i, j); // Create a new size at row i and column j with size 20
+            var cell = new Cell(15, i, j); // Create a new size at row i and column j with size 20
             this.cellGraph[i].push(cell); // Add the cell to the row
         }
     }

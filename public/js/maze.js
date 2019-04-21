@@ -98,12 +98,12 @@ function getRandomPos(widthCells, heightCells) {
 
 var mazeIntro = function (p) {
 
-    var maze = new Maze(23, 35); // Generate a new maze with 20 rows and 35 columns
+    var maze = new Maze(31, 47); // Generate a new maze with 20 rows and 35 columns
 
     Maze.prototype.createMaze = function () { // Build an empty maze
         for (var i = 0; i < this.numRows; i++) { // Iterate through every row
             for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
-                var cell = new Cell(20, i, j); // Create a new size at row i and column j with size 20
+                var cell = new Cell(15, i, j); // Create a new size at row i and column j with size 20
                 maze.cellGraph[i].push(cell); // Add the cell to the row
             }
         }
@@ -112,7 +112,7 @@ var mazeIntro = function (p) {
     maze.createMaze(); // Build the maze
 
     p.setup = function () {
-        var canvas = p.createCanvas(700, 460);
+        var canvas = p.createCanvas(705, 465);
         p.background(255, 255, 255);
 
         p.smooth();

@@ -4,8 +4,7 @@
   "description": "multiplayer maze competition",
   "main": "server.js",
   "scripts": {
-    "test": "babel-node server.js",
-    "build": "babel-node server.js"
+    "test": "node server.js"
   },
   "keywords": [
     "mazes",
@@ -16,8 +15,6 @@
   "author": "henryzhu",
   "license": "ISC",
   "dependencies": {
-    "actionhero": "^19.1.2",
-    "colyseus": "^0.10.1",
     "easytimer.js": "^2.4.0",
     "express": "^4.16.4",
     "socket.io": "^2.2.0",
@@ -29,5 +26,8 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1"
+  }, 
+  "engines": {
+    "node": "10.13.0"
   }
 }

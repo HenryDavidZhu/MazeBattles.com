@@ -38,7 +38,7 @@ button {
 
 /* Text syling */
 #text-container {
-    width: 700px;
+    width: 705px;
 }
 #play-wrapper, #one-on-one-wrapper {
     text-align: center;
@@ -48,7 +48,7 @@ button {
 #canvas-wrapper {
     position: relative;
     z-index: 4;
-    height: 460px;
+    height: 465px;
     background: black;
     border-radius: 7px;
     box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
@@ -59,7 +59,7 @@ button {
     display: none;
     position: relative;
     z-index: 4;
-    height: 460px;
+    height: 465px;
     background: black;
     border-radius: 8px;
     box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
@@ -70,7 +70,7 @@ button {
 
 #game-wrapper {
     padding-bottom: 4px;
-    width: 700px;
+    width: 705px;
 }
 
 
@@ -86,7 +86,7 @@ button {
 
 #join-menu {
     display: none;
-    width: 700px;
+    width: 705px;
 }
 #game-panel {
     display: none;
@@ -140,7 +140,7 @@ button {
     color: black;
     width: 100%;
     font-size: 17px;
-    width: 700px;
+    width: 705px;
 }
 
 #join-menu input::placeholder {

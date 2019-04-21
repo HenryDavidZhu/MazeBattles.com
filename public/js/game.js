@@ -1,5 +1,4 @@
-
-
+// IDEA: DECREASE FRAME RATE TO ENABLE CONTINUOUS MOVEMENT
 
 // MODULIZE DRAW FUNCTION FOR SINGLE-PLAYER
 
@@ -72,7 +71,7 @@ function Maze(numRows, numColumns) {
 Maze.prototype.createMaze = function () { // Build an empty maze
     for (var i = 0; i < this.numRows; i++) { // Iterate through every row
         for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
-            var cell = new Cell(20, i, j); // Create a new size at row i and column j with size 20
+            var cell = new Cell(15, i, j); // Create a new size at row i and column j with size 15
             this.cellGraph[i].push(cell); // Add the cell to the row
         }
     }
@@ -174,7 +173,7 @@ function initSinglePlayer() {
     // If yes, regenerate maze again
     mode = "single-player";
 
-    maze = new Maze(23, 35);
+    maze = new Maze(31, 47);
     maze.createMaze();
                 singlePlayerComplete = false;
 
@@ -225,7 +224,7 @@ $("#one-on-one").click(function () {
         $("#invite-menu").show();
         $("#invite-menu").addClass("animated fadeInRight");
 
-        var roomMaze = new Maze(23, 35);
+        var roomMaze = new Maze(31, 47);
         roomMaze.createMaze();
         roomMaze = generateMaze(roomMaze);
 
@@ -388,7 +387,7 @@ function drawPath(p, path) {
         var prevRow = parseInt(components[0]);
         var prevColumn = parseInt(components[1]);
 
-        p.line(10, 10, column * 20 + 10, row * 20 + 10);
+        p.line(7.5, 7.5, column * 15 + 7.5, row * 15 + 7.5);
 
         for (var k = 1; k < path.length; k++) {
             var pathCell = path[k];
@@ -396,7 +395,7 @@ function drawPath(p, path) {
             var row = components[0];
             var column = components[1];
 
-            p.line(prevColumn * 20 + 10, prevRow * 20 + 10, column * 20 + 10, row * 20 + 10);
+            p.line(prevColumn * 15 + 7.5, prevRow * 15 + 7.5, column * 15 + 7.5, row * 15 + 7.5);
             prev = pathCell.split("-");
 
             prevRow = prev[0];
@@ -652,7 +651,7 @@ function generateMaze(inputMaze) {
 // Following construct is for multi-player maze
 var mazeDisplay = function (p) {
     p.setup = function () {
-        var canvas = p.createCanvas(700, 460);
+        var canvas = p.createCanvas(705, 465);
         p.background(0, 0, 0);
 
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
@@ -757,7 +756,7 @@ var mazeDisplay = function (p) {
                     // Draw the path
                     drawPath(p, path);
 
-                    p.ellipse(maze.numColumns * 20 - 10, maze.numRows * 20 - 10, 5, 5);
+                    p.ellipse(maze.numColumns * 15 - 7.5, maze.numRows * 15 - 7.5, 5, 5);
                 }
             }
 
@@ -801,8 +800,7 @@ var mazeDisplay = function (p) {
 
             drawPath(p, singlePlayerPath);
 
-            //console.log("maze.numColumns * 20 + 10 = " + (maze.numColumns * 20 + 10) + ", maze.numRows * 20 + 10 = " + (maze.numRows * 20 + 10));
-            p.ellipse(maze.numColumns * 20 - 10, maze.numRows * 20 - 10, 5, 5);
+            p.ellipse(maze.numColumns * 15 - 7.5, maze.numRows * 15 - 7.5, 5, 5);
         }
     }
 
@@ -925,7 +923,9 @@ var mazeDisplay = function (p) {
                     }
                 }
 
-                if (cellString == "22-34") {
+                var endPosition = (maze.numRows - 1).toString() + "-" + (maze.numColumns - 1).toString();
+
+                if (cellString == endPosition) {
                     solved = true;
                     socket.emit("winner", roomID);
 
@@ -981,7 +981,7 @@ function replay() {
     userY = 0;
     userX = 0;
 
-    maze = new Maze(23, 35);
+    maze = new Maze(31, 47);
     maze.createMaze();
                 singlePlayerComplete = false;
 
@@ -1078,7 +1078,7 @@ function handleRematch() {
 function acceptRematch(accept) {
     if (accept) {
         // Regenerate the maze
-        maze = new Maze(23, 35);
+        maze = new Maze(31, 47);
         maze.createMaze();
         maze = generateMaze(maze);
 
