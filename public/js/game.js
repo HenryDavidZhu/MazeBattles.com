@@ -647,6 +647,28 @@ function generateMaze(inputMaze) {
     return inputMaze;
 }
 
+    function deleteWall(current, neighbor) {
+        var deltaX = current.column - neighbor.column;
+        var deltaY = current.row - neighbor.row;
+
+        if (deltaX == 1) { // Current is to the right of the neighbor
+            current.walls[3] = false;
+            neighbor.walls[1] = false;
+        }
+        if (deltaX == -1) { // Current is to the left of the neighbor
+            current.walls[1] = false;
+            neighbor.walls[3] = false;
+        }
+        if (deltaY == 1) { // Current is to the bottom of the neighbor
+            current.walls[0] = false;
+            neighbor.walls[2] = false;
+        }
+        if (deltaY == -1) { // Current is to the top of the neighbor
+            current.walls[2] = false;
+            neighbor.walls[0] = false;
+        }
+    }
+
 
 // Following construct is for multi-player maze
 var mazeDisplay = function (p) {
@@ -716,28 +738,6 @@ var mazeDisplay = function (p) {
         p.stroke("#ffffff");
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
         p.fill(98, 244, 88);
-    }
-
-    function deleteWall(current, neighbor) {
-        var deltaX = current.column - neighbor.column;
-        var deltaY = current.row - neighbor.row;
-
-        if (deltaX == 1) { // Current is to the right of the neighbor
-            current.walls[3] = false;
-            neighbor.walls[1] = false;
-        }
-        if (deltaX == -1) { // Current is to the left of the neighbor
-            current.walls[1] = false;
-            neighbor.walls[3] = false;
-        }
-        if (deltaY == 1) { // Current is to the bottom of the neighbor
-            current.walls[0] = false;
-            neighbor.walls[2] = false;
-        }
-        if (deltaY == -1) { // Current is to the top of the neighbor
-            current.walls[2] = false;
-            neighbor.walls[0] = false;
-        }
     }
 
     p.draw = function () {
