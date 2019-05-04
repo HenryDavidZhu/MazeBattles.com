@@ -1,8 +1,4 @@
-// IDEA: DECREASE FRAME RATE TO ENABLE CONTINUOUS MOVEMENT
-
-// MODULIZE DRAW FUNCTION FOR SINGLE-PLAYER
-
-var roomID = "";
+var roomID = ""; 
 
 var gameOver = false;
 var gameOverTrigger = false;
@@ -12,32 +8,26 @@ var solved = false;
 var singlePlayerComplete = false;
 var singlePlayerPath = ["0-0"];
 var singlePlayerSolved = false;
-var maze;
 var singlePlayerCurrent;
 var singlePlayerTimeElapsedFadeIn = false;
 
+var maze;
+
 var timer = new Timer();
 
-// The directions and vectors arrays correspond to each other
-// For example, the first element of directions is "N" and the first element of vectors also represents a 
-// north vector
 var directions = ["N", "E", "S", "W"];
-
 var vectors = [
-    [-1, 0],
-    [0, 1],
-    [1, 0],
-    [0, -1]
+    [-1, 0], // N vector
+    [0, 1], // E vector
+    [1, 0], // S vector
+    [0, -1] // W vector
 ];
 
-var wallList = {}; // Structure of a wall [rol (num), col (num), direction (string)]
+var wallList = {}; // [rol (num), col (num), direction (string)]
 
-var locked = false;
+var locked = false; // Whether movement is enabled or not
 
 function isWall(cellA, cellB) {
-    // Whether there's a wall or not depends on the orientation of the blocks
-    // If it's vertical, it has to be false between even numbers
-    // If it's horizontal, it has to be false between odd numbers
     for (var j = 0; j < cellA.walls.length; j++) {
         for (var k = 0; k < cellB.walls.length; k++) {
             if (Math.abs(j - k) == 2 && !cellA.walls[j] && !cellB.walls[k]) {
@@ -55,9 +45,6 @@ function isWall(cellA, cellB) {
 }
 
 function Maze(numRows, numColumns) {
-    /*
-        Defines a maze given the number of rows and the number of columns in the maze
-    */
     this.numColumns = numColumns;
     this.numRows = numRows;
     this.numCells = numRows * numColumns;
@@ -68,21 +55,18 @@ function Maze(numRows, numColumns) {
     }
 }
 
-Maze.prototype.createMaze = function () { // Build an empty maze
-    for (var i = 0; i < this.numRows; i++) { // Iterate through every row
-        for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
-            var cell = new Cell(15, i, j); // Create a new size at row i and column j with size 15
-            this.cellGraph[i].push(cell); // Add the cell to the row
+Maze.prototype.createMaze = function () {
+    for (var i = 0; i < this.numRows; i++) {
+        for (var j = 0; j < this.numColumns; j++) {
+            var cell = new Cell(15, i, j);
+            this.cellGraph[i].push(cell);
         }
     }
 }
 
 Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
     /*
-        The frontier walls of a cell is defined as all the walls of the adjacent cells
-    */
-
-    /*
+    Frontier walls are all the walls of the adjacent cells.
     Coordinates of adjacent cells:
     Up [cellRow - 1, cellColumn]
     Down [cellRow + 1, cellColumn]
@@ -96,9 +80,8 @@ Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
         [cellRow, cellColumn - 1]
     ];
 
-    var computedFrontier = []; // List of frontier cells
-
-    var originalCell = this.cellGraph[cellRow][cellColumn]; // We want to calculate the frontier of the original cell
+    var computedFrontier = [];
+    var originalCell = this.cellGraph[cellRow][cellColumn];
 
     for (var i = 0; i < coordinates.length; i++) {
         // Get the coordinates of the adjacent cell
@@ -130,7 +113,6 @@ function Cell(cellSize, row, column) {
     this.xPos = column * cellSize;
     this.yPos = row * cellSize;
 
-
     this.walls = [true, true, true, true]; // 0 = top, 1 = right, 2 = bottom, 3 = left
     this.visited = false; // Whether the cell has been traversed or not
 }
@@ -154,16 +136,11 @@ var mode;
 $("#content").fadeIn();
 
 
-
-
-    function updateTime() {
-        if (singlePlayerComplete) {
-            $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
-        }
+function updateTime() {
+    if (singlePlayerComplete) {
+        $("#game-panel").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
     }
-
-
-
+}
 
 
 function initSinglePlayer() {
@@ -175,17 +152,24 @@ function initSinglePlayer() {
 
     maze = new Maze(31, 47);
     maze.createMaze();
-                singlePlayerComplete = false;
+    singlePlayerComplete = false;
 
-            maze = generateMaze(maze);
+    maze = generateMaze(maze);
 
-            singlePlayerComplete = true;
+    singlePlayerComplete = true;
 
-    singlePlayerCurrent = maze.cellGraph[0][0];
-
+    singlePlayerCurrent = maze.cellGraph[0][0]
+;
     $("#canvas-wrapper").hide();
+
+    // Remove the canvas element embedded inside the canvas-wrapper
+    var myNode = document.getElementById("canvas-wrapper");
+    while (myNode.firstChild) {
+        myNode.removeChild(myNode.firstChild);
+    }
+
     $("#canvas2-wrapper").show();
-    myp25 = new p5(mazeDisplay, "canvas2-wrapper");
+    myp5 = new p5(mazeDisplay, "canvas2-wrapper");
 
     // Fade out the one-on-one and single-player buttons, fade in generating maze
     $("#text-container").removeClass();
@@ -330,9 +314,7 @@ function initializeGame(room, initialized) {
     if (!initialized) {
         $("#canvas-wrapper").hide();
         $("#canvas2-wrapper").show();
-        myp25 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
-    } else {
-
+        myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
     }
 
     $("#score-panel").fadeOut(500);
@@ -647,27 +629,27 @@ function generateMaze(inputMaze) {
     return inputMaze;
 }
 
-    function deleteWall(current, neighbor) {
-        var deltaX = current.column - neighbor.column;
-        var deltaY = current.row - neighbor.row;
+function deleteWall(current, neighbor) {
+    var deltaX = current.column - neighbor.column;
+    var deltaY = current.row - neighbor.row;
 
-        if (deltaX == 1) { // Current is to the right of the neighbor
-            current.walls[3] = false;
-            neighbor.walls[1] = false;
-        }
-        if (deltaX == -1) { // Current is to the left of the neighbor
-            current.walls[1] = false;
-            neighbor.walls[3] = false;
-        }
-        if (deltaY == 1) { // Current is to the bottom of the neighbor
-            current.walls[0] = false;
-            neighbor.walls[2] = false;
-        }
-        if (deltaY == -1) { // Current is to the top of the neighbor
-            current.walls[2] = false;
-            neighbor.walls[0] = false;
-        }
+    if (deltaX == 1) { // Current is to the right of the neighbor
+        current.walls[3] = false;
+        neighbor.walls[1] = false;
     }
+    if (deltaX == -1) { // Current is to the left of the neighbor
+        current.walls[1] = false;
+        neighbor.walls[3] = false;
+    }
+    if (deltaY == 1) { // Current is to the bottom of the neighbor
+        current.walls[0] = false;
+        neighbor.walls[2] = false;
+    }
+    if (deltaY == -1) { // Current is to the top of the neighbor
+        current.walls[2] = false;
+        neighbor.walls[0] = false;
+    }
+}
 
 
 // Following construct is for multi-player maze
@@ -805,155 +787,7 @@ var mazeDisplay = function (p) {
     }
 
     p.keyTyped = function () {
-        if (!locked) {
-            if (mode == "single-player") {
-                if (singlePlayerComplete) {
-                    var cellString = "";
 
-                    if (p.key === 'w' || p.key === 'W') {
-                        cellString = movementController("w");
-                    }
-                    if (p.key === 's' || p.key === 'S') {
-                        cellString = movementController("S");
-                    }
-                    if (p.key === 'a' || p.key === 'A') {
-                        cellString = movementController("A");
-                    }
-                    if (p.key === 'd' || p.key === 'D') {
-                        cellString = movementController("D");
-                    }
-
-                    var endPosition = (maze.numRows - 1).toString() + "-" + (maze.numColumns - 1).toString();
-
-                    if (cellString == endPosition) {
-                        singlePlayerSolved = true;
-                        singlePlayerTimeElapsedFadeIn = true;
-
-                        timer.removeEventListener("secondsUpdated", updateTime);
-
-                        // Lock the movement controls
-                        locked = true;
-
-                        $("#game-panel").fadeOut(500, function () {
-                            $("#game-panel").html("You solved the maze in " + timer.getTimeValues().toString(["minutes", "seconds"]) + "!");
-
-                            $("#game-panel").fadeIn(500, function () {
-
-                            });
-                        });
-
-                        setTimeout(function () {
-                            $("#game-panel").fadeOut(500, function () {
-                                $("#score-panel").html("<button id='play-again-button' onclick='replay()'>Play Again?</button>&nbsp;<button id='quit-button' onclick='quit()'>Quit</button>");
-                                $("#score-panel").removeClass();
-                                $("#score-panel").show();
-                                $("#score-panel").fadeIn(500, function () {
-
-                                });
-                            });
-                        }, 3000);
-                    }
-                }
-
-                singlePlayerUserPosition = maze.cellGraph[userY][userX];
-            }
-
-            if (mode == "one-on-one") {
-                //if (complete) {
-                var cellString = "";
-
-                if (p.key === 'w' || p.key === 'W') {
-                    if (userPosition && !userPosition.walls[0]) {
-                        userY -= 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (path.indexOf(cellString) == -1) {
-                            path.push(cellString);
-                        } else if (cellString == "0-0") {
-                            path = ["0-0"];
-                        } else {
-                            path.pop();
-                        }
-                    }
-                }
-                if (p.key === 's' || p.key === 'S') {
-                    if (userPosition && !userPosition.walls[2]) {
-                        userY += 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (path.indexOf(cellString) == -1) {
-                            path.push(cellString);
-                        } else if (cellString == "0-0") {
-                            path = ["0-0"];
-                        } else {
-                            path.pop();
-                        }
-                    }
-                }
-                if (p.key === 'a' || p.key === 'A') {
-                    if (userPosition && !userPosition.walls[3]) {
-                        userX -= 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (path.indexOf(cellString) == -1) {
-                            path.push(cellString);
-                        } else if (cellString == "0-0") {
-                            path = ["0-0"];
-                        } else {
-                            path.pop();
-                        }
-                    }
-                }
-                if (p.key === 'd' || p.key === 'D') {
-                    if (userPosition && !userPosition.walls[1]) {
-                        userX += 1;
-
-                        cellString = userY + "-" + userX;
-
-                        if (path.indexOf(cellString) == -1) {
-                            path.push(cellString);
-                        } else if (cellString == "0-0") {
-                            path = ["0-0"];
-                        } else {
-                            path.pop();
-                        }
-                    }
-                }
-
-                var endPosition = (maze.numRows - 1).toString() + "-" + (maze.numColumns - 1).toString();
-
-                if (cellString == endPosition) {
-                    solved = true;
-                    socket.emit("winner", roomID);
-
-                    $("#game-panel").fadeOut(500, function () {
-                        $("#game-panel").html("You won the match!");
-                        $("#game-panel").fadeIn(500);
-                        singlePlayerComplete = false;
-                        locked = true;
-                    });
-
-                    setTimeout(function () {
-                        $("#game-panel").fadeOut(500, function () {
-                            $("#game-panel").html("Waiting for your opponent to request a rematch<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
-                            $("#game-panel").fadeIn(500);
-                        });
-                    }, 3000);
-                }
-            }
-
-            userPosition = maze.cellGraph[userY][userX];
-
-            if (!gameOver) {
-                //socket.emit("position", [socket.id, roomID, userPosition]);
-            }
-        }
-
-        return false;
-        //}
     }
 };
 
@@ -983,11 +817,11 @@ function replay() {
 
     maze = new Maze(31, 47);
     maze.createMaze();
-                singlePlayerComplete = false;
+    singlePlayerComplete = false;
 
-            maze = generateMaze(maze);
+    maze = generateMaze(maze);
 
-            singlePlayerComplete = true;
+    singlePlayerComplete = true;
 
     singlePlayerCurrent = maze.cellGraph[0][0];
 
@@ -1050,7 +884,6 @@ function rematch() {
 }
 
 
-
 socket.on("rematchrequest", handleRematch);
 
 function handleRematch() {
@@ -1085,9 +918,6 @@ function acceptRematch(accept) {
         socket.emit("acceptRematch", true, maze, roomID);
     }
 }
-
-
-
 
 
 socket.on("disconnectedUser", userDisconnect);

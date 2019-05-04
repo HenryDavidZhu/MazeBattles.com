@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			.content {
+				margin: 0 auto;
+				width: 705px;
+				font-family: sans-serif;
+			}
+			.content img {
+				width: 400px;
+			}
+		</style>
+		      <!-- Global site tag (gtag.js) - Google Analytics -->
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-44986998-4"></script>
+      <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-44986998-4');
+      </script>
+		<script type="text/javascript" src="https://load.fomo.com/ads/load.js?id=JnP6jeGOKVOTw5gs4_taGw" async></script>
+	</head>
+
+	<body>
+		<div class="content">
+		<a href="http://www.mazebattles.com/">back</a>
+		<h2>what was the site written in?</h2>
+		node.js, socket.io, and p5.js.
+		<h2>how are mazes generated?</h2>
+		Mazes are generated using Prim's Algorithm. Prim’s Algorithm is a minimum spanning tree algorithm. An MST of a graph is the subset of edges (with the smallest total weight) where you can reach every node in the graph. For example, in the following diagram, the MST is highlighted in bold.
+		<br><br>
+		<img src="img/background.png" />
+		<br><br>
+		 A maze can be thought of as a graph, although not weighted since the distance from each cell to its adjacent cells is always 1. In graph theory terms, you can think of the cells as nodes and the connections from each cell to its neighboring cells as edges. Prim’s Algorithm creates a maze that ensures there’s always a path between the starting and ending point because that is the very definition of an MST. When applied to maze generation, Prim’s Algorithm is still very similar to the original graph version, but instead of continuously adding the closest node to the tree, it just adds a random one, since a maze graph is unweighted. Below is the pseudo-code for the standard graph version and the maze version.<br><br>Graph version:
+		 <pre>
+Choose a random node from the input graph
+Initialize the MST (starts with the random node)
+ 
+While not all of the vertices are in the MST:
+	Get the last node entered into the set
+    Retrieve the edges to that node and determine the shortest edge
+	Add that edge and the node connected to by that edge to the MST
+		 </pre>
+		 Maze version:
+		 <pre>
+Select a random cell from that maze and mark it as visited
+Create a list of walls
+Add the walls from the initial cell to the list of walls
+ 
+While the list of walls isn't empty:
+    Select a random wall from the list:
+        Calculate the two cells the wall divides
+ 
+        If one of the cells isn't visited:
+            Delete the wall from the grid
+            Mark the unvisited cell as visited
+            Add the walls of the cell to the list of walls
+    
+     Remove the random wall from the list
+		 </pre>
+		</div>
+	</body>
+</html>

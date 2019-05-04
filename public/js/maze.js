@@ -17,6 +17,8 @@ var vectors = [
 
 var wallList = {}; // Structure of a wall [rol (num), col (num), direction (string)]
 
+var myp5;
+
 function Maze(numRows, numColumns) {
     /*
         Defines a maze given the number of rows and the number of columns in the maze
@@ -360,6 +362,151 @@ var mazeIntro = function (p) {
             }
         }
     }
+
+    p.keyPressed = function() {
+        if (!locked) {
+            if (mode == "single-player") {
+                if (singlePlayerComplete) {
+                    var cellString = "";
+
+                    if (p.keyCode === 87 || p.keyCode === 38) {
+                        cellString = movementController("w");
+                    }
+                    if (p.keyCode === 83 || p.keyCode == 40) {
+                        cellString = movementController("S");
+                    }
+                    if (p.keyCode === 65|| p.keyCode == 37) {
+                        cellString = movementController("A");
+                    }
+                    if (p.keyCode === 68 || p.keyCode === 39) {
+                        cellString = movementController("D");
+                    }
+
+                    var endPosition = (maze.numRows - 1).toString() + "-" + (maze.numColumns - 1).toString();
+
+                    if (cellString == endPosition) {
+                        singlePlayerSolved = true;
+                        singlePlayerTimeElapsedFadeIn = true;
+
+                        timer.removeEventListener("secondsUpdated", updateTime);
+
+                        // Lock the movement controls
+                        locked = true;
+
+                        $("#game-panel").fadeOut(500, function () {
+                            $("#game-panel").html("You solved the maze in " + timer.getTimeValues().toString(["minutes", "seconds"]) + "!");
+
+                            $("#game-panel").fadeIn(500, function () {
+
+                            });
+                        });
+
+                        setTimeout(function () {
+                            $("#game-panel").fadeOut(500, function () {
+                                $("#score-panel").html("<button id='play-again-button' onclick='replay()'>Play Again?</button>&nbsp;<button id='quit-button' onclick='quit()'>Quit</button>");
+                                $("#score-panel").removeClass();
+                                $("#score-panel").show();
+                                $("#score-panel").fadeIn(500, function () {
+
+                                });
+                            });
+                        }, 3000);
+                    }
+                }
+
+                singlePlayerUserPosition = maze.cellGraph[userY][userX];
+            }
+
+            if (mode == "one-on-one") {
+                //if (complete) {
+                var cellString = "";
+
+                if (p.key === 'w' || p.key === 'W') {
+                    if (userPosition && !userPosition.walls[0]) {
+                        userY -= 1;
+
+                        cellString = userY + "-" + userX;
+
+                        if (path.indexOf(cellString) == -1) {
+                            path.push(cellString);
+                        } else if (cellString == "0-0") {
+                            path = ["0-0"];
+                        } else {
+                            path.pop();
+                        }
+                    }
+                }
+                if (p.key === 's' || p.key === 'S') {
+                    if (userPosition && !userPosition.walls[2]) {
+                        userY += 1;
+
+                        cellString = userY + "-" + userX;
+
+                        if (path.indexOf(cellString) == -1) {
+                            path.push(cellString);
+                        } else if (cellString == "0-0") {
+                            path = ["0-0"];
+                        } else {
+                            path.pop();
+                        }
+                    }
+                }
+                if (p.key === 'a' || p.key === 'A') {
+                    if (userPosition && !userPosition.walls[3]) {
+                        userX -= 1;
+
+                        cellString = userY + "-" + userX;
+
+                        if (path.indexOf(cellString) == -1) {
+                            path.push(cellString);
+                        } else if (cellString == "0-0") {
+                            path = ["0-0"];
+                        } else {
+                            path.pop();
+                        }
+                    }
+                }
+                if (p.key === 'd' || p.key === 'D') {
+                    if (userPosition && !userPosition.walls[1]) {
+                        userX += 1;
+
+                        cellString = userY + "-" + userX;
+
+                        if (path.indexOf(cellString) == -1) {
+                            path.push(cellString);
+                        } else if (cellString == "0-0") {
+                            path = ["0-0"];
+                        } else {
+                            path.pop();
+                        }
+                    }
+                }
+
+                var endPosition = (maze.numRows - 1).toString() + "-" + (maze.numColumns - 1).toString();
+
+                if (cellString == endPosition) {
+                    solved = true;
+                    socket.emit("winner", roomID);
+
+                    $("#game-panel").fadeOut(500, function () {
+                        $("#game-panel").html("You won the match!");
+                        $("#game-panel").fadeIn(500);
+                        singlePlayerComplete = false;
+                        locked = true;
+                    });
+
+                    setTimeout(function () {
+                        $("#game-panel").fadeOut(500, function () {
+                            $("#game-panel").html("Waiting for your opponent to request a rematch<span class='dots'><span class='dot'>.</span class='dot'><span>.</span class='dot'><span>.</span></span>");
+                            $("#game-panel").fadeIn(500);
+                        });
+                    }, 3000);
+                }
+            }
+
+            userPosition = maze.cellGraph[userY][userX];
+        }
+    }
 };
 
-var myp5 = new p5(mazeIntro, "canvas-wrapper"); // Initialize the graphics engine for the canvas
+myp5 = new p5(mazeIntro, "canvas-wrapper"); // Initialize the graphics engine for the canvas
