@@ -97,51 +97,6 @@ html, body {
     height: 8px;
 }
 
-/* Styling for the play buttons */
-#one-on-one, #single-player, #opponent-progress, #join, #invite, #play-again, #play-again-button, #quit-button, #quit {
-    background: black;
-    color: white;
-    display: inline-block;
-    z-index: 5;
-    padding: 8px 12px;
-    border-radius: 0px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.2s ease 0s;
-    text-align: center;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.16), 0 6px 10px rgba(0,0,0,0.23);
-    font-weight: 700;
-    border: 2px solid rgb(70, 70, 70);
-}
-#one-on-one:hover, #single-player:hover, #join:hover, #invite:hover, #play-again:hover, #play-again-button:hover, #quit-button:hover, #quit:hover {
-    cursor: pointer;
-}
-#one-on-one-wrapper {
-    display: none;
-}
-#one-on-one, #join {
-    margin-right: 7px;
-}
-
-#join-menu input {
-    background: transparent;
-    outline: 0;
-    border: 1px solid rgb(0, 0, 0);
-    border-radius: 0px;
-    padding: 3px 6px;
-    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
-    box-sizing: border-box;         /* Opera/IE 8+ */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.16), 0 2px 4px rgba(0,0,0,0.23);
-    color: black;
-    width: 100%;
-    font-size: 17px;
-    width: 705px;
-}
-
-#join-menu input::placeholder {
-    color: black;
-}
 
 /* Background text and widgets */
 #title {
@@ -260,7 +215,7 @@ html, body {
 
 #social-media-buttons {
     position: absolute;
-    top: 10px !important;
+    bottom: 10px !important;
     left: 10px !important;
 }
 
@@ -356,15 +311,13 @@ html, body {
     height: 10px;
 }
 
-#menu-2 {
-    display: none;
-}
 #menu-2 img {
     width: 705px;
 }
-#menu-2 button {
-
+#menu-2, #menu-3, #menu-4 {
+    display: none;
 }
+
 
 .note {
     font-size: 13px;

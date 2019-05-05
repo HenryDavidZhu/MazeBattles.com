@@ -42,8 +42,37 @@
                <option>one-on-one</option>
             </select>
             <div class="whitespace-2"></div>
-            <form>
+            
                <div id="menu-1">
+                  <div class="option-container" id="top-div-1">
+                     <div class="option" id="easy">
+                        <img src="img/medium.PNG" /><br>
+                        Easy Difficulty (29x44)
+                     </div>
+                      <div class="option" id="medium">
+                        <img src="img/medium.PNG" /><br>
+                        Medium Difficulty (31x47)
+                     </div>
+                  </div>
+                  <div class="whitespace-2"></div>
+                  <div class="option-container" id="top-div-2">
+                     <div class="option" id="hard">
+                        <img src="img/medium.PNG" /><br>
+                        Hard Difficulty (34x51)
+                     </div>
+                      <div class="option" id="expert">
+                        <img src="img/medium.PNG" /><br>
+                        Expert Difficulty (36x56)
+                     </div>
+                  </div>
+               </div>
+
+               <div id="menu-2">
+                  <button id="invite">Invite</button>
+                  <button id="join">Join</button>
+               </div>
+ 
+               <div id="menu-3">
                   <div class="option-container" id="top-div-1">
                      <div class="option" id="easy">
                         <img src="img/medium.PNG" /><br>
@@ -66,44 +95,14 @@
                      </div>
                   </div>
                   <div class="whitespace-3"></div>
+                  Select the difficulty of the maze you want to race to solve.
                </div>
 
-               <div id="menu-2">
-                  <img src="img/medium.PNG" /><br>
-                  <span class="note">*All mazes are generated from scratch. The above maze is a pre-generated example.</span>
-                  <form><br>
-                     <input type="radio" name="mode" value="one-on-one" id="check-1" checked> one-on-one<br>
-                     <input type="radio" name="mode" value="single-player" id="check-2"> single player
-                  </form> 
-                  <div class="whitespace-3"></div>
-                  <button id="play">Play</button>
+               <div id="menu-4">
+                  <input type="text" placeholder="enter your room code" />
+                  <button>Join</button>
                </div>
-               <!--
-               <div id="text-container">
-                  <div id="play-wrapper">
-                     <button id="one-on-one">
-                     one-on-one
-                     </button>
-                     <button id="single-player">
-                     single player
-                     </button>
-                  </div>
-                  <div id="one-on-one-wrapper">
-                     <button id="join">
-                     join
-                     </button>
-                     <button id="invite">
-                     invite
-                     </button>
-                  </div>
-               </div>-->
-
-                 <!--<div class="step-container">
-                   <div class="whitespace"></div>
-                   <span class="step active" id="step-1"></span>
-                   <span class="step" id="step-2"></span>
-                 </div>-->
-               </form>
+               
             <div id="invite-menu">
                generating room code<span class="dots"><span class="dot">.</span class="dot"><span>.</span class="dot"><span>.</span></span>
             </div>
@@ -112,22 +111,19 @@
             </div>
             <div id="score-panel">
             </div>
-
-            <div id="join-menu">
-               <input type="text" placeholder="room code (press enter / return to join)" id="room-code" />
-            </div>
          </div>
 
-         <!--<div id="social-media-buttons">
+         <div id="social-media-buttons">
             <div class="fb-share-button" data-href="http://www.mazebattles.com/" data-layout="button_count" data-size="large"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fwww.mazebattles.com%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
 
             <a class="twitter-share-button"
               href="https://twitter.com/intent/tweet?url=http://www.mazebattles.com/"
               data-size="large">
             Tweet</a>
-         </div>-->
+         </div>
       </div>
-      <script type="text/javascript" src="js/form-processor.js"></script>
+      <script type="text/javascript" src="js/mazestructure.js"></script>
       <script type="text/javascript" src="js/game.js"></script>
+      <script type="text/javascript" src="js/form-processor.js"></script>
    </body>
 </html>
