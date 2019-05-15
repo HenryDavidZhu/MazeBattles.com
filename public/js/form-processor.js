@@ -1,44 +1,40 @@
-$("#mode-select").change(function() {
-	var option = $(this).val(); // Get the mode the user selected
+var difficulties = ["easy", "medium", "hard", "expert"];
+var difficultyIndex = 0;
+//var difficulty = "easy";
 
-	if (option == "one-on-one") {
-		$("#menu-1").hide();
-		$("#menu-3").hide();
-		$("#menu-4").hide();
-		$("#menu-2").show();
-
-		mode = "one-on-one";
+$(".easier").click(function() {
+	if (difficultyIndex == 0) {
+		difficultyIndex = difficulties.length - 1;
+	} else {
+		difficultyIndex--;
 	}
 
-	if (option == "single-player") {
-		$("#menu-2").hide();
-		$("#menu-3").hide();
-		$("#menu-4").hide();
-		$("#menu-1").show();
+	changeDifficulty(difficultyIndex);
+});
 
-		mode = "single-player";
+$(".harder").click(function() {
+	console.log("harder clicked!");
+	if (difficultyIndex == difficulties.length - 1) {
+		difficultyIndex = 0;
+	} else {
+		difficultyIndex++;
 	}
+
+	changeDifficulty(difficultyIndex);
 });
 
-$("#invite").click(function() {
-    // Show the maze difficulty menu
-    $("#menu-1").hide();
-    $("#menu-2").hide();
-    $("#menu-4").hide();
-    $("#menu-3").show();
-});
+function changeDifficulty(difficultyIndex) {
+	console.log("difficulty = " + difficulty);
 
-$("#join").click(function() {
-    // Show the room code input
-    $("#menu-1").hide();
-    $("#menu-2").hide();
-    $("#menu-3").hide();
-    $("#menu-4").show();
-})
+	for (var i = 0; i < difficulties.length; i++) {
+		var difficulty = difficulties[i];
 
-// Maze difficulty events
-$(".option").click(function() {
-	difficulty = jQuery(this).attr("id");
-
-	initSinglePlayer();
-});
+		if (i == difficultyIndex) {
+			console.log("showing " + difficulty);
+			$("#" + difficulty).css({"display":"inline"});
+		} else {
+			console.log("hiding " + difficulty);
+			$("#" + difficulty).css({"display":"none"});
+		}
+	}
+}

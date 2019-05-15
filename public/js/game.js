@@ -59,12 +59,21 @@ function updateTime() {
 
 
 function initSinglePlayer() {
+    
+
+    // Fade out all of the option menus and show the game interface
+    $("#menu-1").hide();
+    $("#menu-2").hide();
+    $("#menu-3").hide();
+    $("#menu-4").hide();
+    $("#menu-5").show();
+
     // Determine the maze's generations
     var dimensions = difficultySizes[difficulty];
     var rows = dimensions[0];
     var cols = dimensions[1];
 
-    // Generate the mazes
+    // Generate the maze
     maze = new Maze(rows, cols);
     maze.createMaze();
 
@@ -74,9 +83,8 @@ function initSinglePlayer() {
     singlePlayerCurrent = maze.cellGraph[0][0];
 
 
-    $("#canvas-wrapper").hide();
 
-    // Remove the canvas element embedded inside the canvas-wrapper
+    /* Remove the canvas element embedded inside the canvas-wrapper
     var myNode = document.getElementById("canvas-wrapper");
     while (myNode.firstChild) {
         myNode.removeChild(myNode.firstChild);
@@ -88,7 +96,7 @@ function initSinglePlayer() {
     // Fade out the one-on-one and single-player buttons, fade in generating maze
     $("#text-container").removeClass();
     $("#text-container").addClass("animated fadeOutLeft");
-    $("#text-container").hide();
+    $("#text-container").hide();*/
 }
 
 var url = new URL(window.location.href);
@@ -451,6 +459,15 @@ function deleteWall(current, neighbor) {
     }
 }
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomPos(rows, cols) {
+    return [getRandomInt(0, rows - 1), getRandomInt(0, cols - 1)];
+}
 
 function generateMaze(inputMaze) {
     // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list

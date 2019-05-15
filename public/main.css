@@ -1,342 +1,54 @@
-/* General styling*/
+/* General styling */
 html, body {
-    font-family: Verdana;
-    margin: 0;
+    font-family: Helvetica, Arial, sans-serif;
     padding: 0;
-    color: black;
-    width: 100%;
-    height: 100%;
-
-    text-align: center;
-    font-size: 14px;
-    font-weight: 400;
-    overflow: hidden;
-
+    margin: 0;
 }
-#content {
-    z-index: 4;
+
+#menu-1 {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+}
+
+#menu-2, #menu-3, #menu-4, #menu-5 {
     display: none;
 }
-#display-error {
+
+.navigation, #display-error, #title, #invite-menu, #game-panel, #social-media-buttons, #play-menu {
     display: none;
 }
 
-/* Whitespace */
-.whitespace {
-    height: 10px;
-}
-
-
-/* Text syling */
-#text-container {
-    width: 705px;
-}
-#play-wrapper, #one-on-one-wrapper {
+.option {
+    display: none;
     text-align: center;
 }
 
-/* Gameplay styling */
-#canvas-wrapper {
-    position: relative;
-    z-index: 4;
-    height: 465px;
-    background: black;
-    border-radius: 0px;
+.option img {
+    max-width: 705px;
+    max-height: 470px;
+    border-radius: 7px;
     box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
-    border: 2px solid rgb(70, 70, 70);
-    padding: 0;
-}
-#canvas2-wrapper {
-    display: none;
-    position: relative;
-    z-index: 4;
-    height: 465px;
-    background: black;
-    border-radius: 0px;
-    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
-    border: 2px solid rgb(70, 70, 70);
-    padding: 0;
-    margin: 0;
 }
 
-#game-wrapper {
-    padding-bottom: 4px;
-    width: 705px;
-}
-
-
-/* Submenus */
-#invite-menu {
-    display: none;
-    font-size: 17px;
-}
-
-.code {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-#join-menu {
-    display: none;
-    width: 705px;
-    z-index: 80;
-}
-#game-panel {
-    display: none;
-    font-size: 17px;
-}
-#score-panel {
-    display: none;
-    font-size: 17px;
+.one {
+    display: inherit;
 }
 
 .whitespace {
-    height: 8px;
+    height: 5px;
 }
 
-
-/* Background text and widgets */
-#title {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    text-align: right;
-    font-size: 13px;
-    font-weight: normal;
+.relative-wrapper {
+    position: relative;
 }
 
-#share-button {
-    width: 35px;
-    height: 35px;
-    line-height: 35px;
-
-    border-radius: 0px;
-    background: black;
-    color: white;
-    border: 2px solid rgb(70, 70, 70);
-
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-
-    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
-}
-
-#share-button i {
-    vertical-align: middle;
-}
-
-#title a:visited {
+.easier, .harder {
+    text-decoration: underline;
     color: blue;
 }
 
-/* DOTS DOTS DOTS DOTS DOTS DOTS (BORROWED FROM https://codepen.io/xwildeyes/pen/KpqVzN) */
-
-@keyframes blink {
-    /**
-     * At the start of the animation the dot
-     * has an opacity of .2
-     */
-    0% {
-      opacity: .2;
-    }
-    /**
-     * At 20% the dot is fully visible and
-     * then fades out slowly
-     */
-    20% {
-      opacity: 1;
-    }
-    /**
-     * Until it reaches an opacity of .2 and
-     * the animation can start again
-     */
-    100% {
-      opacity: .2;
-    }
-}
-
-#amazon-container {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-}
-
-#amazon-link {
-    color: black;
-    font-size: 15px;
-}
-
-#amazon-link:visited {
-    color: black;
-}
-
-.dots span {
-    /**
-     * Use the blink animation, which is defined above
-     */
-    animation-name: blink;
-    /**
-     * The animation should take 1.4 seconds
-     */
-    animation-duration: 1.4s;
-    /**
-     * It will repeat itself forever
-     */
-    animation-iteration-count: infinite;
-    /**
-     * This makes sure that the starting style (opacity: .2)
-     * of the animation is applied before the animation starts.
-     * Otherwise we would see a short flash or would have
-     * to set the default styling of the dots to the same
-     * as the animation. Same applies for the ending styles.
-     */
-    animation-fill-mode: both;
-}
-
-.dots span:nth-child(2) {
-
-    animation-delay: .2s;
-}
-
-.dots span:nth-child(3) {
-
-    animation-delay: .4s;
-}
-
-.navigation {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-}
-
-#social-media-buttons {
-    position: absolute;
-    bottom: 10px !important;
-    left: 10px !important;
-}
-
-
-@media only screen and (max-width: 750px) {
-    #display-error {
-        display: inline;
-    }
-    #full-wrapper {
-        display: none;
-    }
-}
-
-@media only screen and (max-height: 630px) {
-    #display-error {
-        display: inline;
-    }
-    #full-wrapper {
-        display: none;
-    }
-}
-
-#about-link {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-}
-
-
-.option-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 760px;
-}
-.option {
-    /**box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);**/
-    border: 1px solid rgb(140, 140, 140);
-    font-size: 14px;
-}
-.option img {
-    width: 375px;
-
-}
-.whitespace {
-    height: 5px;
-}
-.navigation {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.16), 0 2px 4px rgba(0,0,0,0.23);  
-    width: 100%; 
-    background: rgb(242, 242, 242);
-    line-height: 25px;
-}
-
-/* Make circles that indicate the steps of the form: */
-.step {
-  height: 9px;
-  width: 9px;
-  margin: 0 1px;
-  background-color: #bbbbbb;
-  border: none;  
-  border-radius: 50%;
-  display: inline-block;
-  opacity: 0.5;
-}
-
-.step.active {
-  opacity: 1;
-}
-
-/* Mark the steps that are finished and valid: */
-.step.finish {
-  background-color: #4CAF50;
-}
-
-.instruction {
-    font-size: 14px;
-}
-
-.whitespace {
-    height: 2px;
-}
-
-.whitespace-2 {
-    height: 5px;
-}
-
-.whitespace-3 {
-    height: 10px;
-}
-
-#menu-2 img {
-    width: 705px;
-}
-#menu-2, #menu-3, #menu-4 {
-    display: none;
-}
-
-
-.note {
-    font-size: 13px;
-    color: red;
-}
-
-.content a {
-    font-size: 20px;
-}
-
-.mode-link {
-    font-size: 15px;
-    color: black;
-}
-
-select {
-    outline: 0;
-}
-
-#mode-select {
-
+.easier:hover, .harder:hover {
+    cursor: pointer;
 }
