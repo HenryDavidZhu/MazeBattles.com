@@ -5,7 +5,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>mazebattles.com / race to solve mazes</title>
       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
       <link href="https://fonts.googleapis.com/css?family=Cutive+Mono" rel="stylesheet">
       <link href="main.css" rel="stylesheet">
       <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
@@ -50,42 +49,63 @@
                      <div class="option one" id="easy">
                         <img src="img/medium.PNG" />
                         <div class="whitespace"></div>
-                        <a class="easier">easier</a>
-                           Easy Difficulty (29x44)
-                        <a class="harder">harder</a>
-                        <br>
-                        <i>Select the difficulty of the maze you want to solve</i>
+                        <button class="easier">&lt;</button>
+                        Easy Difficulty (29x44)
+                        <button class="harder">&gt;</button> / 
+                        <select>
+                           <option>single-player</option>
+                           <option>one-on-one</option>
+                        </select>
                      </div>
                      <div class="option" id="medium">
-                        <img src="img/medium.PNG" /><br>
-                        <a class="easier">easier</a>
+                        <img src="img/medium.PNG" />
+                        <div class="whitespace"></div>
+                        <button class="easier">&lt;</button>
                         Medium Difficulty (31x47)
-                        <a class="harder">harder</a>
-                        <br>
-                        <i>Select the difficulty of the maze you want to solve</i>
+                        <button class="harder">&gt;</button> / 
+                        <select>
+                           <option>single-player</option>
+                           <option>one-on-one</option>
+                        </select>
                      </div>
                      <div class="option" id="hard">
-                        <img src="img/medium.PNG" /><br>
-                        <a class="easier">easier</a>
+                        <img src="img/medium.PNG" />
+                        <div class="whitespace"></div>
+                        <button class="easier">&lt;</button>
                         Hard Difficulty (34x51)
-                        <a class="harder">harder</a>
-                        <br>
-                        <i>Select the difficulty of the maze you want to solve</i>
+                        <button class="harder">&gt;</button> / 
+                        <select>
+                           <option>single-player</option>
+                           <option>one-on-one</option>
+                        </select>
                      </div>
                      <div class="option" id="expert">
-                        <img src="img/medium.PNG" /><br>
-                        <a class="easier">easier</a>
+                        <img src="img/medium.PNG" />
+                        <div class="whitespace"></div>
+                        <button class="easier">&lt;</button>
                         Expert Difficulty (36x56)
-                        <a class="harder">harder</a>
-                        <br>
-                        <i>Select the difficulty of the maze you want to solve</i>
+                        <button class="harder">&gt;</button> / 
+                        <select>
+                           <option selected>single-player</option>
+                           <option>one-on-one</option>
+                        </select>
                      </div>
                   </div>
                </div>
 
                <div id="menu-2">
-                  <button id="invite">Invite</button>
-                  <button id="join">Join</button>
+                  
+
+                  <div class="option one">
+                        <img src="img/medium.PNG" />
+                        <div class="whitespace"></div>
+                     <button id="invite">Invite</button>
+                     <button id="join">Join</button> / 
+                     <select>
+                        <option selected>one-on-one</option>
+                        <option>single-player</option>
+                     </select>
+                  </div>
                </div>
  
                <div id="menu-3">

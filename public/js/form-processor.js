@@ -1,6 +1,5 @@
 var difficulties = ["easy", "medium", "hard", "expert"];
 var difficultyIndex = 0;
-//var difficulty = "easy";
 
 $(".easier").click(function() {
 	if (difficultyIndex == 0) {
@@ -38,3 +37,17 @@ function changeDifficulty(difficultyIndex) {
 		}
 	}
 }
+
+$("select").change(function() {
+	var option = $(this).val();
+
+	if (option == "one-on-one") {
+		$("#menu-1").css({"display":"none"});
+		$("#menu-2").css({"display":"inline"});
+	} 
+
+	if (option == "single-player") {
+		$("#menu-2").css({"display":"none"});
+		$("#menu-1").css({"display":"inline"});
+	}
+});

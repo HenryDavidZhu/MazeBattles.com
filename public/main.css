@@ -1,35 +1,62 @@
-/* General styling */
-html, body {
+html,
+body {
     font-family: Helvetica, Arial, sans-serif;
     padding: 0;
     margin: 0;
 }
 
-#menu-1 {
+#menu-1,
+#menu-2 {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
+    text-align: center;
 }
 
-#menu-2, #menu-3, #menu-4, #menu-5 {
+#menu-2,
+#menu-3,
+#menu-4,
+#menu-5 {
     display: none;
 }
 
-.navigation, #display-error, #title, #invite-menu, #game-panel, #social-media-buttons, #play-menu {
+.navigation,
+#display-error,
+#title,
+#invite-menu,
+#game-panel,
+#social-media-buttons,
+#play-menu {
     display: none;
+}
+
+select {
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16), 0 2px 3px rgba(0, 0, 0, 0.23);
+    background: black;
+    border: 0;
+    border-radius: 5px;
+    color: white;
+    padding: 3px;
+    border: 2px solid rgb(70, 70, 70);
+    outline: 0;
+}
+
+option {
+    border-radius: 5px;
 }
 
 .option {
     display: none;
     text-align: center;
+    line-height: 25px;
 }
 
 .option img {
     max-width: 705px;
     max-height: 470px;
     border-radius: 7px;
-    box-shadow: 0 8px 12px rgba(0,0,0,0.16), 0 8px 12px rgba(0,0,0,0.23);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.16), 0 8px 12px rgba(0, 0, 0, 0.23);
 }
 
 .one {
@@ -44,11 +71,40 @@ html, body {
     position: relative;
 }
 
-.easier, .harder {
-    text-decoration: underline;
-    color: blue;
+.easier,
+.harder {
+    background: black;
+    color: white;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16), 0 2px 3px rgba(0, 0, 0, 0.23);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    outline: 0;
+    border: 2px solid rgb(70, 70, 70);
 }
 
-.easier:hover, .harder:hover {
+.easier:hover,
+.harder:hover {
     cursor: pointer;
+}
+
+#invite,
+#join {
+    background: black;
+    color: white;
+    display: inline-block;
+    z-index: 5;
+    padding: 6px 9px;
+    border-radius: 12 px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.2s ease 0s;
+    text-align: center;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16), 0 6px 10px rgba(0, 0, 0, 0.23);
+    font-weight: 700;
+    border: 2px solid rgb(70, 70, 70);
+}
+
+select {
+    outline: 0;
 }
