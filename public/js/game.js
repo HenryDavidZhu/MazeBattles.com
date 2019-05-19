@@ -21,13 +21,6 @@ var maze;
 
 var timer = new Timer();
 
-var directions = ["N", "E", "S", "W"];
-var vectors = [
-    [-1, 0], // N vector
-    [0, 1], // E vector
-    [1, 0], // S vector
-    [0, -1] // W vector
-];
 
 var wallList = {}; // [rol (num), col (num), direction (string)]
 
@@ -108,7 +101,10 @@ $("#single-player").click(function () {
 });
 
 
-
+// Invite function
+$("#invite").click(function() {
+    console.log("maze difficulty = " + difficulty);
+});
 
 
 
@@ -201,6 +197,7 @@ function lostMatch() {
 socket.on("generated-url", createRoom);
 
 function createRoom(id) {
+    console.log("created room with id " + id);
     roomID = id;
 
     // Add event listeners to the room

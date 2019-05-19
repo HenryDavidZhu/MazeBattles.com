@@ -350,11 +350,12 @@ function playerConnect(user) {
     user.on("invite", createRoom);
 
     function createRoom(generatedMaze) {
+        console.log("building room...");
+        
         var roomID = uniqid();
         system.rooms[roomID] = new Room();
         system.rooms[roomID].connectUser(user.id, roomID); // YAAASSS
         system.rooms[roomID].maze = generatedMaze;
-
 
         user.emit("generated-url", roomID);
     }

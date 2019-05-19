@@ -1,3 +1,11 @@
+var directions = ["N", "E", "S", "W"];
+var vectors = [
+    [-1, 0], // N vector
+    [0, 1], // E vector
+    [1, 0], // S vector
+    [0, -1] // W vector
+];
+
 function isWall(cellA, cellB) {
     for (var j = 0; j < cellA.walls.length; j++) {
         for (var k = 0; k < cellB.walls.length; k++) {
@@ -20,6 +28,7 @@ function Maze(numRows, numColumns) {
     this.numRows = numRows;
     this.numCells = numRows * numColumns;
     this.cellGraph = [];
+    this.wallList = {};
 
     for (var i = 0; i < numRows; i++) { // For every single row
         this.cellGraph.push([]); // Start out with an empty row
@@ -71,8 +80,171 @@ Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
         }
     }
 
-
     return computedFrontier;
+}
+
+Maze.prototype.getRandomPos = function() {
+    return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
+}
+
+Maze.prototype.calculateCellDivision = function(wall) {
+    // Calculate the two cells that the wall divides
+    // For example:
+    // If the wall is [10, 11, "N"]
+    // The two cells that the wall divides are (10, 11) and (9, 11)
+
+    var row = wall[0];
+    var col = wall[1];
+
+    var cell1 = this.cellGraph[row][col]; // Get the cell of the wall
+
+    // Get the corresponding vector based upon the direction of the wall
+    var vectorIndex = directions.indexOf(wall[2]);
+
+    // Add the vector to the position of cell1
+    var cell2Row = parseInt(cell1.row) + vectors[vectorIndex][0];
+    var cell2Column = parseInt(cell1.column) + vectors[vectorIndex][1];
+
+    if (cell2Row < 0 || cell2Row >= this.cellGraph.length ||
+        cell2Column < 0 || cell2 >= this.cellGraph[0].length) {
+        return -1;
+    }
+
+    var cell2 = this.cellGraph[cell2Row][cell2Column]; // Get the corresponding cell
+
+    var cellsVisited = 0;
+    var unvisitedCell;
+
+    if (cell1.visited) {
+        cellsVisited += 1;
+        unvisitedCell = cell2;
+    }
+
+    if (!cell2) { // This means that the wall is a border wall
+        return -1;
+    }
+
+    if (cell2.visited) {
+        cellsVisited += 1;
+        unvisitedCell = cell1;
+    }
+
+    if (cellsVisited == 1) {
+        return [cell1, cell2, cellsVisited, unvisitedCell];
+    }
+
+    return -1;   
+}
+
+Maze.prototype.deleteWall = function (current, neighbor) {
+    var deltaX = current.column - neighbor.column;
+    var deltaY = current.row - neighbor.row;
+
+    if (deltaX == 1) { // Current is to the right of the neighbor
+        current.walls[3] = false;
+        neighbor.walls[1] = false;
+    }
+    if (deltaX == -1) { // Current is to the left of the neighbor
+        current.walls[1] = false;
+        neighbor.walls[3] = false;
+    }
+    if (deltaY == 1) { // Current is to the bottom of the neighbor
+        current.walls[0] = false;
+        neighbor.walls[2] = false;
+    }
+    if (deltaY == -1) { // Current is to the top of the neighbor
+        current.walls[2] = false;
+        neighbor.walls[0] = false;
+    }
+}
+
+Maze.prototype.generateMaze = function () {
+    // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
+    var pos = this.getRandomPos();
+
+    var row = pos[0];
+    var column = pos[1];
+
+    this.cellGraph[row][column].visited = true;
+
+    for (var k = 0; k < directions.length; k++) {
+        var key = row.toString() + column.toString() + directions[k].toString();
+
+        if (!this.wallList[key]) {
+            this.wallList[key] = [row, column, directions[k]];
+        }
+    }
+
+    while (Object.keys(this.wallList).length > 0) { // While there are still walls in the list
+        // Pick a random wall of the list
+        var wallListKeys = Object.keys(this.wallList);
+
+        var randomKey = wallListKeys[Math.floor(Math.random() * wallListKeys.length)];
+
+        var randomWall = this.wallList[randomKey];
+
+        var components = this.calculateCellDivision(randomWall);
+
+        if (components != -1) {
+
+            var numVisited = components[2];
+
+            var cell1 = components[0];
+            var cell2 = components[1];
+
+            // If only one of the two cells that the wall divides is visited, then:
+            //  1. Make the wall a passage and mark the unvisited cell as part of the maze.
+            //  2. Add the neighboring walls of the cell to the wall list.
+            //     Remove the wall from the list.
+            if (numVisited == 1) {
+                this.deleteWall(cell1, cell2);
+
+                var unvisitedCell = this.cellGraph[components[3].row][components[3].column];
+                unvisitedCell.visited = true;
+
+                var unvisitedString = unvisitedCell.row + "|" + unvisitedCell.column;
+
+                // Add the neighboring walls of the cell to the wall list
+                // Format of the walls (by index):
+                // 0 = top, 1 = right, 2 = bottom, 3 = left
+                var computedFrontierWalls = this.computeFrontierWalls(unvisitedCell.row, unvisitedCell.column);
+
+                for (var k = 0; k < computedFrontierWalls.length; k++) {
+                    var computedWall = computedFrontierWalls[k];
+                    var keyString = computedWall[0].toString() + computedWall[1].toString() + computedWall[2];
+
+                    if (!this.wallList[keyString]) {
+                        this.wallList[keyString] = computedWall;
+                    }
+                }
+
+                // Calculate the corresponding cell
+                var direction = randomWall[2];
+                var directionIndex = directions.indexOf(direction);
+                var oppositeDirectionIndex = -1;
+
+                if (directionIndex == 0) {
+                    oppositeDirectionIndex = 2;
+                }
+                if (directionIndex == 2) {
+                    oppositeDirectionIndex = 0;
+                }
+                if (directionIndex == 1) {
+                    oppositeDirectionIndex = 3;
+                }
+                if (directionIndex == 3) {
+                    oppositeDirectionIndex = 1;
+                }
+
+                var vector = vectors[directionIndex];
+
+                var correspondingString = (randomWall[0] + vector[0]).toString() + (randomWall[1] + vector[1]).toString() + directions[oppositeDirectionIndex];
+            }
+        }
+
+        delete this.wallList[randomKey];
+        delete this.wallList[correspondingString];
+    }
 }
 
 function Cell(cellSize, row, column) {

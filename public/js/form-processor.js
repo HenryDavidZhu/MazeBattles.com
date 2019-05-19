@@ -1,4 +1,5 @@
 var difficulties = ["easy", "medium", "hard", "expert"];
+var difficultyDimensions = {"easy":[29, 44], "medium":[31, 47], "hard":[34,51], "expert":[36,56]}
 var difficultyIndex = 0;
 
 $(".easier").click(function() {
@@ -50,4 +51,16 @@ $("select").change(function() {
 		$("#menu-2").css({"display":"none"});
 		$("#menu-1").css({"display":"inline"});
 	}
+});
+
+$("#invite").click(function() {
+    $("#invite-menu").html("setting up match room<span class=\"dots\"><span class=\"dot\">.</span class=\"dot\"><span>.</span class=\"dot\"><span>.</span></span>");
+
+    var mazeDifficulty = difficulties[difficultyIndex];
+    var dimensions = difficultyDimensions[mazeDifficulty];
+    var maze = new Maze(dimensions[0], dimensions[1]);
+    maze.createMaze();	
+    maze.generateMaze();	
+
+    socket.emit("invite", [maze, mazeDifficulty]);
 });

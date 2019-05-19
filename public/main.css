@@ -24,23 +24,12 @@ body {
 .navigation,
 #display-error,
 #title,
-#invite-menu,
 #game-panel,
 #social-media-buttons,
 #play-menu {
     display: none;
 }
 
-select {
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16), 0 2px 3px rgba(0, 0, 0, 0.23);
-    background: black;
-    border: 0;
-    border-radius: 5px;
-    color: white;
-    padding: 3px;
-    border: 2px solid rgb(70, 70, 70);
-    outline: 0;
-}
 
 option {
     border-radius: 5px;
@@ -49,7 +38,6 @@ option {
 .option {
     display: none;
     text-align: center;
-    line-height: 25px;
 }
 
 .option img {
@@ -88,23 +76,21 @@ option {
     cursor: pointer;
 }
 
-#invite,
-#join {
-    background: black;
-    color: white;
-    display: inline-block;
-    z-index: 5;
-    padding: 6px 9px;
-    border-radius: 12 px;
-    font-size: 14px;
-    font-weight: bold;
-    transition: all 0.2s ease 0s;
-    text-align: center;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.16), 0 6px 10px rgba(0, 0, 0, 0.23);
-    font-weight: 700;
-    border: 2px solid rgb(70, 70, 70);
-}
-
 select {
     outline: 0;
+}
+
+.dots span {
+    animation-name: blink;
+    animation-duration: 1.4s;
+    animation-iteration-count: infinite;
+    animation-fill-mode: both;
+}
+
+.dots span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.dots span:nth-child(3) {
+    animation-delay: .4s;
 }
