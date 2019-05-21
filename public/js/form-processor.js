@@ -64,3 +64,21 @@ $("#invite").click(function() {
 
     socket.emit("invite", [maze, mazeDifficulty]);
 });
+
+$("#join").click(function() {
+	$("#invite-menu").hide();
+	$("#join-menu").show();
+});
+
+$("#room-code-form").on("submit", function(e) {
+	var roomCode = $("#room-code").val();
+	var codeLength = roomCode.length;
+
+	if (codeLength == 0) {
+		alert("Please enter a code.");
+	} else {
+		socket.emit("join", roomCode);
+	}
+
+	e.preventDefault();
+});

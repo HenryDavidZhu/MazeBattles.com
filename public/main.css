@@ -17,7 +17,8 @@ body {
 #menu-2,
 #menu-3,
 #menu-4,
-#menu-5 {
+#menu-5,
+#join-menu {
     display: none;
 }
 
@@ -93,4 +94,8 @@ select {
 
 .dots span:nth-child(3) {
     animation-delay: .4s;
+}
+
+input {
+    outline: 0;
 }
