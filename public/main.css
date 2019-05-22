@@ -96,6 +96,6 @@ select {
     animation-delay: .4s;
 }
 
-input {
+input, .play-button {
     outline: 0;
 }

@@ -1,4 +1,3 @@
-var maze;
 var roomID;
 var myp5;
 
@@ -20,7 +19,7 @@ function alertError() {
 socket.on("maze", downloadMaze);
 
 function downloadMaze(newMaze) {
-	maze = newMaze;
+	maze = newMaze[0];
 }
 
 socket.on("paired", initializedGame);
@@ -42,10 +41,10 @@ var mazeDisplay = function (p) {
         var canvas = p.createCanvas(705, 465);
         p.background(0, 0, 0);
 
-        console.log(Object.getOwnPropertyNames(Maze.prototype));
-
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
-        var pos = maze.prototype.getRandomPos();
+        console.log(maze.cellGraph);
+        var pos = maze.getRandomPos();
+        
         var row = pos[0];
         var column = pos[1];
         maze.cellGraph[row][column].visited = true;

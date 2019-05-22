@@ -2,6 +2,8 @@ var difficulties = ["easy", "medium", "hard", "expert"];
 var difficultyDimensions = {"easy":[29, 44], "medium":[31, 47], "hard":[34,51], "expert":[36,56]}
 var difficultyIndex = 0;
 
+var maze;
+
 $(".easier").click(function() {
 	if (difficultyIndex == 0) {
 		difficultyIndex = difficulties.length - 1;
@@ -81,4 +83,16 @@ $("#room-code-form").on("submit", function(e) {
 	}
 
 	e.preventDefault();
+});
+
+$(".play-button").click(function() {
+	var mazeDifficulty = difficulties[difficultyIndex];
+	var dimensions = difficultyDimensions[mazeDifficulty];
+	var maze = new Maze(dimensions[0], dimensions[1]);
+	maze.createMaze();
+	maze.generateMaze();
+
+	displayTab(6, 6); 
+
+	myp5 = new p5(mazeDisplay, "canvas2-wrapper");
 });
