@@ -4,7 +4,8 @@ var cellSizes = {"easy":16, "medium":15, "hard":14, "expert":13}; // The sizes o
 var difficultyIndex = 0;
 
 var maze;
-var mazeComplete; // Whether the maze generation process has finished or not
+var mazeComplete = false; // Whether the maze generation process has finished or not
+var solved = false; // Whether the maze has been solved or not
 var option = "single-player";
 
 var timerStarted = false;
@@ -14,7 +15,6 @@ var playerPosition; // The cell object the user is positioned at
 var playerX = 0;
 var playerY = 0;
 
-var mazeComplete = false;
 var singlePlayerPath = ["0-0"];
 
 $(".easier").click(function() {

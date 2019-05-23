@@ -37,7 +37,6 @@ function initializedGame(room, initialized) {
 }
 
 function updateTime() {
-	console.log("updating time...");
     if (mazeComplete) {
         $("#time-elapsed").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
     }

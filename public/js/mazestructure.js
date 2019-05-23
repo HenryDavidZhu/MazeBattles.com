@@ -39,7 +39,6 @@ function Maze(numRows, numColumns, cellSize) {
     }
 
     this.endString = (numRows - 1) + "-" + (numColumns - 1);
-    console.log("this.endString = " + this.endString);
 }
 
 Maze.prototype.createMaze = function () {
@@ -273,7 +272,6 @@ function Cell(cellSize, row, column) {
 var mazeDisplay = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
-        console.log("creating canvas");
         p.background(0, 0, 0);
 
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
@@ -401,8 +399,10 @@ var mazeDisplay = function (p) {
     }
 
     p.keyTyped = function() {
-        if (p.key === 'a' || p.key === 'A' || p.key === 'w' || p.key === 'W' || p.key === 'd' || p.key === 'D' || p.key === 's' || p.key === 'S') {
-            movementController(p.key);
+        if (!solved) {
+            if (p.key === 'a' || p.key === 'A' || p.key === 'w' || p.key === 'W' || p.key === 'd' || p.key === 'D' || p.key === 's' || p.key === 'S') {
+                movementController(p.key);
+            }
         }
     }
 };
@@ -475,8 +475,10 @@ function movementController(key) {
         }
     }
 
-    if (cellString == this.endString) {
+    if (cellString == maze.endString) {
         alert("You solved the maze!");
+        solved = true;
+        timer.stop();
     }
 
     return cellString;
