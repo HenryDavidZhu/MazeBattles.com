@@ -23,22 +23,29 @@ function isWall(cellA, cellB) {
     return true;
 }
 
-function Maze(numRows, numColumns) {
+function Maze(numRows, numColumns, cellSize) {
     this.numColumns = numColumns;
     this.numRows = numRows;
     this.numCells = numRows * numColumns;
     this.cellGraph = [];
     this.wallList = {};
+    this.cellSize = cellSize;
+
+    this.mazeWidth = numColumns * cellSize;
+    this.mazeHeight = numRows * cellSize;
 
     for (var i = 0; i < numRows; i++) { // For every single row
         this.cellGraph.push([]); // Start out with an empty row
     }
+
+    this.endString = (numRows - 1) + "-" + (numColumns - 1);
+    console.log("this.endString = " + this.endString);
 }
 
 Maze.prototype.createMaze = function () {
     for (var i = 0; i < this.numRows; i++) {
         for (var j = 0; j < this.numColumns; j++) {
-            var cell = new Cell(15, i, j);
+            var cell = new Cell(this.cellSize, i, j);
             this.cellGraph[i].push(cell);
         }
     }
@@ -258,4 +265,219 @@ function Cell(cellSize, row, column) {
 
     this.walls = [true, true, true, true]; // 0 = top, 1 = right, 2 = bottom, 3 = left
     this.visited = false; // Whether the cell has been traversed or not
+}
+
+
+
+// Graphics controller
+var mazeDisplay = function (p) {
+    p.setup = function () {
+        var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
+        console.log("creating canvas");
+        p.background(0, 0, 0);
+
+        // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
+        var pos = maze.getRandomPos();
+        
+        var row = pos[0];
+        var column = pos[1];
+        maze.cellGraph[row][column].visited = true;
+
+        for (var k = 0; k < directions.length; k++) {
+            var key = row.toString() + column.toString() + directions[k].toString();
+
+            if (!maze.wallList[key]) {
+                maze.wallList[key] = [row, column, directions[k]];
+            }
+        }
+
+        playerPosition = maze.cellGraph[0][0];
+    }
+
+    Cell.prototype.display = function () {
+        p.stroke(255, 255, 255);
+        if (this.walls[0] && this.row != 0) { // Top
+            p.line(this.xPos, this.yPos, this.xPos + this.cellSize, this.yPos);
+        }
+        if (this.walls[1] && this.column != playerPosition.widthCells - 1) { // Right
+            p.line(this.xPos + this.cellSize, this.yPos, this.xPos + this.cellSize, this.yPos + this.cellSize);
+        }
+        if (this.walls[2] && this.row != playerPosition.heightCells - 1) { // Bottom
+            p.line(this.xPos + this.cellSize, this.yPos + this.cellSize, this.xPos, this.yPos + this.cellSize);
+        }
+        if (this.walls[3] && this.column != 0) { // Left
+            p.line(this.xPos, this.yPos + this.cellSize, this.xPos, this.yPos);
+        }
+        p.noStroke();
+    }
+
+    p.displayMaze = function (maze) {
+        for (var i = 0; i < maze.cellGraph.length; i++) { // Iterate through row
+            for (var j = 0; j < maze.cellGraph[i].length; j++) { // Iterate through every column
+                var cell = maze.cellGraph[i][j]; // Display the cell
+
+                p.stroke(255, 255, 255);
+                if (cell.walls[0] && cell.row != 0) { // Top
+                    p.line(cell.xPos, cell.yPos, cell.xPos + cell.cellSize, cell.yPos);
+                }
+                if (cell.walls[1] && cell.column != maze.widthCells - 1) { // Right
+                    p.line(cell.xPos + cell.cellSize, cell.yPos, cell.xPos + cell.cellSize, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[2] && cell.row != maze.heightCells - 1) { // Bottom
+                    p.line(cell.xPos + cell.cellSize, cell.yPos + cell.cellSize, cell.xPos, cell.yPos + cell.cellSize);
+                }
+                if (cell.walls[3] && cell.column != 0) { // Left
+                    p.line(cell.xPos, cell.yPos + cell.cellSize, cell.xPos, cell.yPos);
+                }
+                p.noStroke();
+            }
+        }
+    }
+
+    Cell.prototype.highlight = function () {
+        p.noFill();
+        p.stroke("#ffffff");
+        p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
+        p.fill(98, 244, 88);
+    }
+
+    p.draw = function () {
+        if (option == "one-on-one") {
+            if (!gameOverTrigger) {
+
+                if (maze) {
+                    p.clear();
+                    p.displayMaze(maze);
+
+                    userPosition = maze.cellGraph[playerY][playerX];
+
+                    p.fill(98, 244, 88);
+                    p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
+
+                    // Draw the path
+                    drawPath(p, path);
+                }
+            }
+
+            if (gameOver) {
+                gameOverTrigger = true;
+            }
+        }
+
+        if (option == "single-player") {
+            p.clear();
+
+            // Draw the maze
+            for (var i = 0; i < maze.cellGraph.length; i++) { // Iterate through row
+                for (var j = 0; j < maze.cellGraph[i].length; j++) { // Iterate through every column
+                    maze.cellGraph[i][j].display(); // Display the cell
+                }
+            }
+
+            // Change the generating maze text
+            if (!timerStarted) {
+                $("#game-panel").fadeOut(500, function () {
+                    // Change the html of the score-panel to the play again button
+                    $("#game-panel").html("time elapsed: 0:00");
+
+                    $("#game-panel").fadeIn(500, function () {
+
+                    });
+                });
+
+                timer.reset();
+                timer.start();
+                timer.addEventListener("secondsUpdated", updateTime);
+
+                timerStarted = true;
+            }
+
+            playerPosition = maze.cellGraph[playerY][playerX];
+
+            p.fill(98, 244, 88);
+            p.ellipse(playerPosition.xPos + playerPosition.cellSize / 2, playerPosition.yPos + playerPosition.cellSize / 2, playerPosition.cellSize / 2, playerPosition.cellSize / 2);
+            drawPath(p, singlePlayerPath);
+        }
+    }
+
+    p.keyTyped = function() {
+        if (p.key === 'a' || p.key === 'A' || p.key === 'w' || p.key === 'W' || p.key === 'd' || p.key === 'D' || p.key === 's' || p.key === 'S') {
+            movementController(p.key);
+        }
+    }
+};
+
+function movementController(key) {
+    // Controls all the logic behind the user's movement on the board
+    var cellString = "";
+
+    if (key === 'w' || key === 'W') {
+        if (playerPosition && !playerPosition.walls[0]) {
+            playerY -= 1;
+
+            cellString = playerY + "-" + playerX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (key === 's' || key === 'S') {
+        if (playerPosition && !playerPosition.walls[2]) {
+            playerY += 1;
+
+            cellString = playerY + "-" + playerX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (key === 'a' || key === 'A') {
+        if (playerPosition && !playerPosition.walls[3]) {
+            playerX -= 1;
+
+            cellString = playerY + "-" + playerX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (key === 'd' || key === 'D') {
+        if (playerPosition && !playerPosition.walls[1]) {
+            playerX += 1;
+
+            cellString = playerY + "-" + playerX;
+
+            if (singlePlayerPath.indexOf(cellString) == -1) {
+                singlePlayerPath.push(cellString);
+            } else if (cellString == "0-0") {
+                singlePlayerPath = ["0-0"];
+            } else {
+                singlePlayerPath.pop();
+            }
+        }
+    }
+
+    if (cellString == this.endString) {
+        alert("You solved the maze!");
+    }
+
+    return cellString;
 }

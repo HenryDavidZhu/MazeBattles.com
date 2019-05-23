@@ -6,7 +6,8 @@ body {
 }
 
 #menu-1,
-#menu-2 {
+#menu-2,
+#menu-6 {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -14,10 +15,19 @@ body {
     text-align: center;
 }
 
+#menu-6, 
+#canvas2-wrapper {
+    border-radius: 7px;
+}
+
+#canvas2-wrapper {
+    background: black;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.16), 0 8px 12px rgba(0, 0, 0, 0.23);
+}
+
 #menu-2,
 #menu-3,
-#menu-4,
-#menu-5,
+#time-elapsed,
 #join-menu {
     display: none;
 }

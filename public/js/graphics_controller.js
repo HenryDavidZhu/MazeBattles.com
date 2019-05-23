@@ -3,10 +3,10 @@ function displayTab(index, maxIndex) {
 	// menu-1, menu-2, menu-3, ... menu-maxIndex
 	for (var i = 0; i < maxIndex; i++) {
 		if (i == index) {
-			$("#menu-" + i).show();
+			$("#menu-" + i).css({"display":"inline"});
 		}
 		if (i != index) {
-			$("#menu-" + i).hide();
+			$("#menu-" + i).css({"display":"none"})
 		}
 	}
 }	
