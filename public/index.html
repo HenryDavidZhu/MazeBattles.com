@@ -103,23 +103,32 @@
                   <img src="img/medium.png" />
                   <div class="whitespace"></div>
                </div>
-               <button class="easier">&lt;</button>
-               Easy Difficulty (29x44)
-               <button class="harder">&gt;</button> / 
-               <select>
-                  <option value="single-player">single-player</option>
-                  <option value="one-on-one">one-on-one</option>
-               </select>
-               / 
-               <button id="invite">Invite</button>
-               <button id="join">Join</button>
+               <div class="option" id="hard">
+                  <img src="img/hard.png" />
+                  <div class="whitespace"></div>
+               </div>
+               <div class="option" id="expert">
+                  <img src="img/expert.png" />
+                  <div class="whitespace"></div>
+               </div>
+               <div id="one-on-one-menu">
+                  <button class="easier">&lt;</button>
+                  Easy Difficulty (29x44)
+                  <button class="harder">&gt;</button> / 
+                  <select>
+                     <option value="single-player">single-player</option>
+                     <option value="one-on-one">one-on-one</option>
+                  </select>
+                  / 
+                  <button id="invite">Invite</button>
+                  <button id="join">Join</button>
+               </div>
             </div>
             <div id="menu-6">
                <div id="canvas2-wrapper">
                </div>
-               <div class="whitespace"></div>
-               <div class="whitespace"></div>
-               <span id="time-elapsed">time elapsed: 00:00</span>
+               <div class="whitespace-2"></div>
+               <span id="time-elapsed">time elapsed: <span id="time-span">00:00</span></span>
             </div>
          </div>
          <div id="social-media-buttons">

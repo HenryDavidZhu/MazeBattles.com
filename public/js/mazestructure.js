@@ -478,7 +478,10 @@ function movementController(key) {
     if (cellString == maze.endString) {
         alert("You solved the maze!");
         solved = true;
-        timer.stop();
+        timer.stop(); 
+        var timeText = $("#time-span").html();
+        console.log("timeText = " + timeText);
+        $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
     }
 
     return cellString;

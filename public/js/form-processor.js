@@ -18,6 +18,8 @@ var playerY = 0;
 var singlePlayerPath = ["0-0"];
 
 $(".easier").click(function() {
+	console.log("easier difficulty!");
+
 	if (difficultyIndex == 0) {
 		difficultyIndex = difficulties.length - 1;
 	} else {
@@ -28,6 +30,8 @@ $(".easier").click(function() {
 });
 
 $(".harder").click(function() {
+	console.log("harder difficulty!");
+
 	if (difficultyIndex == difficulties.length - 1) {
 		difficultyIndex = 0;
 	} else {
@@ -42,8 +46,10 @@ function changeDifficulty(difficultyIndex) {
 		var difficulty = difficulties[i];
 
 		if (i == difficultyIndex) {
+			console.log("setting #" + difficulty + "'s display to inline");
 			$("#" + difficulty).css({"display":"inline"});
 		} else {
+			console.log("setting #" + difficulty + "'s dispaly to none");
 			$("#" + difficulty).css({"display":"none"});
 		}
 	}

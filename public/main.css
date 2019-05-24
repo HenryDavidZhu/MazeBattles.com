@@ -109,3 +109,7 @@ select {
 input, .play-button {
     outline: 0;
 }
+
+.whitespace-2 {
+    height: 8px;
+}

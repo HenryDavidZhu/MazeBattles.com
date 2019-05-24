@@ -38,7 +38,7 @@ function initializedGame(room, initialized) {
 
 function updateTime() {
     if (mazeComplete) {
-        $("#time-elapsed").html("time elapsed: " + timer.getTimeValues().toString(["minutes", "seconds"]));
+        $("#time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
     }
 }
 
