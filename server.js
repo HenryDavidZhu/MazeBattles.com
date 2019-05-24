@@ -43,9 +43,9 @@ function Maze(numRows, numColumns) {
     }
 }
 
-Maze.prototype.getRandomPos = function() {
+/*Maze.prototype.getRandomPos = function() {
     return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
-}
+}*/
 
 Maze.prototype.createMaze = function () { // Build an empty maze
     for (var i = 0; i < this.numRows; i++) { // Iterate through every row

@@ -18,8 +18,6 @@ var playerY = 0;
 var singlePlayerPath = ["0-0"];
 
 $(".easier").click(function() {
-	console.log("easier difficulty!");
-
 	if (difficultyIndex == 0) {
 		difficultyIndex = difficulties.length - 1;
 	} else {
@@ -30,8 +28,6 @@ $(".easier").click(function() {
 });
 
 $(".harder").click(function() {
-	console.log("harder difficulty!");
-
 	if (difficultyIndex == difficulties.length - 1) {
 		difficultyIndex = 0;
 	} else {
@@ -46,10 +42,8 @@ function changeDifficulty(difficultyIndex) {
 		var difficulty = difficulties[i];
 
 		if (i == difficultyIndex) {
-			console.log("setting #" + difficulty + "'s display to inline");
 			$("#" + difficulty).css({"display":"inline"});
 		} else {
-			console.log("setting #" + difficulty + "'s dispaly to none");
 			$("#" + difficulty).css({"display":"none"});
 		}
 	}
@@ -84,7 +78,8 @@ $("#invite").click(function() {
 });
 
 $("#join").click(function() {
-	$("#invite-menu").hide();
+	$("#one-on-one-menu").hide();
+	$("#url-menu").hide();
 	$("#join-menu").show();
 });
 
@@ -108,8 +103,6 @@ $(".play-button").click(function() {
 	maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
 	maze.createMaze();
 	maze.generateMaze();
-
-	console.log("displaying menu-6");
 
 	displayTab(6, 6); 
 	myp5 = new p5(mazeDisplay, "canvas2-wrapper");

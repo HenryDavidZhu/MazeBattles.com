@@ -28,10 +28,8 @@ body {
 #menu-2,
 #menu-3,
 #time-elapsed,
-#join-menu {
-    display: none;
-}
-
+#join-menu,
+#display-menu,
 .navigation,
 #display-error,
 #title,

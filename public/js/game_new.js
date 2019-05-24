@@ -7,8 +7,10 @@ socket.on("generated-url", createRoom);
 function createRoom(id) {
     roomID = id;
 
-    $("#invite-menu").html("share this code with your friend: <span class='code'>" + roomID +
+    $("#url-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
+    $("#one-on-one-menu").hide();
+    $("#url-menu").show();
 }
 
 socket.on("invalid", alertError); // When the user entered a room code that does not exist

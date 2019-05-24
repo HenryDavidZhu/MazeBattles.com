@@ -1,3 +1,13 @@
+const getMethods = (obj) => {
+  // Borowwed from https://flaviocopes.com/how-to-list-object-methods-javascript/
+  let properties = new Set()
+  let currentObj = obj
+  do {
+    Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
+  } while ((currentObj = Object.getPrototypeOf(currentObj)))
+  return [...properties.keys()].filter(item => typeof obj[item] === 'function')
+}
+
 var directions = ["N", "E", "S", "W"];
 var vectors = [
     [-1, 0], // N vector
@@ -274,6 +284,8 @@ var mazeDisplay = function (p) {
         var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
         p.background(0, 0, 0);
 
+        console.log(getMethods(maze));
+
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
         var pos = maze.getRandomPos();
         
@@ -480,7 +492,6 @@ function movementController(key) {
         solved = true;
         timer.stop(); 
         var timeText = $("#time-span").html();
-        console.log("timeText = " + timeText);
         $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
     }
 
