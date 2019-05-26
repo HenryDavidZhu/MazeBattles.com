@@ -99,6 +99,10 @@ Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
     return computedFrontier;
 }
 
+Maze.prototype.testFunction = function() {
+    console.log("test function");
+}
+
 Maze.prototype.getRandomPos = function() {
     return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
 }
@@ -284,13 +288,14 @@ var mazeDisplay = function (p) {
         var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
         p.background(0, 0, 0);
 
-        console.log(getMethods(maze));
-
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
         var pos = maze.getRandomPos();
         
         var row = pos[0];
         var column = pos[1];
+
+        console.log("row = " + row + ", column = " + column);
+
         maze.cellGraph[row][column].visited = true;
 
         for (var k = 0; k < directions.length; k++) {
@@ -353,8 +358,6 @@ var mazeDisplay = function (p) {
 
     p.draw = function () {
         if (option == "one-on-one") {
-            if (!gameOverTrigger) {
-
                 if (maze) {
                     p.clear();
                     p.displayMaze(maze);
@@ -367,11 +370,7 @@ var mazeDisplay = function (p) {
                     // Draw the path
                     drawPath(p, path);
                 }
-            }
 
-            if (gameOver) {
-                gameOverTrigger = true;
-            }
         }
 
         if (option == "single-player") {

@@ -4,7 +4,7 @@ var timerStarted = false;
 
 socket.on("generated-url", createRoom);
 
-function createRoom(id) {
+function createRoom(id) { 
     roomID = id;
 
     $("#url-menu").html("share this code with your friend: <span class='code'>" + roomID +
@@ -22,7 +22,12 @@ function alertError() {
 socket.on("maze", downloadMaze);
 
 function downloadMaze(newMaze) {
-	maze = newMaze[0];
+	var mazeToCopy = newMaze[0];
+	console.log(mazeToCopy.numRows);
+	console.log(mazeToCopy.numColumns);
+	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns);
+	maze.createMaze();
+	maze.generateMaze();
 }
 
 socket.on("paired", initializedGame);
