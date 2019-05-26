@@ -23,11 +23,13 @@ socket.on("maze", downloadMaze);
 
 function downloadMaze(newMaze) {
 	var mazeToCopy = newMaze[0];
+	console.log("difficulty = " + newMaze[1]);
 	console.log(mazeToCopy.numRows);
 	console.log(mazeToCopy.numColumns);
-	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns);
-	maze.createMaze();
-	maze.generateMaze();
+	var cellSize = cellSizes[newMaze[1]];
+	console.log("cellSize = " + cellSize);
+	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize);
+	maze.cellGraph = mazeToCopy.cellGraph;
 }
 
 socket.on("paired", initializedGame);

@@ -16,6 +16,7 @@ var playerX = 0;
 var playerY = 0;
 
 var singlePlayerPath = ["0-0"];
+var path = [];
 
 $(".easier").click(function() {
 	if (difficultyIndex == 0) {

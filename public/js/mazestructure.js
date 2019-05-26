@@ -285,6 +285,8 @@ function Cell(cellSize, row, column) {
 // Graphics controller
 var mazeDisplay = function (p) {
     p.setup = function () {
+        //console.log("maze.cellSize = " + maze.cellSize);
+        //console.log("maze.mazeWidth = " + maze.d + ", maze.mazeHeight = " + maze.mazeHeight);
         var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
         p.background(0, 0, 0);
 
@@ -293,8 +295,6 @@ var mazeDisplay = function (p) {
         
         var row = pos[0];
         var column = pos[1];
-
-        console.log("row = " + row + ", column = " + column);
 
         maze.cellGraph[row][column].visited = true;
 
@@ -357,31 +357,10 @@ var mazeDisplay = function (p) {
     }
 
     p.draw = function () {
-        if (option == "one-on-one") {
-                if (maze) {
-                    p.clear();
-                    p.displayMaze(maze);
-
-                    userPosition = maze.cellGraph[playerY][playerX];
-
-                    p.fill(98, 244, 88);
-                    p.ellipse(userPosition.xPos + userPosition.cellSize / 2, userPosition.yPos + userPosition.cellSize / 2, userPosition.cellSize / 2, userPosition.cellSize / 2);
-
-                    // Draw the path
-                    drawPath(p, path);
-                }
-
-        }
-
-        if (option == "single-player") {
+        if (option == "single-player" || option == "one-on-one") {
             p.clear();
 
-            // Draw the maze
-            for (var i = 0; i < maze.cellGraph.length; i++) { // Iterate through row
-                for (var j = 0; j < maze.cellGraph[i].length; j++) { // Iterate through every column
-                    maze.cellGraph[i][j].display(); // Display the cell
-                }
-            }
+            p.displayMaze(maze);
 
             // Change the generating maze text
             if (!timerStarted) {
@@ -419,6 +398,7 @@ var mazeDisplay = function (p) {
 };
 
 function movementController(key) {
+    console.log("key = " + key + ", playerPosition.row = " + playerPosition.row + ", playerPosition.column = " + playerPosition.column + ", playerPosition.walls = " + playerPosition.walls);
     // Controls all the logic behind the user's movement on the board
     var cellString = "";
 
