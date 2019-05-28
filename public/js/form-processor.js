@@ -43,9 +43,9 @@ function changeDifficulty(difficultyIndex) {
 		var difficulty = difficulties[i];
 
 		if (i == difficultyIndex) {
-			$("#" + difficulty).css({"display":"inline"});
+			$("." + difficulty).show();
 		} else {
-			$("#" + difficulty).css({"display":"none"});
+			$("." + difficulty).hide();
 		}
 	}
 }
@@ -66,20 +66,35 @@ $("select").change(function() {
 	}
 });
 
-$("#invite").click(function() {
-    $("#invite-menu").html("setting up match room<span class=\"dots\"><span class=\"dot\">.</span class=\"dot\"><span>.</span class=\"dot\"><span>.</span></span>");
+function displayMatchLoading() {
+	/*
+		This function is designed to do asyncronous work: for some reason, the maze generation process alwayos
+		precedes the command changing the content of the .one-on-one-menu. to "setting up match room..."
+	*/
+	$(".one-on-one-menu").html("setting up match room<span class=\"dots\"><span class=\"dot\">.</span class=\"dot\"><span>.</span class=\"dot\"><span>.</span></span>");
+}
 
-    var mazeDifficulty = difficulties[difficultyIndex];
-    var dimensions = difficultyDimensions[mazeDifficulty];
-    var maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
-    maze.createMaze();	
-    maze.generateMaze();	
+function generateMaze() {
+	    var mazeDifficulty = difficulties[difficultyIndex];
+	    var dimensions = difficultyDimensions[mazeDifficulty];
+	    var maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
+	    maze.createMaze();	
+	    maze.generateMaze();
+	    socket.emit("invite", [maze, mazeDifficulty]);	
+}
 
-    socket.emit("invite", [maze, mazeDifficulty]);
+$(".invite").click(function() {
+	console.log("invite button clicked");
+	$.ajax({
+	   url: displayMatchLoading(),
+	   success:function(){
+	   generateMaze();
+	}
+	})
 });
 
-$("#join").click(function() {
-	$("#one-on-one-menu").hide();
+$(".join").click(function() {
+	$(".one-on-one-menu").hide();
 	$("#url-menu").hide();
 	$("#join-menu").show();
 });

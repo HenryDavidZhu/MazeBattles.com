@@ -1,11 +1,11 @@
 const getMethods = (obj) => {
-  // Borowwed from https://flaviocopes.com/how-to-list-object-methods-javascript/
-  let properties = new Set()
-  let currentObj = obj
-  do {
-    Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
-  } while ((currentObj = Object.getPrototypeOf(currentObj)))
-  return [...properties.keys()].filter(item => typeof obj[item] === 'function')
+    // Borowwed from https://flaviocopes.com/how-to-list-object-methods-javascript/
+    let properties = new Set()
+    let currentObj = obj
+    do {
+        Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
+    } while ((currentObj = Object.getPrototypeOf(currentObj)))
+    return [...properties.keys()].filter(item => typeof obj[item] === 'function')
 }
 
 var directions = ["N", "E", "S", "W"];
@@ -51,7 +51,7 @@ function Maze(numRows, numColumns, cellSize) {
     this.endString = (numRows - 1) + "-" + (numColumns - 1);
 }
 
-Maze.prototype.createMaze = function () {
+Maze.prototype.createMaze = function() {
     for (var i = 0; i < this.numRows; i++) {
         for (var j = 0; j < this.numColumns; j++) {
             var cell = new Cell(this.cellSize, i, j);
@@ -60,7 +60,7 @@ Maze.prototype.createMaze = function () {
     }
 }
 
-Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
+Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {
     /*
     Frontier walls are all the walls of the adjacent cells.
     Coordinates of adjacent cells:
@@ -153,10 +153,10 @@ Maze.prototype.calculateCellDivision = function(wall) {
         return [cell1, cell2, cellsVisited, unvisitedCell];
     }
 
-    return -1;   
+    return -1;
 }
 
-Maze.prototype.deleteWall = function (current, neighbor) {
+Maze.prototype.deleteWall = function(current, neighbor) {
     var deltaX = current.column - neighbor.column;
     var deltaY = current.row - neighbor.row;
 
@@ -178,7 +178,7 @@ Maze.prototype.deleteWall = function (current, neighbor) {
     }
 }
 
-Maze.prototype.generateMaze = function () {
+Maze.prototype.generateMaze = function() {
     // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
     var pos = this.getRandomPos();
 
@@ -283,8 +283,8 @@ function Cell(cellSize, row, column) {
 
 
 // Graphics controller
-var mazeDisplay = function (p) {
-    p.setup = function () {
+var mazeDisplay = function(p) {
+    p.setup = function() {
         //console.log("maze.cellSize = " + maze.cellSize);
         //console.log("maze.mazeWidth = " + maze.d + ", maze.mazeHeight = " + maze.mazeHeight);
         var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
@@ -292,7 +292,7 @@ var mazeDisplay = function (p) {
 
         // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
         var pos = maze.getRandomPos();
-        
+
         var row = pos[0];
         var column = pos[1];
 
@@ -309,7 +309,7 @@ var mazeDisplay = function (p) {
         playerPosition = maze.cellGraph[0][0];
     }
 
-    Cell.prototype.display = function () {
+    Cell.prototype.display = function() {
         p.stroke(255, 255, 255);
         if (this.walls[0] && this.row != 0) { // Top
             p.line(this.xPos, this.yPos, this.xPos + this.cellSize, this.yPos);
@@ -326,7 +326,7 @@ var mazeDisplay = function (p) {
         p.noStroke();
     }
 
-    p.displayMaze = function (maze) {
+    p.displayMaze = function(maze) {
         for (var i = 0; i < maze.cellGraph.length; i++) { // Iterate through row
             for (var j = 0; j < maze.cellGraph[i].length; j++) { // Iterate through every column
                 var cell = maze.cellGraph[i][j]; // Display the cell
@@ -349,14 +349,14 @@ var mazeDisplay = function (p) {
         }
     }
 
-    Cell.prototype.highlight = function () {
+    Cell.prototype.highlight = function() {
         p.noFill();
         p.stroke("#ffffff");
         p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
         p.fill(98, 244, 88);
     }
 
-    p.draw = function () {
+    p.draw = function() {
         if (option == "single-player" || option == "one-on-one") {
             p.clear();
 
@@ -364,11 +364,11 @@ var mazeDisplay = function (p) {
 
             // Change the generating maze text
             if (!timerStarted) {
-                $("#game-panel").fadeOut(500, function () {
+                $("#game-panel").fadeOut(500, function() {
                     // Change the html of the score-panel to the play again button
                     $("#game-panel").html("time elapsed: 0:00");
 
-                    $("#game-panel").fadeIn(500, function () {
+                    $("#game-panel").fadeIn(500, function() {
 
                     });
                 });
@@ -469,7 +469,7 @@ function movementController(key) {
     if (cellString == maze.endString) {
         alert("You solved the maze!");
         solved = true;
-        timer.stop(); 
+        timer.stop();
         var timeText = $("#time-span").html();
         $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
     }
