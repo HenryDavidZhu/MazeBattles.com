@@ -39,7 +39,7 @@ function initializedGame(room, initialized) {
 	// room: the id of the room the user has just joined
 	roomID = room;
 
-	if (!initialized) {
+	//if (!initialized) {
 		displayTab(6, 6); 
 		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
 
@@ -50,7 +50,7 @@ function initializedGame(room, initialized) {
 	    timer.reset();
 	    timer.start();
 	    timer.addEventListener("secondsUpdated", updateTime);
-	}
+	//}
 }
 
 function updateTime() {
@@ -101,7 +101,6 @@ function rematch() {
 socket.on("lost", handleLoss);
 
 function handleLoss() {
-	alert("You lost!");
 	solved = true;
 	timer.stop();
 
@@ -128,12 +127,24 @@ function opponentDisconnect() {
 }
 
 function acceptRematch(accept) {
-	
+	if (accept) {
+		$("#time-elapsed").html("setting up match room...");
+		
+		// Regenerate new maze
+		maze = new Maze(maze.numRows, maze.numColumns);
+		maze.createMaze();
+		maze.generateMaze();
+
+		socket.emit("acceptRematch", true, maze, roomID);
+	}
+	if (!accept) {
+		redirectUser();
+	}
 }
 
 socket.on("rematchrequest", rematchRequest);
 
 function rematchRequest() {
 	alert("Your opponent has requested a rematch");
-	$("#time-elapsed").html("<button>Accept</button>&nbsp;<button onclick=\"redirectUser()\">Decline</button>")
+	$("#time-elapsed").html("<button onclick=\"acceptRematch(true)\">Accept</button>&nbsp;<button onclick=\"acceptRematch(false)\">Decline</button>")
 }

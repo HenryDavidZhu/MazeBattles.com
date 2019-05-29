@@ -443,6 +443,7 @@ function playerConnect(user) {
 
     function acceptRematchHandler(accept, maze, roomID) {
         if (accept) {
+            console.log("rematch for room " + roomID);
             // If the user accepts the rematch
             var room = system.rooms[roomID];
             room.maze = maze;
@@ -451,8 +452,6 @@ function playerConnect(user) {
                 io.to(room.playerIDs[i]).emit("maze", room.maze);
                 io.to(room.playerIDs[i]).emit("paired", roomID, true);
             }
-        } else {
-            // Destroy the room
         }
     }
 }

@@ -477,7 +477,7 @@ function movementController(key) {
         }
 
         if (option == "one-on-one") {
-            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>");
+            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>");
             socket.emit("winner", roomID);
         }
     }
