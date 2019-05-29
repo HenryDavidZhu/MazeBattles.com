@@ -35,7 +35,8 @@ body {
 #title,
 #game-panel,
 #social-media-buttons,
-#play-menu {
+#play-menu,
+.loading-msg {
     display: none;
 }
 

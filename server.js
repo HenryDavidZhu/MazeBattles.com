@@ -387,6 +387,8 @@ function playerConnect(user) {
                 9. Have the accepting user create the maze, send it to the server
                 10. Server emits maze to players
         */
+        console.log("winner event");
+
         var room = system.rooms[roomID];
 
         var loser = room.playerIDs[0];
@@ -413,6 +415,7 @@ function playerConnect(user) {
                 opponent = system.rooms[roomID].playerIDs[1];
             }
 
+            console.log("opponent = " + opponent);
             io.to(opponent).emit("disconnectedUser", true);
 
             // Destroy the room and references between the client ids and the room ids
@@ -421,8 +424,6 @@ function playerConnect(user) {
             delete system.rooms[roomID];
         }
     }
-
-
 
     user.on("rematch", sendRematchRequest);
 

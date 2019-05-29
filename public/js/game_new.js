@@ -9,7 +9,7 @@ function createRoom(id) {
 
     $("#url-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
-    $("#one-on-one-menu").hide();
+    $(".one-on-one-menu").hide();
     $("#url-menu").show();
 }
 
@@ -42,10 +42,19 @@ function initializedGame(room, initialized) {
 	if (!initialized) {
 		displayTab(6, 6); 
 		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
+
+		mazeComplete = true;
+
+		$("#time-elapsed").show();
+
+	    timer.reset();
+	    timer.start();
+	    timer.addEventListener("secondsUpdated", updateTime);
 	}
 }
 
 function updateTime() {
+	console.log("mazeComplete = " + mazeComplete);
     if (mazeComplete) {
         $("#time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
     }
@@ -81,4 +90,50 @@ function drawPath(p, path) {
 
         p.strokeWeight(1);
     }
+}
+
+function rematch() {
+	console.log("rematch function activated");
+	$("#time-elapsed").html("Waiting for your opponent to accept your rematch request.");
+	socket.emit("rematch", roomID);
+}
+
+socket.on("lost", handleLoss);
+
+function handleLoss() {
+	alert("You lost!");
+	solved = true;
+	timer.stop();
+
+	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>")
+}
+
+socket.on("disconnectedUser", opponentDisconnect);
+
+function alertOpponentDisconnect() {
+	alert("Your opponent disconnected from the match");
+}
+
+function redirectUser() {
+	window.location.href = "http://localhost:3000";
+}
+
+function opponentDisconnect() {
+	$.ajax({
+		url: alertOpponentDisconnect(),
+		success: function() {
+			redirectUser();
+		}
+	})
+}
+
+function acceptRematch(accept) {
+	
+}
+
+socket.on("rematchrequest", rematchRequest);
+
+function rematchRequest() {
+	alert("Your opponent has requested a rematch");
+	$("#time-elapsed").html("<button>Accept</button>&nbsp;<button onclick=\"redirectUser()\">Decline</button>")
 }

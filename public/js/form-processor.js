@@ -5,7 +5,7 @@ var difficultyIndex = 0;
 
 var maze;
 var mazeComplete = false; // Whether the maze generation process has finished or not
-var solved = false; // Whether the maze has been solved or not
+var solved = false; // Whether the maze has been solved (or the user lost) or not
 var option = "single-player";
 
 var timerStarted = false;
@@ -87,9 +87,9 @@ $(".invite").click(function() {
 	console.log("invite button clicked");
 	$.ajax({
 	   url: displayMatchLoading(),
-	   success:function(){
-	   generateMaze();
-	}
+	   success: function(){
+	   		generateMaze();
+		}
 	})
 });
 
@@ -112,7 +112,16 @@ $("#room-code-form").on("submit", function(e) {
 	e.preventDefault();
 });
 
-$(".play-button").click(function() {
+function displayMazeGenerating() {
+	/*
+		This function is designed to do asyncronous work: for some reason, the maze generation process alwayos
+		precedes the command changing the content of the .one-on-one-menu. to "setting up match room..."
+	*/
+	$(".single-player-menu").hide();
+	$(".loading-msg").show();
+}
+
+function initializeSinglePlayer() {
 	var mazeDifficulty = difficulties[difficultyIndex];
 	var dimensions = difficultyDimensions[mazeDifficulty];
 	
@@ -130,4 +139,14 @@ $(".play-button").click(function() {
     timer.reset();
     timer.start();
     timer.addEventListener("secondsUpdated", updateTime);
+}
+
+
+$(".play-button").click(function() {
+	$.ajax({
+	   url: displayMazeGenerating(),
+	   success: function() {
+		   initializeSinglePlayer();
+		}
+	});
 });

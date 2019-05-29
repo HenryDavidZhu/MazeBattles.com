@@ -471,7 +471,15 @@ function movementController(key) {
         solved = true;
         timer.stop();
         var timeText = $("#time-span").html();
-        $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
+
+        if (option == "single-player") {
+            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
+        }
+
+        if (option == "one-on-one") {
+            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>");
+            socket.emit("winner", roomID);
+        }
     }
 
     return cellString;
