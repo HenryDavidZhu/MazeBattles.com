@@ -20,16 +20,20 @@ function alertError() {
 }
 
 socket.on("maze", downloadMaze);
-
+	
 function downloadMaze(newMaze) {
+	//console.log("newMaze = " + newMaze);
 	var mazeToCopy = newMaze[0];
-	console.log("difficulty = " + newMaze[1]);
-	console.log(mazeToCopy.numRows);
-	console.log(mazeToCopy.numColumns);
+	//console.log("difficulty = " + newMaze[1]);
+	//console.log(mazeToCopy.cellGraph);
+	//console.log(mazeToCopy.numRows);
+	//console.log(mazeToCopy.numColumns);
 	var cellSize = cellSizes[newMaze[1]];
-	console.log("cellSize = " + cellSize);
+	//console.log("cellSize = " + cellSize);
+	alert("mazeToCopy.numRows = " + mazeToCopy.numRows);
 	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize);
 	maze.cellGraph = mazeToCopy.cellGraph;
+	alert("done downloading maze");
 }
 
 socket.on("paired", initializedGame);
@@ -39,8 +43,20 @@ function initializedGame(room, initialized) {
 	// room: the id of the room the user has just joined
 	roomID = room;
 
-	//if (!initialized) {
+	console.log("initialized = " + initialized);
+
+
+
+	/*if (initialized) {
+		console.log("removing child in canvas2-wrapper");
+		var canvasWrapper = $("#canvas2-wrapper");
+		while (canvasWrapper.firstChild) {
+			canvasWrapper.removeChild(canvasWrapper.firstChild);
+		}
+	}*/
+	
 		displayTab(6, 6); 
+
 		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
 
 		mazeComplete = true;
@@ -50,7 +66,7 @@ function initializedGame(room, initialized) {
 	    timer.reset();
 	    timer.start();
 	    timer.addEventListener("secondsUpdated", updateTime);
-	//}
+	
 }
 
 function updateTime() {
@@ -129,13 +145,13 @@ function opponentDisconnect() {
 function acceptRematch(accept) {
 	if (accept) {
 		$("#time-elapsed").html("setting up match room...");
-		
+
 		// Regenerate new maze
 		maze = new Maze(maze.numRows, maze.numColumns);
 		maze.createMaze();
 		maze.generateMaze();
 
-		socket.emit("acceptRematch", true, maze, roomID);
+		socket.emit("acceptRematch", maze, roomID);
 	}
 	if (!accept) {
 		redirectUser();
