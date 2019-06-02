@@ -459,7 +459,7 @@ function playerConnect(user) {
             io.to(room.playerIDs[i]).emit("maze", [room.maze, room.difficulty]);
             io.to(room.playerIDs[i]).emit("paired", roomID, true);
 
-            room.playerIDs[i] = [0, 0]; // reset the player position in the dictionary
+            room.playerPositions[i] = [0, 0]; // reset the player position in the dictionary
         }
     }
 }

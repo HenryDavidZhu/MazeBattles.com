@@ -56,13 +56,13 @@ $("select").change(function() {
 	option = $(this).val();
 
 	if (option == "one-on-one") {
-		$("#mode-select").val("one-on-one");
+		//$("#mode-select").val("one-on-one");
 		$("#menu-1").css({"display":"none"});
 		$("#menu-2").css({"display":"inline"});
 	} 
 
 	if (option == "single-player") {
-		$("#mode-select").val("single-player");
+		//$("#mode-select").val("single-player");
 		$("#menu-2").css({"display":"none"});
 		$("#menu-1").css({"display":"inline"});
 	}
