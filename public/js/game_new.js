@@ -6,6 +6,7 @@ socket.on("generated-url", createRoom);
 
 function createRoom(id) { 
     roomID = id;
+    console.log("roomID = " + roomID);
 
     $("#url-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
@@ -22,55 +23,58 @@ function alertError() {
 socket.on("maze", downloadMaze);
 	
 function downloadMaze(newMaze) {
-	//console.log("newMaze = " + newMaze);
 	var mazeToCopy = newMaze[0];
-	//console.log("difficulty = " + newMaze[1]);
-	//console.log(mazeToCopy.cellGraph);
-	//console.log(mazeToCopy.numRows);
-	//console.log(mazeToCopy.numColumns);
 	var cellSize = cellSizes[newMaze[1]];
-	//console.log("cellSize = " + cellSize);
-	alert("mazeToCopy.numRows = " + mazeToCopy.numRows);
+	//console.log("cellSize = " + cellSize);;
 	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize);
 	maze.cellGraph = mazeToCopy.cellGraph;
-	alert("done downloading maze");
+
+	path = [];
+	singlePlayerPath = ["0-0"];
+	solved = false;
+	playerPosition = maze.cellGraph[0][0];
+	playerX = 0;
+	playerY = 0;
 }
 
 socket.on("paired", initializedGame);
 
-function initializedGame(room, initialized) {
-	// initialized: whether the user has already played a match
+function initializedGame(room, rematch) {
+	// rematch: whether the user is playing a rematch game
+
 	// room: the id of the room the user has just joined
 	roomID = room;
+	console.log("roomID = " + roomID);
 
-	console.log("initialized = " + initialized);
-
-
+	alert("initializing game");
 
 	/*if (initialized) {
 		console.log("removing child in canvas2-wrapper");
-		var canvasWrapper = $("#canvas2-wrapper");
+
+	}*/
+
+		var canvasWrapper = document.getElementById("canvas2-wrapper");
 		while (canvasWrapper.firstChild) {
 			canvasWrapper.removeChild(canvasWrapper.firstChild);
 		}
-	}*/
 	
 		displayTab(6, 6); 
 
 		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
-
+	
 		mazeComplete = true;
+		initialized = true;
+
+		alert("Done powering up graphics engine");
 
 		$("#time-elapsed").show();
 
 	    timer.reset();
 	    timer.start();
 	    timer.addEventListener("secondsUpdated", updateTime);
-	
 }
 
 function updateTime() {
-	console.log("mazeComplete = " + mazeComplete);
     if (mazeComplete) {
         $("#time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
     }
@@ -109,7 +113,6 @@ function drawPath(p, path) {
 }
 
 function rematch() {
-	console.log("rematch function activated");
 	$("#time-elapsed").html("Waiting for your opponent to accept your rematch request.");
 	socket.emit("rematch", roomID);
 }
@@ -147,9 +150,13 @@ function acceptRematch(accept) {
 		$("#time-elapsed").html("setting up match room...");
 
 		// Regenerate new maze
-		maze = new Maze(maze.numRows, maze.numColumns);
+		maze = new Maze(maze.numRows, maze.numColumns, maze.cellSize);
 		maze.createMaze();
 		maze.generateMaze();
+
+		path = [];
+		solved = false;
+		playerPosition = maze.cellGraph[0][0];
 
 		socket.emit("acceptRematch", maze, roomID);
 	}

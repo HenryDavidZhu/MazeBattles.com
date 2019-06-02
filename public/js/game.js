@@ -197,7 +197,6 @@ function lostMatch() {
 socket.on("generated-url", createRoom);
 
 function createRoom(id) {
-    console.log("created room with id " + id);
     roomID = id;
 
     // Add event listeners to the room
@@ -230,10 +229,12 @@ function initializeGame(room, initialized) {
 
     locked = false; // enable user movement
 
+    $("#canvas-wrapper").hide();
+    $("#canvas2-wrapper").show();
+    myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+
     if (!initialized) {
-        $("#canvas-wrapper").hide();
-        $("#canvas2-wrapper").show();
-        myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // This is where the error is happening
+        initialized = true;
     }
 
     $("#score-panel").fadeOut(500);

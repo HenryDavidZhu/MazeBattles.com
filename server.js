@@ -394,7 +394,10 @@ function playerConnect(user) {
         */
         console.log("winner event");
 
+
         var room = system.rooms[roomID];
+
+        console.log("room.playerIds[1] = " + room.playerIDs[1]);
 
         var loser = room.playerIDs[0];
 

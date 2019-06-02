@@ -15,6 +15,8 @@ var playerPosition; // The cell object the user is positioned at
 var playerX = 0;
 var playerY = 0;
 
+var initialized = false; // Whether the maze has already been created or not
+
 var singlePlayerPath = ["0-0"];
 var path = [];
 

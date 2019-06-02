@@ -17,7 +17,6 @@ body {
 
 #menu-6, 
 #canvas2-wrapper {
-    border-radius: 7px;
 }
 
 #canvas2-wrapper {
@@ -53,7 +52,6 @@ option {
 .option img {
     max-width: 705px;
     max-height: 470px;
-    border-radius: 7px;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.16), 0 8px 12px rgba(0, 0, 0, 0.23);
 }
 
