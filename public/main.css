@@ -7,16 +7,12 @@ body {
 
 #menu-1,
 #menu-2,
-#menu-6 {
+#menu-3 {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translateX(-50%) translateY(-50%);
     text-align: center;
-}
-
-#menu-6, 
-#canvas2-wrapper {
 }
 
 #canvas2-wrapper {
@@ -33,12 +29,22 @@ body {
 #display-error,
 #title,
 #game-panel,
-#social-media-buttons,
 #play-menu,
 .loading-msg {
     display: none;
 }
 
+#social-media-buttons {
+    position: absolute;
+    top: 10px !important;
+    left: 10px !important;
+}
+
+#about-button {
+    position: absolute;
+    top: 10px !important;
+    right: 10px !important;
+}
 
 option {
     border-radius: 5px;

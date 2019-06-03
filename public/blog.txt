@@ -1,2 +1,0 @@
-For a maze of the same area, a square maze will be harder to solve than a rectangle maze. Here's why.
-Let's say we have two mazes, both with area A. One of the mazes is a 

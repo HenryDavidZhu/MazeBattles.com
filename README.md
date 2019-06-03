@@ -1,35 +1,30 @@
-# MazeBattles.com
+# Mazebattles.com
 
-MazeBattles.com is a site built with NodeJS and SocketIO where users race one-on-one against their friends to solve generated mazes as quickly as possible. Contributions are GREATLY WELCOMED. Issues that I currently face:
-- Make the generation of mazes faster.
-- Implement and algorithm that creates more complicated mazes.
-- Don't make people watch the generation of the maze (instead, implement a progress bar)
-- Allow users to hold down a directional key to move multiple steps in the same direction.
+Mazebattles.com is a site where players race against each other to solve generated mazes. There is a single player and a one-on-one mode.
 
-## Getting Started
+## Installation
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Navigate your CLI to the project folder, and execute the following command
 
-### Prerequisites
-
-* [NodeJS](https://nodejs.org/en/)
-* [SocketIO](https://maven.apache.org/) - Networking Library
-* [Express](https://expressjs.com/) - Networking Library
-* [TimerJS](https://rometools.github.io/rome/) - Used to display time elapsed
-
-### Installing
-
-```bash
-git clone https://github.com/HenryDavidZhu/MazeBattles.com.git
-```
-
-### Running
- 
 ```bash
 node server.js
 ```
 
-## Authors
+## Contributing
+If any of you could contribute to developing a feature that enables users to view solutions to the mazes, that would be great!
 
-* **Henry Zhu** - *Initial development* - [HenryDavidZhu](https://github.com/HenryDavidZhu/)
+File Structure:
 
+**server.js**: Contains all the networking-related code of the site.
+
+**/public**: Contains all the client-side HTML, CSS, and image files.
+
+**/public/img**: Contains all the screenshots used.
+
+**/public/css**: Contains all the CSS files used for the project
+
+## Road Map
+Planning on releasing a feature that allows the user to view the solution to a maze (using BFS). Also working on making the project's commentary more clear :p!
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)

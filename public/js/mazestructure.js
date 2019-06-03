@@ -113,10 +113,6 @@ Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {
     return computedFrontier;
 }
 
-Maze.prototype.testFunction = function() {
-    console.log("test function");
-}
-
 Maze.prototype.getRandomPos = function() {
     return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
 }
@@ -294,7 +290,12 @@ function Cell(cellSize, row, column) {
     this.visited = false; // Whether the cell has been traversed or not
 }
 
-
+Cell.prototype.highlight = function() {
+    p.noFill();
+    p.stroke("#ffffff");
+    p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
+    p.fill(98, 244, 88);
+}
 
 // Graphics controller
 var mazeDisplay = function(p) {
@@ -363,13 +364,6 @@ var mazeDisplay = function(p) {
             }
         }
 
-        Cell.prototype.highlight = function() {
-            p.noFill();
-            p.stroke("#ffffff");
-            p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
-            p.fill(98, 244, 88);
-        }
-
         p.draw = function() {
             if (option == "single-player" || option == "one-on-one") {
                 p.clear();
@@ -394,11 +388,11 @@ var mazeDisplay = function(p) {
                     timerStarted = true;
                 }
 
-                playerPosition = maze.cellGraph[playerY][playerX];
+                playerPosition = maze.cellGraph[playerRow][playerCol];
 
                 p.fill(98, 244, 88);
                 p.ellipse(playerPosition.xPos + playerPosition.cellSize / 2, playerPosition.yPos + playerPosition.cellSize / 2, playerPosition.cellSize / 2, playerPosition.cellSize / 2);
-                drawPath(p, singlePlayerPath);
+                drawPath(p, path);
             }
         }
 
@@ -423,80 +417,79 @@ function movementController(key) {
 
     if (key === 'w' || key === 'W') {
         if (playerPosition && !playerPosition.walls[0]) {
-            playerY -= 1;
+            playerRow -= 1;
 
-            cellString = playerY + "-" + playerX;
+            cellString = playerRow + "-" + playerCol;
 
-            if (singlePlayerPath.indexOf(cellString) == -1) {
-                singlePlayerPath.push(cellString);
+            if (path.indexOf(cellString) == -1) {
+                path.push(cellString);
             } else if (cellString == "0-0") {
-                singlePlayerPath = ["0-0"];
+                path = ["0-0"];
             } else {
-                singlePlayerPath.pop();
+                path.pop();
             }
         }
     }
 
     if (key === 's' || key === 'S') {
         if (playerPosition && !playerPosition.walls[2]) {
-            playerY += 1;
+            playerRow += 1;
 
-            cellString = playerY + "-" + playerX;
+            cellString = playerRow + "-" + playerCol;
 
-            if (singlePlayerPath.indexOf(cellString) == -1) {
-                singlePlayerPath.push(cellString);
+            if (path.indexOf(cellString) == -1) {
+                path.push(cellString);
             } else if (cellString == "0-0") {
-                singlePlayerPath = ["0-0"];
+                path = ["0-0"];
             } else {
-                singlePlayerPath.pop();
+                path.pop();
             }
         }
     }
 
     if (key === 'a' || key === 'A') {
         if (playerPosition && !playerPosition.walls[3]) {
-            playerX -= 1;
+            playerCol -= 1;
 
-            cellString = playerY + "-" + playerX;
+            cellString = playerRow + "-" + playerCol;
 
-            if (singlePlayerPath.indexOf(cellString) == -1) {
-                singlePlayerPath.push(cellString);
+            if (path.indexOf(cellString) == -1) {
+                path.push(cellString);
             } else if (cellString == "0-0") {
-                singlePlayerPath = ["0-0"];
+                path = ["0-0"];
             } else {
-                singlePlayerPath.pop();
+                path.pop();
             }
         }
     }
 
     if (key === 'd' || key === 'D') {
         if (playerPosition && !playerPosition.walls[1]) {
-            playerX += 1;
+            playerCol += 1;
 
-            cellString = playerY + "-" + playerX;
+            cellString = playerRow + "-" + playerCol;
 
-            if (singlePlayerPath.indexOf(cellString) == -1) {
-                singlePlayerPath.push(cellString);
+            if (path.indexOf(cellString) == -1) {
+                path.push(cellString);
             } else if (cellString == "0-0") {
-                singlePlayerPath = ["0-0"];
+                path = ["0-0"];
             } else {
-                singlePlayerPath.pop();
+                path.pop();
             }
         }
     }
 
     if (cellString == maze.endString) {
-        alert("You solved the maze!");
         solved = true;
         timer.stop();
         var timeText = $("#time-span").html();
 
         if (option == "single-player") {
-            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://localhost:3000'\">Play Again</button>");
+            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
         }
 
         if (option == "one-on-one") {
-            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>");
+            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>");
             socket.emit("winner", roomID);
         }
     }

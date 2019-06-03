@@ -29,24 +29,20 @@ function downloadMaze(newMaze) {
 	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize);
 	maze.cellGraph = mazeToCopy.cellGraph;
 
-	path = [];
-	singlePlayerPath = ["0-0"];
+	path = ["0-0"];
 	solved = false;
 	playerPosition = maze.cellGraph[0][0];
-	playerX = 0;
-	playerY = 0;
+	playerCol = 0;
+	playerRow = 0;
 }
 
 socket.on("paired", initializedGame);
 
-function initializedGame(room, rematch) {
+function initializedGame(room) {
 	// rematch: whether the user is playing a rematch game
 
 	// room: the id of the room the user has just joined
 	roomID = room;
-	console.log("roomID = " + roomID);
-
-	alert("initializing game");
 
 	/*if (initialized) {
 		console.log("removing child in canvas2-wrapper");
@@ -58,14 +54,12 @@ function initializedGame(room, rematch) {
 			canvasWrapper.removeChild(canvasWrapper.firstChild);
 		}
 	
-		displayTab(6, 6); 
+		displayTab(3, 3); 
 
 		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
 	
 		mazeComplete = true;
 		initialized = true;
-
-		alert("Done powering up graphics engine");
 
 		$("#time-elapsed").show();
 
@@ -123,7 +117,7 @@ function handleLoss() {
 	solved = true;
 	timer.stop();
 
-	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://localhost:3000'\">Quit</button>")
+	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>")
 }
 
 socket.on("disconnectedUser", opponentDisconnect);
@@ -133,10 +127,11 @@ function alertOpponentDisconnect() {
 }
 
 function redirectUser() {
-	window.location.href = "http://localhost:3000";
+	window.location.href = "http://www.mazebattles.com";
 }
 
 function opponentDisconnect() {
+	// For some reason, 
 	$.ajax({
 		url: alertOpponentDisconnect(),
 		success: function() {
@@ -154,7 +149,7 @@ function acceptRematch(accept) {
 		maze.createMaze();
 		maze.generateMaze();
 
-		path = [];
+		path = ["0-0"];
 		solved = false;
 		playerPosition = maze.cellGraph[0][0];
 
