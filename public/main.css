@@ -116,3 +116,10 @@ input, .play-button {
 .whitespace-2 {
     height: 8px;
 }
+
+#instructions {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    text-align: right;
+}
