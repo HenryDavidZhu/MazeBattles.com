@@ -1,12 +1,11 @@
-var roomID;
-var myp5;
-var timerStarted = false;
+var roomID; 
+var myp5; // Instance of the p5.js graphics engine
+var timerStarted = false; 
 
-socket.on("generated-url", createRoom);
+socket.on("generated-url", createRoom); // Server finishes creating room, notifies client of the room code
 
 function createRoom(id) { 
-    roomID = id;
-    console.log("roomID = " + roomID);
+    roomID = id; // Download the room id
 
     $("#url-menu").html("share this code with your friend: <span class='code'>" + roomID +
         "</span><br><b>stay on this page</b>. you will be automatically paired once your friend joins.");
@@ -20,75 +19,68 @@ function alertError() {
     alert("The code you entered is invalid.");
 }
 
-socket.on("maze", downloadMaze);
+socket.on("maze", downloadMaze); // Client-side (opponent) finishes generating maze, sends that maze to the server, and the server sends that maze to
+// this client to download 
 	
-function downloadMaze(newMaze) {
-	var mazeToCopy = newMaze[0];
+function downloadMaze(newMaze) { // newMaze: [(Maze) Object, maze's cell size]
+	var mazeToCopy = newMaze[0]; 
 	var cellSize = cellSizes[newMaze[1]];
-	//console.log("cellSize = " + cellSize);;
-	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize);
-	maze.cellGraph = mazeToCopy.cellGraph;
 
-	path = ["0-0"];
-	solved = false;
-	playerPosition = maze.cellGraph[0][0];
-	playerCol = 0;
+	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize); // Construct a new maze based on the dimension properties of the maze passed in
+	maze.cellGraph = mazeToCopy.cellGraph; // Download the maze's cell graph
+
+	path = ["0-0"]; // Reset the path: the user always starts at the top left corner
+	solved = false; // Initially, the maze is not solved
+
+	// The player starts in the top left corner of the maze
+	playerPosition = maze.cellGraph[0][0]; 
 	playerRow = 0;
+	playerCol = 0;
+	
 }
 
-socket.on("paired", initializedGame);
+socket.on("paired", initializedGame) // When the user has been paired in a match with another player
 
 function initializedGame(room) {
-	// rematch: whether the user is playing a rematch game
+	roomID = room; // Download the room ID
 
-	// room: the id of the room the user has just joined
-	roomID = room;
-
-	/*if (initialized) {
-		console.log("removing child in canvas2-wrapper");
-
-	}*/
-
-		var canvasWrapper = document.getElementById("canvas2-wrapper");
-		while (canvasWrapper.firstChild) {
-			canvasWrapper.removeChild(canvasWrapper.firstChild);
-		}
+	// When the user plays a rematch, remove any existing canvases inside canvas2-wrapper to prevent duplicate canvases
+	var canvasWrapper = document.getElementById("canvas2-wrapper");
+	while (canvasWrapper.firstChild) {
+		canvasWrapper.removeChild(canvasWrapper.firstChild);
+	}
 	
-		displayTab(3, 3); 
+	displayTab(3, 3); // display the game menu
 
-		myp5 = new p5(mazeDisplay, "canvas2-wrapper");
+	myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // Initialize the game's graphics engine
 	
-		mazeComplete = true;
-		initialized = true;
+	mazeComplete = true; // The maze has finished generating
 
-		$("#time-elapsed").show();
+	$("#time-elapsed").show(); // Show the timer 
 
-	    timer.reset();
-	    timer.start();
-	    timer.addEventListener("secondsUpdated", updateTime);
+	timer.reset();
+	timer.start();
+	timer.addEventListener("secondsUpdated", updateTime); // Update the timer every second
 }
 
 function updateTime() {
-    if (mazeComplete) {
+    if (mazeComplete) { // Only update the time if the maze has finished generating
         $("#time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
     }
 }
 
-function drawPath(p, path) {
+function drawPath(p, path) { // Draws the path on a canvas given an array of the player's coordinates (path)
     if (path.length >= 1) {
-        p.strokeWeight(2);
-        p.stroke(98, 244, 88);
+        p.strokeWeight(2); // How thick the path is
+        p.stroke(98, 244, 88); // Light green color
 
-        var prev = path[0];
+        var prev = path[0]; // The previous cell on the user's path
 
         var components = prev.split("-");
-
         var prevRow = parseInt(components[0]);
         var prevColumn = parseInt(components[1]);
 
-        p.line(maze.cellSize / 2, maze.cellSize / 2, column * maze.cellSize + maze.cellSize / 2, row * maze.cellSize + maze.cellSize / 2);
-
-        for (var k = 1; k < path.length; k++) {
+        for (var k = 1; k < path.length; k++) { 
             var pathCell = path[k];
             components = pathCell.split("-");
             var row = components[0];
@@ -108,14 +100,14 @@ function drawPath(p, path) {
 
 function rematch() {
 	$("#time-elapsed").html("Waiting for your opponent to accept your rematch request.");
-	socket.emit("rematch", roomID);
+	socket.emit("rematch", roomID); // Send a rematch request to the server with the roomID
 }
 
 socket.on("lost", handleLoss);
 
 function handleLoss() {
-	solved = true;
-	timer.stop();
+	solved = true; // The current match is no longer in session
+	timer.stop(); 
 
 	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>")
 }
@@ -127,15 +119,15 @@ function alertOpponentDisconnect() {
 }
 
 function redirectUser() {
-	window.location.href = "http://www.mazebattles.com";
+	window.location.href = "http://www.mazebattles.com"; // Redirect the user to the main page
 }
 
 function opponentDisconnect() {
-	// For some reason, 
+	// For some reason, without a callback function, the user is redirected before alerted that the opponent disconnected from the match.
 	$.ajax({
-		url: alertOpponentDisconnect(),
+		url: alertOpponentDisconnect(), // Alert the user first
 		success: function() {
-			redirectUser();
+			redirectUser(); // Then redirect the user
 		}
 	})
 }
@@ -144,19 +136,20 @@ function acceptRematch(accept) {
 	if (accept) {
 		$("#time-elapsed").html("setting up match room...");
 
-		// Regenerate new maze
-		maze = new Maze(maze.numRows, maze.numColumns, maze.cellSize);
+		// Construct the maze based on the given dimensions
+		maze = new Maze(maze.numRows, maze.numColumns, maze.cellSize); 
 		maze.createMaze();
-		maze.generateMaze();
 
-		path = ["0-0"];
+		maze.generateMaze(); // Generate the maze
+
+		path = ["0-0"]; // Reset the path (the user starts at the top left corner)
 		solved = false;
-		playerPosition = maze.cellGraph[0][0];
+		playerPosition = maze.cellGraph[0][0]; // Reset the user position (user starts at the top left corner)
 
 		socket.emit("acceptRematch", maze, roomID);
 	}
-	if (!accept) {
-		redirectUser();
+	if (!accept) { // If the user doesn't accept the rematch
+		redirectUser(); // Redirect the user to the main page (the disconnect event on the server-side will )
 	}
 }
 

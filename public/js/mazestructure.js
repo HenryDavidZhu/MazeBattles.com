@@ -1,25 +1,3 @@
-Element.prototype.remove = function() {
-    this.parentElement.removeChild(this);
-}
-NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
-    for (var i = this.length - 1; i >= 0; i--) {
-        if (this[i] && this[i].parentElement) {
-            this[i].parentElement.removeChild(this[i]);
-        }
-    }
-}
-
-
-const getMethods = (obj) => {
-    // Borowwed from https://flaviocopes.com/how-to-list-object-methods-javascript/
-    let properties = new Set()
-    let currentObj = obj
-    do {
-        Object.getOwnPropertyNames(currentObj).map(item => properties.add(item))
-    } while ((currentObj = Object.getPrototypeOf(currentObj)))
-    return [...properties.keys()].filter(item => typeof obj[item] === 'function')
-}
-
 var directions = ["N", "E", "S", "W"];
 var vectors = [
     [-1, 0], // N vector
@@ -27,22 +5,22 @@ var vectors = [
     [1, 0], // S vector
     [0, -1] // W vector
 ];
+var openPairings = [ // [cellA, cellB] - A list of possible combinations of open walls between two cells
+    [0, 2],
+    [1, 3],
+    [2, 0],
+    [3, 1]
+]
 
-function isWall(cellA, cellB) {
-    for (var j = 0; j < cellA.walls.length; j++) {
-        for (var k = 0; k < cellB.walls.length; k++) {
-            if (Math.abs(j - k) == 2 && !cellA.walls[j] && !cellB.walls[k]) {
-                var rA = cellA.row;
-                var cA = cellA.column;
-                var rB = cellB.row;
-                var cB = cellB.column
-                if ((rA - rB) == 1 && j == 0 || (rA - rB) == -1 && j == 2 || (cA - cB) == 1 && j == 3 || (cA - cB) == -1 && j == 1) {
-                    return false;
-                }
-            }
-        }
+function isWall(cellA, cellB) { // Sees if there's a wall between two cells
+    for (var i = 0; i < openPairings.length; i++) {
+        var pairing = openPairings[i];
+
+        if (!cellA.walls[pairing[0]] && !cellA.walls[pairing[1]]) // Check if the correct walls from both cells are open
+            return true;
     }
-    return true;
+
+    return false;
 }
 
 function Maze(numRows, numColumns, cellSize) {
@@ -70,8 +48,6 @@ Maze.prototype.createMaze = function() {
             this.cellGraph[i].push(cell);
         }
     }
-
-    //alert("Done creating maze!");
 }
 
 Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {

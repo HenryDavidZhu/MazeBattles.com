@@ -4,10 +4,13 @@ var socket = require("socket.io");
 var uniqid = require("uniqid");
 
 function Maze(numRows, numColumns, cellSize) {
+    // Constructs a maze given the number of rows, columns, and the size of a cell
     this.numColumns = numColumns;
     this.numRows = numRows;
     this.numCells = numRows * numColumns;
-    this.cellGraph = [];
+
+    this.cellGraph = []; // 2-Dimensional array containing all the Cell objects inside the maze
+
     this.wallList = {};
     this.cellSize = cellSize;
 
@@ -22,10 +25,10 @@ function Maze(numRows, numColumns, cellSize) {
 }
 
 Maze.prototype.createMaze = function() {
-    for (var i = 0; i < this.numRows; i++) {
-        for (var j = 0; j < this.numColumns; j++) {
-            var cell = new Cell(this.cellSize, i, j);
-            this.cellGraph[i].push(cell);
+    for (var i = 0; i < this.numRows; i++) { // Iterate through every row
+        for (var j = 0; j < this.numColumns; j++) { // Iterate through every column
+            var cell = new Cell(this.cellSize, i, j); // Construct a new cell
+            this.cellGraph[i].push(cell); // Add that cell to the current row
         }
     }
 }

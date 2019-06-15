@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+		<style>
+			html, body { margin: 0; padding: 0; }
+
+			body {
+				text-align: center;
+			}
+
+			.content {
+				border-top: 5px solid black;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.16), 0 4px 6px rgba(0, 0, 0, 0.23);
+				margin: 0 auto;
+				margin-top: 10px;
+				width: 100%;
+				max-width: 650px;
+				font-family: Helvetica, Arial, sans-serif;
+				text-align: left;
+			}
+
+			.inner-content {
+				padding: 5px 9px;
+				line-height: 135%;
+			}
+
+			ul {
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			#back {
+	    		background: black;
+	    		color: white;
+	    		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.23);
+	    		border-radius: 50%;
+	    		width: 25px;
+	    		height: 25px;
+	    		outline: 0;
+	    		border: 2px solid rgb(70, 70, 70);
+			}
+		</style>
+	</head>
+
+	<body>
+		<br>
+		<button id="back">
+			&uarr;
+		</button>
+		<div class="content">
+			<div class="inner-content">
+				<b>6/15/19: v0.0.2</b><br>
+				<ul>
+					<li>Improved wall detection algorithm by 4x. Number of checks reduced to 4 from 16.</li>
+				</ul>
+			</div>
+		</div>
+		<div class="content">
+			<div class="inner-content">
+				<b>6/2/19: Initial Release (v0.0.1)</b><br>
+				<ul>
+					<li>4 levels of difficulty: easy (29x44), medium (31x47), hard (34x51), extreme (36x56)</li>
+					<li>2 modes: single player and one-on-one</li>
+				</ul>
+			</div>
+		</div>
+		<br>
+
+		<script type="text/javascript">
+			$("#back").click(function() {
+				window.location.href = "http://www.mazebattles.com"; // Redirect the user to the main page
+			});
+		</script>
+	</body>
+</html>
