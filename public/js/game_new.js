@@ -103,6 +103,11 @@ function rematch() {
 	socket.emit("rematch", roomID); // Send a rematch request to the server with the roomID
 }
 
+$("#show-solution").click(function() {
+	alert("Are you sure you want to view the solution?");
+	solved = true;
+});
+
 socket.on("lost", handleLoss);
 
 function handleLoss() {

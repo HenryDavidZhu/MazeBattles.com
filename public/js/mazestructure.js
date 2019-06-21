@@ -34,6 +34,8 @@ function Maze(numRows, numColumns, cellSize) {
     this.mazeWidth = this.numColumns * this.cellSize;
     this.mazeHeight = this.numRows * this.cellSize;
 
+    this.path = []; // The solution to the maze
+
     for (var i = 0; i < numRows; i++) { // For every single row
         this.cellGraph.push([]); // Start out with an empty row
     }
@@ -91,6 +93,57 @@ Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {
 
 Maze.prototype.getRandomPos = function() {
     return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
+}
+
+Maze.prototype.BFS = function(startR, startC) {
+    // startR = the starting row of the cell to traverse from
+    // startC = the starting column of the cell to traverse from
+    var cellQueue = new Queue();
+    var prevDictionary = {};
+
+    var rootCell = maze.cellGraph[startR][startC];
+    rootCell.visited = true;
+    cellQueue.enqueue(maze.cellGraph[startR][startC]);
+
+    while (!cellQueue.isEmpty()) {
+        var cellToSearch = cellQueue.dequeue();
+
+        // Get cellToSearch's neighbors
+        var neighbors = cellToSearch.getNeighbors();
+        for (var i = 0; i < neighbors.length; i++) {
+            var neighbor = neighbors[i];
+
+            if (!neighbors[i].visited) {
+                cellQueue.enqueue(neighbors[i]);
+                neighbors[i].visited = true;
+                prev[neighbors[i].toString()] = cellToSearch;
+            }
+        }
+
+        if (cellToSearch.row == maze.numRows - 1 && cellToSearch.column == maze.numColumns - 1) {
+            break;
+        }
+    }
+
+    var path = []; // initialize the solution path
+    var current = maze.cellGraph[maze.numRows - 1][maze.numColumns - 1];
+    var previous = prev[current.toString()];
+
+    while (current != null) {
+        if (current.row == 0 && current.column == 0) {
+            break;
+        }
+
+        path.push(current);
+        current = prev[current.toString()];
+    }
+
+    return path;
+}
+
+Maze.prototype.findSolution = function() {
+    this.BFS(0, 0); // Start searching for the solution from the user's starting point
+    console.log(path);
 }
 
 Maze.prototype.calculateCellDivision = function(wall) {
@@ -273,6 +326,24 @@ Cell.prototype.highlight = function() {
     p.fill(98, 244, 88);
 }
 
+Cell.prototype.getNeighbors = function() {
+    var neighbors = [];
+
+    for (var i = 0; i < vectors.length; i++) {
+        var vector = vectors[i];
+        
+        if (this.walls[i]) {
+            neighbors.push(maze.cellGraph[parseInt(this.row + vectors[0]])[parseInt(this.column + vectors[1])];     
+        }  
+    }
+
+    return neighbors;
+}
+
+Cell.prototype.toString = function() {
+    return this.numRows + "-" + this.numColumns;
+}
+
 // Graphics controller
 var mazeDisplay = function(p) {
     if (maze) {
@@ -368,7 +439,13 @@ var mazeDisplay = function(p) {
 
                 p.fill(98, 244, 88);
                 p.ellipse(playerPosition.xPos + playerPosition.cellSize / 2, playerPosition.yPos + playerPosition.cellSize / 2, playerPosition.cellSize / 2, playerPosition.cellSize / 2);
-                drawPath(p, path);
+                
+                if (!solved) {
+                    drawPath(p, path);
+                }
+                if (solved) {
+                    drawPath(p, maze.path);
+                }
             }
         }
 

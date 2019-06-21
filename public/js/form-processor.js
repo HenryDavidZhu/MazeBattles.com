@@ -149,6 +149,7 @@ function initializeSinglePlayer() {
 	maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
 	maze.createMaze();
 	maze.generateMaze();
+	maze.findSolution();
 
 	displayTab(3, 3); 
 	myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // Initialize the graphics engine
