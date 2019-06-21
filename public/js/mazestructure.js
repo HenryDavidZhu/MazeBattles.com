@@ -98,20 +98,23 @@ Maze.prototype.getRandomPos = function() {
 Maze.prototype.BFS = function(startR, startC) {
     // startR = the starting row of the cell to traverse from
     // startC = the starting column of the cell to traverse from
+    console.log("startR = " + startR + ", startC = " + startC);
     var cellQueue = new Queue();
-    var prevDictionary = {};
+    var prev = {};
 
-    var rootCell = maze.cellGraph[startR][startC];
+    var rootCell = this.cellGraph[startR][startC];
     rootCell.visited = true;
-    cellQueue.enqueue(maze.cellGraph[startR][startC]);
+    cellQueue.enqueue(this.cellGraph[startR][startC]);
 
     while (!cellQueue.isEmpty()) {
         var cellToSearch = cellQueue.dequeue();
+       console.log("dequeuing " + cellToSearch.toString() + " from the Queue");
 
         // Get cellToSearch's neighbors
         var neighbors = cellToSearch.getNeighbors();
         for (var i = 0; i < neighbors.length; i++) {
             var neighbor = neighbors[i];
+            console.log("analyzing " + neighbor.toString());
 
             if (!neighbors[i].visited) {
                 cellQueue.enqueue(neighbors[i]);
@@ -120,13 +123,13 @@ Maze.prototype.BFS = function(startR, startC) {
             }
         }
 
-        if (cellToSearch.row == maze.numRows - 1 && cellToSearch.column == maze.numColumns - 1) {
+        if (cellToSearch.row == this.numRows - 1 && cellToSearch.column == this.numColumns - 1) {
             break;
         }
     }
 
     var path = []; // initialize the solution path
-    var current = maze.cellGraph[maze.numRows - 1][maze.numColumns - 1];
+    var current = this.cellGraph[this.numRows - 1][this.numColumns - 1];
     var previous = prev[current.toString()];
 
     while (current != null) {
@@ -332,8 +335,8 @@ Cell.prototype.getNeighbors = function() {
     for (var i = 0; i < vectors.length; i++) {
         var vector = vectors[i];
         
-        if (this.walls[i]) {
-            neighbors.push(maze.cellGraph[parseInt(this.row + vectors[0]])[parseInt(this.column + vectors[1])];     
+        if (!this.walls[i]) {
+            neighbors.push(maze.cellGraph[parseInt(this.row + vectors[0])][parseInt(this.column + vectors[1])]);     
         }  
     }
 
@@ -341,7 +344,7 @@ Cell.prototype.getNeighbors = function() {
 }
 
 Cell.prototype.toString = function() {
-    return this.numRows + "-" + this.numColumns;
+    return this.row + "-" + this.column;
 }
 
 // Graphics controller
