@@ -19,13 +19,25 @@ var initialized = false; // Whether the maze has already been created or not
 
 var path = ["0-0"];
 
-function displayTab(index, maxIndex) {
+function displayTab(index, maxIndex, oneonone) {
+	// index: the number of the tab to be displayed
+	// maxIndex: total number of tabs
+	// oneonone: whether the user is playing in one-on-one mode or not
 	// Tab ids are named in the following structure:
 	// menu-1, menu-2, menu-3, ... menu-maxIndex
 	for (var i = 1; i <= maxIndex; i++) {
 		if (i == index) {
 			console.log("showing menu-" + i);
 			$("#menu-" + i).css({"display":"inline"});
+
+			if (oneonone) {
+				$("#single-player-info").show();
+				$("#one-on-one-info").hide();
+			}
+			if (!oneonone) {
+				$("#single-player-info").show();
+				$("#one-on-one-info").hide();
+			}
 		}
 		if (i != index) {
 			console.log("hiding menu-" + i);
@@ -93,13 +105,15 @@ function displayMatchLoading() {
 }
 
 function generateMaze() {
+	console.log("generating room maze");
 	    var mazeDifficulty = difficulties[difficultyIndex]; // Determine the maze difficulty
 	    var dimensions = difficultyDimensions[mazeDifficulty]; // Determine the maze dimensions
 
 	    // Create the maze
-	    var maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]); 
+	    maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]); 
 	    maze.createMaze();	
 	    maze.generateMaze();
+	    maze.findSolution(); // Use BFS to solve the maze
 
 	    socket.emit("invite", [maze, mazeDifficulty]);	
 }
@@ -151,7 +165,7 @@ function initializeSinglePlayer() {
 	maze.generateMaze();
 	maze.findSolution();
 
-	displayTab(3, 3); 
+	displayTab(3, 3, false); 
 	myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // Initialize the graphics engine
 
 	$("#time-elapsed").css({"display":"inline"}); // Show the time elapsed menu

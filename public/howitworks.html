@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
+		<style>
+			html, body { margin: 0; padding: 0; }
+
+			body {
+				text-align: center;
+			}
+
+			.content {
+				border-top: 5px solid black;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.16), 0 4px 6px rgba(0, 0, 0, 0.23);
+				margin: 0 auto;
+				margin-top: 10px;
+				width: 100%;
+				max-width: 650px;
+				font-family: Helvetica, Arial, sans-serif;
+				text-align: left;
+			}
+
+			.inner-content {
+				padding: 5px 9px;
+				line-height: 150%;
+			}
+
+			ul {
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			#back {
+	    		background: black;
+	    		color: white;
+	    		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.16), 0 1px 2px rgba(0, 0, 0, 0.23);
+	    		border-radius: 50%;
+	    		width: 25px;
+	    		height: 25px;
+	    		outline: 0;
+	    		border: 2px solid rgb(70, 70, 70);
+			}
+
+			.content img {
+				max-height: 225px;
+			}
+
+			pre {
+				line-height: 135%;
+			}
+
+			h2 {
+				font-size: 23px;
+				margin-top: 9px;
+				margin-bottom: 9px;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<br>
+		<button id="back">
+			&uarr;
+		</button>
+		<div class="content">
+			<div class="inner-content">
+				<h2><b>How are mazes generated?</b></h2>
+				Maze are generated using Prim's Minimum Spanning Tree Algorithm. Prim’s Algorithm is a minimum spanning tree algorithm. An MST of a graph is the subset of edges (with the smallest total weight) where you can reach every node in the graph. For example, in the following diagram, the MST is highlighted in bold.<br>
+				<img src="img/MST.png" alt="Your browser cannot display this image."/><br>
+				A maze can be thought of as a graph, although not weighted since the distance from each cell to its adjacent cells is always 1. In graph theory terms, you can think of the cells as nodes and the connections from each cell to its neighboring cells as edges. Prim’s Algorithm creates a maze that ensures there’s always a path between the starting and ending point because that is the very definition of an MST. When applied to maze generation, Prim’s Algorithm is still very similar to the original graph version, but instead of continuously adding the closest node to the tree, it just adds a random one, since a maze graph is unweighted. Below is the pseudo-code for the standard graph version and the maze version.<br><br>
+				<i>Graph Version</i>:
+<pre>
+Choose a random node from the input graph
+Initialize the MST (starts with the random node)
+ 
+While not all of the vertices are in the MST:
+	Get the last node entered into the set
+    Retrieve the edges to that node and determine the shortest edge
+	Add that edge and the node connected to by that edge to the MST
+</pre>
+<br>
+<i>Maze Version</i>:
+<pre>
+Select a random cell from that maze
+Create a list of walls
+Add the walls from the initial cell to the list of walls
+ 
+While the list of walls isn't empty:
+    Select a random wall from the list:
+        Calculate the two cells the wall divides
+ 
+        If one of the cells isn't visited:
+            Delete the wall
+            Mark the unvisited cell as visited
+            Add the walls of the cell to the list of walls
+    
+     Remove the random wall from the list
+</pre>
+			</div>
+		</div>
+
+		<br>
+
+		<div class="content">
+			<div class="inner-content">
+				<h2><b>How are mazes solved?</b></h2>
+				Mazes are solved using Breadth-First Search with backtracking. Starting from the top left corner, 
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			$("#back").click(function() {
+				window.location.href = "http://www.mazebattles.com"; // Redirect the user to the main page
+			});
+		</script>
+	</body>
+</html>

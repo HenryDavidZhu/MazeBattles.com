@@ -28,6 +28,7 @@ function downloadMaze(newMaze) { // newMaze: [(Maze) Object, maze's cell size]
 
 	maze = new Maze(mazeToCopy.numRows, mazeToCopy.numColumns, cellSize); // Construct a new maze based on the dimension properties of the maze passed in
 	maze.cellGraph = mazeToCopy.cellGraph; // Download the maze's cell graph
+	maze.path = mazeToCopy.path;
 
 	path = ["0-0"]; // Reset the path: the user always starts at the top left corner
 	solved = false; // Initially, the maze is not solved
@@ -50,7 +51,7 @@ function initializedGame(room) {
 		canvasWrapper.removeChild(canvasWrapper.firstChild);
 	}
 	
-	displayTab(3, 3); // display the game menu
+	displayTab(3, 3, true); // display the game menu
 
 	myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // Initialize the game's graphics engine
 	
@@ -103,9 +104,11 @@ function rematch() {
 	socket.emit("rematch", roomID); // Send a rematch request to the server with the roomID
 }
 
-$("#show-solution").click(function() {
+$(".show-solution").click(function() {
 	alert("Are you sure you want to view the solution?");
 	solved = true;
+	timer.stop();
+	$("#time-elapsed").html("<button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
 });
 
 socket.on("lost", handleLoss);
@@ -114,7 +117,7 @@ function handleLoss() {
 	solved = true; // The current match is no longer in session
 	timer.stop(); 
 
-	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>")
+	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button> / <button class=\"show-solution\">View Solution</button>")
 }
 
 socket.on("disconnectedUser", opponentDisconnect);

@@ -1,3 +1,5 @@
+var printed = false; // For debugging purposes only (REMOVE)
+
 var directions = ["N", "E", "S", "W"];
 var vectors = [
     [-1, 0], // N vector
@@ -98,28 +100,29 @@ Maze.prototype.getRandomPos = function() {
 Maze.prototype.BFS = function(startR, startC) {
     // startR = the starting row of the cell to traverse from
     // startC = the starting column of the cell to traverse from
-    console.log("startR = " + startR + ", startC = " + startC);
     var cellQueue = new Queue();
     var prev = {};
 
     var rootCell = this.cellGraph[startR][startC];
-    rootCell.visited = true;
+    rootCell.BFSvisited = true;
     cellQueue.enqueue(this.cellGraph[startR][startC]);
 
     while (!cellQueue.isEmpty()) {
         var cellToSearch = cellQueue.dequeue();
-       console.log("dequeuing " + cellToSearch.toString() + " from the Queue");
+
+        //console.log("-----------------------------------------------");
+        console.log("dequeuing " + cellToSearch.toString() + " from cellQueue");
 
         // Get cellToSearch's neighbors
         var neighbors = cellToSearch.getNeighbors();
         for (var i = 0; i < neighbors.length; i++) {
             var neighbor = neighbors[i];
-            console.log("analyzing " + neighbor.toString());
+            console.log("neighbor " + i + ": " + neighbor.toString());
 
-            if (!neighbors[i].visited) {
-                cellQueue.enqueue(neighbors[i]);
-                neighbors[i].visited = true;
-                prev[neighbors[i].toString()] = cellToSearch;
+            if (!neighbor.BFSvisited) {
+                cellQueue.enqueue(neighbor);
+                neighbor.BFSvisited = true;
+                prev[neighbor.toString()] = cellToSearch.toString();
             }
         }
 
@@ -128,8 +131,12 @@ Maze.prototype.BFS = function(startR, startC) {
         }
     }
 
-    var path = []; // initialize the solution path
+    // The below 3 lines for debugging purposes ONLY
+    console.log(prev);
+
+    this.path = []; // initialize the solution path
     var current = this.cellGraph[this.numRows - 1][this.numColumns - 1];
+    //console.log("current.toString() = " + current.toString() + ", current.row = " + current.row + ", current.column = " + current.column);
     var previous = prev[current.toString()];
 
     while (current != null) {
@@ -137,14 +144,13 @@ Maze.prototype.BFS = function(startR, startC) {
             break;
         }
 
-        path.push(current);
+        this.path.push(current.toString());
         current = prev[current.toString()];
     }
-
-    return path;
 }
 
 Maze.prototype.findSolution = function() {
+    console.log("Finding solution to maze.");
     this.BFS(0, 0); // Start searching for the solution from the user's starting point
     console.log(path);
 }
@@ -320,6 +326,7 @@ function Cell(cellSize, row, column) {
 
     this.walls = [true, true, true, true]; // 0 = top, 1 = right, 2 = bottom, 3 = left
     this.visited = false; // Whether the cell has been traversed or not
+    this.BFSvisited = false; // Whether the cell has been traversed by the BFS generator
 }
 
 Cell.prototype.highlight = function() {
@@ -336,7 +343,7 @@ Cell.prototype.getNeighbors = function() {
         var vector = vectors[i];
         
         if (!this.walls[i]) {
-            neighbors.push(maze.cellGraph[parseInt(this.row + vectors[0])][parseInt(this.column + vectors[1])]);     
+            neighbors.push(maze.cellGraph[parseInt(this.row + vector[0])][parseInt(this.column + vector[1])]);     
         }  
     }
 
@@ -447,6 +454,10 @@ var mazeDisplay = function(p) {
                     drawPath(p, path);
                 }
                 if (solved) {
+                    if (!printed) {
+                        console.log(maze.path);
+                        printed = true;
+                    }
                     drawPath(p, maze.path);
                 }
             }
