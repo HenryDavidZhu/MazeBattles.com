@@ -4,6 +4,10 @@ Built a site using Node.js and Socket.io where users race against each other to 
 
 ![Gameplay](/public/img/screenshot.png)
 
+![Gameplay 2](/public/img/screenshot2.png)
+
+![Gameplay 3](/public/img/screenshot3.png)
+
 ## Installation
 
 Navigate your CLI to the project folder, and execute the following command
