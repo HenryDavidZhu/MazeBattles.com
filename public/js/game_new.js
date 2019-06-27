@@ -57,7 +57,7 @@ function initializedGame(room) {
 	
 	mazeComplete = true; // The maze has finished generating
 
-	$("#time-elapsed").show(); // Show the timer 
+	$(".time-elapsed").show(); // Show the timer 
 
 	timer.reset();
 	timer.start();
@@ -66,7 +66,7 @@ function initializedGame(room) {
 
 function updateTime() {
     if (mazeComplete) { // Only update the time if the maze has finished generating
-        $("#time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
+        $(".time-elapsed").html("time elapsed: <span id=\"time-span\">" + timer.getTimeValues().toString(["minutes", "seconds"]) + "</span>");
     }
 }
 
@@ -100,24 +100,27 @@ function drawPath(p, path) { // Draws the path on a canvas given an array of the
 }
 
 function rematch() {
-	$("#time-elapsed").html("Waiting for your opponent to accept your rematch request.");
+	$(".time-elapsed").html("Waiting for your opponent to accept your rematch request.");
 	socket.emit("rematch", roomID); // Send a rematch request to the server with the roomID
 }
 
-$(".show-solution").click(function() {
-	alert("Are you sure you want to view the solution?");
-	solved = true;
-	timer.stop();
-	$("#time-elapsed").html("<button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
+$(document).on("click", ".show-solution", function(){
+	var viewSolution = confirm("Are you sure you want to view the solution?");
+
+	if (viewSolution) {
+		solved = true;
+		timer.stop();
+		$("#single-player-info").html("<button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
+	}
 });
 
 socket.on("lost", handleLoss);
 
 function handleLoss() {
-	solved = true; // The current match is no longer in session
+	keyControllerActive = false; // The current match is no longer in session
 	timer.stop(); 
 
-	$("#time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button> / <button class=\"show-solution\">View Solution</button>")
+	$(".time-elapsed").html("Your opponent won the match. /  <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button class=\"show-solution\">View Solution</button>")
 }
 
 socket.on("disconnectedUser", opponentDisconnect);
@@ -142,7 +145,7 @@ function opponentDisconnect() {
 
 function acceptRematch(accept) {
 	if (accept) {
-		$("#time-elapsed").html("setting up match room...");
+		$(".time-elapsed").html("setting up match room...");
 
 		// Construct the maze based on the given dimensions
 		maze = new Maze(maze.numRows, maze.numColumns, maze.cellSize); 
@@ -165,5 +168,5 @@ socket.on("rematchrequest", rematchRequest);
 
 function rematchRequest() {
 	alert("Your opponent has requested a rematch");
-	$("#time-elapsed").html("<button onclick=\"acceptRematch(true)\">Accept</button>&nbsp;<button onclick=\"acceptRematch(false)\">Decline</button>")
+	$(".time-elapsed").html("<button onclick=\"acceptRematch(true)\">Accept</button>&nbsp;<button onclick=\"acceptRematch(false)\">Decline</button>")
 }

@@ -45,7 +45,7 @@ function Maze(numRows, numColumns, cellSize) {
     this.endString = (numRows - 1) + "-" + (numColumns - 1);
 }
 
-Maze.prototype.createMaze = function() {
+Maze.prototype.createMaze = function () {
     for (var i = 0; i < this.numRows; i++) {
         for (var j = 0; j < this.numColumns; j++) {
             var cell = new Cell(this.cellSize, i, j);
@@ -54,7 +54,7 @@ Maze.prototype.createMaze = function() {
     }
 }
 
-Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {
+Maze.prototype.computeFrontierWalls = function (cellRow, cellColumn) {
     /*
     Frontier walls are all the walls of the adjacent cells.
     Coordinates of adjacent cells:
@@ -93,11 +93,11 @@ Maze.prototype.computeFrontierWalls = function(cellRow, cellColumn) {
     return computedFrontier;
 }
 
-Maze.prototype.getRandomPos = function() {
+Maze.prototype.getRandomPos = function () {
     return [Math.floor(Math.random() * this.numRows), Math.floor(Math.random() * this.numColumns)];
 }
 
-Maze.prototype.BFS = function(startR, startC) {
+Maze.prototype.BFS = function (startR, startC) {
     // startR = the starting row of the cell to traverse from
     // startC = the starting column of the cell to traverse from
     var cellQueue = new Queue();
@@ -110,14 +110,10 @@ Maze.prototype.BFS = function(startR, startC) {
     while (!cellQueue.isEmpty()) {
         var cellToSearch = cellQueue.dequeue();
 
-        //console.log("-----------------------------------------------");
-        console.log("dequeuing " + cellToSearch.toString() + " from cellQueue");
-
         // Get cellToSearch's neighbors
         var neighbors = cellToSearch.getNeighbors();
         for (var i = 0; i < neighbors.length; i++) {
             var neighbor = neighbors[i];
-            console.log("neighbor " + i + ": " + neighbor.toString());
 
             if (!neighbor.BFSvisited) {
                 cellQueue.enqueue(neighbor);
@@ -131,12 +127,8 @@ Maze.prototype.BFS = function(startR, startC) {
         }
     }
 
-    // The below 3 lines for debugging purposes ONLY
-    console.log(prev);
-
     this.path = []; // initialize the solution path
     var current = this.cellGraph[this.numRows - 1][this.numColumns - 1];
-    //console.log("current.toString() = " + current.toString() + ", current.row = " + current.row + ", current.column = " + current.column);
     var previous = prev[current.toString()];
 
     while (current != null) {
@@ -149,13 +141,11 @@ Maze.prototype.BFS = function(startR, startC) {
     }
 }
 
-Maze.prototype.findSolution = function() {
-    console.log("Finding solution to maze.");
+Maze.prototype.findSolution = function () {
     this.BFS(0, 0); // Start searching for the solution from the user's starting point
-    console.log(path);
 }
 
-Maze.prototype.calculateCellDivision = function(wall) {
+Maze.prototype.calculateCellDivision = function (wall) {
     // Calculate the two cells that the wall divides
     // For example:
     // If the wall is [10, 11, "N"]
@@ -204,7 +194,7 @@ Maze.prototype.calculateCellDivision = function(wall) {
     return -1;
 }
 
-Maze.prototype.deleteWall = function(current, neighbor) {
+Maze.prototype.deleteWall = function (current, neighbor) {
     var deltaX = current.column - neighbor.column;
     var deltaY = current.row - neighbor.row;
 
@@ -226,7 +216,7 @@ Maze.prototype.deleteWall = function(current, neighbor) {
     }
 }
 
-Maze.prototype.generateMaze = function() {
+Maze.prototype.generateMaze = function () {
     // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list
     var pos = this.getRandomPos();
 
@@ -329,35 +319,35 @@ function Cell(cellSize, row, column) {
     this.BFSvisited = false; // Whether the cell has been traversed by the BFS generator
 }
 
-Cell.prototype.highlight = function() {
+Cell.prototype.highlight = function () {
     p.noFill();
     p.stroke("#ffffff");
     p.ellipse(this.xPos + this.cellSize / 2, this.yPos + this.cellSize / 2, this.cellSize / 2, this.cellSize / 2);
     p.fill(98, 244, 88);
 }
 
-Cell.prototype.getNeighbors = function() {
+Cell.prototype.getNeighbors = function () {
     var neighbors = [];
 
     for (var i = 0; i < vectors.length; i++) {
         var vector = vectors[i];
-        
+
         if (!this.walls[i]) {
-            neighbors.push(maze.cellGraph[parseInt(this.row + vector[0])][parseInt(this.column + vector[1])]);     
-        }  
+            neighbors.push(maze.cellGraph[parseInt(this.row + vector[0])][parseInt(this.column + vector[1])]);
+        }
     }
 
     return neighbors;
 }
 
-Cell.prototype.toString = function() {
+Cell.prototype.toString = function () {
     return this.row + "-" + this.column;
 }
 
 // Graphics controller
-var mazeDisplay = function(p) {
+var mazeDisplay = function (p) {
     if (maze) {
-        p.setup = function() {
+        p.setup = function () {
             var canvas = p.createCanvas(maze.mazeWidth, maze.mazeHeight);
             p.background(0, 0, 0);
 
@@ -380,7 +370,7 @@ var mazeDisplay = function(p) {
             playerPosition = maze.cellGraph[0][0];
         }
 
-        Cell.prototype.display = function() {
+        Cell.prototype.display = function () {
             p.stroke(255, 255, 255);
             if (this.walls[0] && this.row != 0) { // Top
                 p.line(this.xPos, this.yPos, this.xPos + this.cellSize, this.yPos);
@@ -397,7 +387,7 @@ var mazeDisplay = function(p) {
             p.noStroke();
         }
 
-        p.displayMaze = function(maze) {
+        p.displayMaze = function (maze) {
             for (var i = 0; i < maze.cellGraph.length; i++) { // Iterate through row
                 for (var j = 0; j < maze.cellGraph[i].length; j++) { // Iterate through every column
                     var cell = maze.cellGraph[i][j]; // Display the cell
@@ -421,7 +411,7 @@ var mazeDisplay = function(p) {
             }
         }
 
-        p.draw = function() {
+        p.draw = function () {
             if (option == "single-player" || option == "one-on-one") {
                 p.clear();
 
@@ -429,11 +419,11 @@ var mazeDisplay = function(p) {
 
                 // Change the generating maze text
                 if (!timerStarted) {
-                    $("#game-panel").fadeOut(500, function() {
+                    $("#game-panel").fadeOut(500, function () {
                         // Change the html of the score-panel to the play again button
                         $("#game-panel").html("time elapsed: 0:00");
 
-                        $("#game-panel").fadeIn(500, function() {
+                        $("#game-panel").fadeIn(500, function () {
 
                         });
                     });
@@ -449,13 +439,12 @@ var mazeDisplay = function(p) {
 
                 p.fill(98, 244, 88);
                 p.ellipse(playerPosition.xPos + playerPosition.cellSize / 2, playerPosition.yPos + playerPosition.cellSize / 2, playerPosition.cellSize / 2, playerPosition.cellSize / 2);
-                
+
                 if (!solved) {
                     drawPath(p, path);
                 }
                 if (solved) {
                     if (!printed) {
-                        console.log(maze.path);
                         printed = true;
                     }
                     drawPath(p, maze.path);
@@ -463,12 +452,9 @@ var mazeDisplay = function(p) {
             }
         }
 
-
-        //if (maze.initialized != true) {
         if (!initialized) {
-
-            p.keyTyped = function() {
-                if (!solved) {
+            p.keyTyped = function () {
+                if (!solved || !keyControllerActive) {
                     if (p.key === 'a' || p.key === 'A' || p.key === 'w' || p.key === 'W' || p.key === 'd' || p.key === 'D' || p.key === 's' || p.key === 'S') {
                         movementController(p.key);
                     }
@@ -552,11 +538,11 @@ function movementController(key) {
         var timeText = $("#time-span").html();
 
         if (option == "single-player") {
-            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
+            $("#single-player-info").html("<span class=\"time-elapsed\">You solved the maze in " + timeText + "</span> / <button id=\"play-again\" onclick=\"window.location.href='http://www.mazebattles.com'\">Play Again</button>");
         }
 
         if (option == "one-on-one") {
-            $("#time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>");
+            $(".time-elapsed").html("You solved the maze in " + timeText + " / <button id=\"rematch\" onclick=\"rematch()\">Rematch</button> / <button id=\"quit\"  onclick=\"window.location.href='http://www.mazebattles.com'\">Quit</button>");
             socket.emit("winner", roomID);
         }
     }

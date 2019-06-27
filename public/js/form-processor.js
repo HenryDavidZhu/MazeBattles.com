@@ -1,18 +1,29 @@
 var difficulties = ["easy", "medium", "hard", "expert"]; // List of all the different maze difficulties
-var difficultyDimensions = {"easy":[29, 44], "medium": [31, 47], "hard": [34,51], "expert": [36,56]} // Sizes of the mazes [row, col] corresponding to the maze difficulty
-var cellSizes = {"easy": 16, "medium": 15, "hard": 14, "expert": 13}; // The sizes of the cells corresponding to the maze's difficulty
-var difficultyIndex = 0; 
+var difficultyDimensions = {
+	"easy": [29, 44],
+	"medium": [31, 47],
+	"hard": [34, 51],
+	"expert": [36, 56]
+} // Sizes of the mazes [row, col] corresponding to the maze difficulty
+var cellSizes = {
+	"easy": 16,
+	"medium": 15,
+	"hard": 14,
+	"expert": 13
+}; // The sizes of the cells corresponding to the maze's difficulty
+var difficultyIndex = 0;
 
-var maze; 
+var maze;
 var mazeComplete = false; // Whether the maze generation process has finished or not
 var solved = false; // Whether the maze has been solved (or the user lost) or not
 var option = "single-player"; // What mode the user is playing in ("single-player" or "one-on-one")
+var keyControllerActive = true; // Whether or not the user can still play the game
 
 var timerStarted = false; // Whether the 
 var timer = new Timer();
 
 var playerPosition; // The cell object the user is positioned at
-var playerCol = 0; 
+var playerCol = 0;
 var playerRow = 0;
 
 var initialized = false; // Whether the maze has already been created or not
@@ -27,26 +38,30 @@ function displayTab(index, maxIndex, oneonone) {
 	// menu-1, menu-2, menu-3, ... menu-maxIndex
 	for (var i = 1; i <= maxIndex; i++) {
 		if (i == index) {
-			console.log("showing menu-" + i);
-			$("#menu-" + i).css({"display":"inline"});
+			$("#menu-" + i).css({
+				"display": "inline"
+			});
 
 			if (oneonone) {
-				$("#single-player-info").show();
-				$("#one-on-one-info").hide();
+				$("#single-player-info").hide();
+				$("#one-on-one-info").show();
+				$(".time-elapsed").show();
 			}
 			if (!oneonone) {
 				$("#single-player-info").show();
 				$("#one-on-one-info").hide();
+				$(".time-elapsed").show();
 			}
 		}
 		if (i != index) {
-			console.log("hiding menu-" + i);
-			$("#menu-" + i).css({"display":"none"})
+			$("#menu-" + i).css({
+				"display": "none"
+			});
 		}
 	}
-}	
+}
 
-$(".easier").click(function() {
+$(".easier").click(function () {
 	if (difficultyIndex == 0) {
 		difficultyIndex = difficulties.length - 1;
 	} else {
@@ -56,7 +71,7 @@ $(".easier").click(function() {
 	changeDifficulty(difficultyIndex);
 });
 
-$(".harder").click(function() {
+$(".harder").click(function () {
 	if (difficultyIndex == difficulties.length - 1) {
 		difficultyIndex = 0;
 	} else {
@@ -78,21 +93,27 @@ function changeDifficulty(difficultyIndex) {
 	}
 }
 
-$(".mode-select").change(function() {
+$(".mode-select").change(function () {
 	option = $(this).val();
 
 	if (option == "one-on-one") {
 		$(".mode-select").val("one-on-one");
-		console.log("switching to one-on-one mode");
-		$("#menu-1").css({"display":"none"});
-		$("#menu-2").css({"display":"inline"});
-	} 
+		$("#menu-1").css({
+			"display": "none"
+		});
+		$("#menu-2").css({
+			"display": "inline"
+		});
+	}
 
 	if (option == "single-player") {
 		$(".mode-select").val("single-player");
-		console.log("switching to single-player mode");
-		$("#menu-2").css({"display":"none"});
-		$("#menu-1").css({"display":"inline"});
+		$("#menu-2").css({
+			"display": "none"
+		});
+		$("#menu-1").css({
+			"display": "inline"
+		});
 	}
 });
 
@@ -105,35 +126,34 @@ function displayMatchLoading() {
 }
 
 function generateMaze() {
-	console.log("generating room maze");
-	    var mazeDifficulty = difficulties[difficultyIndex]; // Determine the maze difficulty
-	    var dimensions = difficultyDimensions[mazeDifficulty]; // Determine the maze dimensions
+	var mazeDifficulty = difficulties[difficultyIndex]; // Determine the maze difficulty
+	var dimensions = difficultyDimensions[mazeDifficulty]; // Determine the maze dimensions
 
-	    // Create the maze
-	    maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]); 
-	    maze.createMaze();	
-	    maze.generateMaze();
-	    maze.findSolution(); // Use BFS to solve the maze
+	// Create the maze
+	maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
+	maze.createMaze();
+	maze.generateMaze();
+	maze.findSolution(); // Use BFS to solve the maze
 
-	    socket.emit("invite", [maze, mazeDifficulty]);	
+	socket.emit("invite", [maze, mazeDifficulty]);
 }
 
-$(".invite").click(function() {
+$(".invite").click(function () {
 	$.ajax({
-	   url: displayMatchLoading(),
-	   success: function(){
-	   		generateMaze();
+		url: displayMatchLoading(),
+		success: function () {
+			generateMaze();
 		}
 	})
 });
 
-$(".join").click(function() {
+$(".join").click(function () {
 	$(".one-on-one-menu").hide();
 	$("#url-menu").hide();
 	$("#join-menu").show();
 });
 
-$("#room-code-form").on("submit", function(e) {
+$("#room-code-form").on("submit", function (e) {
 	var roomCode = $("#room-code").val();
 	var codeLength = roomCode.length;
 
@@ -156,34 +176,36 @@ function displayMazeGenerating() {
 }
 
 function initializeSinglePlayer() {
-	var mazeDifficulty = difficulties[difficultyIndex]; 
+	var mazeDifficulty = difficulties[difficultyIndex];
 	var dimensions = difficultyDimensions[mazeDifficulty];
-	
+
 	// Construct the maze
 	maze = new Maze(dimensions[0], dimensions[1], cellSizes[mazeDifficulty]);
 	maze.createMaze();
 	maze.generateMaze();
 	maze.findSolution();
 
-	displayTab(3, 3, false); 
+	displayTab(3, 3, false);
 	myp5 = new p5(mazeDisplay, "canvas2-wrapper"); // Initialize the graphics engine
 
-	$("#time-elapsed").css({"display":"inline"}); // Show the time elapsed menu
+	$(".time-elapsed").css({
+		"display": "inline"
+	}); // Show the time elapsed menu
 
 	mazeComplete = true; // Maze has finished generated
 
 	// Reset the timer
-    timer.reset();
-    timer.start();
-    timer.addEventListener("secondsUpdated", updateTime);
+	timer.reset();
+	timer.start();
+	timer.addEventListener("secondsUpdated", updateTime);
 }
 
 
-$(".play-button").click(function() {
+$(".play-button").click(function () {
 	$.ajax({
-	   url: displayMazeGenerating(),
-	   success: function() {
-		   initializeSinglePlayer();
+		url: displayMazeGenerating(),
+		success: function () {
+			initializeSinglePlayer();
 		}
 	});
 });

@@ -15,6 +15,10 @@ body {
     text-align: center;
 }
 
+#single-player-info, #one-on-one-info {
+    display: none;
+}
+
 #canvas2-wrapper {
     background: black;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.16), 0 8px 12px rgba(0, 0, 0, 0.23);
@@ -22,7 +26,7 @@ body {
 
 #menu-2,
 #menu-3,
-#time-elapsed,
+.time-elapsed,
 #join-menu,
 #display-menu,
 .navigation,
